@@ -151,24 +151,14 @@ const GUIDES=[
 ];
 function localGuide(q){const s=String(q).toLowerCase();const g=GUIDES.find(g=>g.kw.some(k=>s.includes(k)));return g?`**${g.title}**\n\n${g.body}\n\n_This is the basic guide built into the app. Kwa ushauri wa kina uliza afisa ugani au daktari wa mifugo._`:null}
 
-const CRE={s1:{name:'Mama Neema',handle:'@mamaneema'},s2:{name:'Baba Juma',handle:'@babajuma'},s3:{name:'Salma wa Shamba',handle:'@salmashamba'},s4:{name:'Farming Bora',handle:'@kilimobora'}};
-const BGS=['linear-gradient(160deg,#20502c,#0d2415)','linear-gradient(160deg,#5a4413,#1d160a)','linear-gradient(160deg,#2c5a33,#557a1c)','linear-gradient(160deg,#4a3021,#171009)','linear-gradient(160deg,#1e4a45,#0c1d1b)'];
-const SEEDPOSTS=[
-{by:'s1',tag:'kilimo',bg:0,text:'Palilia mahindi mapema: magugu ya wiki 2–6 za mwanzo huathiri mavuno zaidi.',cap:'#mahindi #palizi'},
-{by:'s2',tag:'ufugaji',bg:1,text:'Vifaranga wa wiki ya kwanza wanahitaji joto la 32–35°C na maji safi kila wakati.',cap:'#kuku #vifaranga'},
-{by:'s3',tag:'kilimo',bg:2,text:'Nyanya: tandaza majani makavu kuzuia magugu na kuhifadhi unyevu.',cap:'#nyanya #matandazo'},
-{by:'s4',tag:'kilimo',bg:4,text:'Pima udongo kabla ya kuweka mbolea. Utaokoa pesa na kuboresha mavuno.',cap:'#udongo #mbolea'},
-{by:'s2',tag:'ufugaji',bg:3,text:'Homa ya nguruwe ya Afrika haina chanjo. Kinga ni kufunga banda na kuzuia wageni.',cap:'#nguruwe #usalama'},
-{by:'s1',tag:'kilimo',bg:0,text:'Kausha mahindi hadi unyevu 13% kabla ya kuhifadhi ili kuepuka ukungu na aflatoksini.',cap:'#mahindi #kuhifadhi'},
-{by:'s3',tag:'ufugaji',bg:4,text:'Ng\'ombe wa maziwa wanahitaji maji safi mengi kila siku; wakikosa, maziwa hupungua.',cap:'#ngombe #maziwa'},
-{by:'s4',tag:'kilimo',bg:2,text:'Kagua shamba la mahindi kila wiki kutafuta viwavijeshi wakiwa bado wachanga.',cap:'#viwavijeshi #mahindi'}
+const RETIRED_SEED_USERS=new Set(['s1','s2','s3','s4']);
+const RETIRED_DEMO_CONTACTS=new Set(['x1','x2','x3','x4']);
+const EXPERTS=[
+ {id:'vet',name:'Daktari wa Mifugo',role:'Afya ya mifugo na chanjo',kind:'ufugaji',phone:'+255749763095',displayPhone:'+255 749 763 095'},
+ {id:'extension',name:'Bwana Shamba',role:'Ushauri wa kilimo na mazao',kind:'kilimo',phone:'+255796236053',displayPhone:'+255 796 236 053'}
 ];
 const SEED_CONTACTS=[
- {id:'ai',name:'MIMI Assistant',role:'Msaidizi wa AI wa kilimo na ufugaji',ai:true,online:true},
- {id:'x1',name:'Afisa Ugani',role:'Expert wa mazao',demo:true,kind:'kilimo',online:true},
- {id:'x2',name:'Expert wa Udongo',role:'Udongo na mbolea',demo:true,kind:'kilimo',online:false},
- {id:'x3',name:'Daktari wa Mifugo',role:'Afya ya mifugo na chanjo',demo:true,kind:'ufugaji',online:true},
- {id:'x4',name:'Expert wa Lishe',role:'Lishe ya mifugo',demo:true,kind:'ufugaji',online:false}
+ {id:'ai',name:'MIMI Assistant',role:'Msaidizi wa AI wa kilimo na ufugaji',ai:true,online:true}
 ];
 const SEED_CHANNELS=[
  {id:'ch1',name:'Vidokezo vya Farming',desc:'Mbinu fupi za kila siku kwa wakulima.',posts:[{id:'a1',text:'Andaa shamba mapema kabla ya mvua ili upande mvua za kwanza.',ago:86400e3},{id:'a2',text:'Tumia mbegu bora na uliza afisa ugani aina inayofaa eneo lako.',ago:2*86400e3}]},
@@ -183,13 +173,20 @@ const SEED_COMM=[
 
 /* ============ store ============ */
 const KEY='mimi_ni_mkulima_v1';
-function seedDB(){const t=now();return{v:1,session:null,users:{},guest:{ai:{},history:[]},
+function seedDB(){return{v:1,session:null,users:{},guest:{ai:{},history:[]},
   settings:{dark:true,font:'sans',size:100,chatTheme:'system',shareInfo:true,allowProfile:true,secure:false,autoDelBlocked:true,location:false,perm:{file:true,camera:true,mic:true}},
-  posts:SEEDPOSTS.map((p,i)=>({id:'sp'+i,by:p.by,name:CRE[p.by].name,handle:CRE[p.by].handle,color:colorOf(p.by),kind:'text',text:p.text,caption:p.cap,tag:p.tag,bg:p.bg,ts:t-(i+1)*5*3600e3,likedBy:[],reposts:0,comments:[],seed:true}))}}
+  posts:[]}}
 function loadDB(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);if(d&&d.v===1){
-  d.posts.forEach(p=>{if(typeof p.src==='string'&&p.src.startsWith('blob:')){p.src=null;p.dead=true}});
-  Object.values(d.users).forEach(u=>Object.values(u.chats||{}).forEach(c=>c.msgs.forEach(m=>{if(typeof m.src==='string'&&m.src.startsWith('blob:')){m.src=null;m.dead=true}})));
-  d.settings=Object.assign(seedDB().settings,d.settings);return d}}}catch(e){}return seedDB()}
+  d.posts=(d.posts||[]).filter(p=>!p.seed&&!RETIRED_SEED_USERS.has(p.by));
+  Object.values(d.users).forEach(u=>{
+    u.contacts=(u.contacts||[]).filter(c=>!c.demo&&!RETIRED_DEMO_CONTACTS.has(c.id));
+    u.statuses=(u.statuses||[]).filter(s=>!RETIRED_DEMO_CONTACTS.has(s.by));
+    u.following=(u.following||[]).filter(id=>!RETIRED_SEED_USERS.has(id));
+    u.reposts=(u.reposts||[]).filter(id=>d.posts.some(p=>p.id===id));
+    for(const id of RETIRED_DEMO_CONTACTS)delete (u.chats||{})[id];
+    Object.values(u.chats||{}).forEach(c=>(c.msgs||[]).forEach(m=>{if(typeof m.src==='string'&&m.src.startsWith('blob:')){m.src=null;m.dead=true}}));
+  });
+  d.settings=Object.assign(seedDB().settings,d.settings);localStorage.setItem(KEY,JSON.stringify(d));return d}}}catch(e){}return seedDB()}
 let DB=loadDB(),saveT;
 function save(){clearTimeout(saveT);saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(DB))}catch(e){toast('Hifadhi ya kifaa imejaa. Futa baadhi ya picha au machapisho.')}},200)}
 const curUser=()=>DB.users[DB.session]||null;
@@ -202,7 +199,7 @@ function newUserData(u){
     contacts:SEED_CONTACTS.map(c=>({...c,fav:false,blocked:false})),
     channels:SEED_CHANNELS.map(c=>({id:c.id,name:c.name,desc:c.desc,followed:false,mine:false,posts:c.posts.map(p=>({id:p.id,text:p.text,ts:now()-p.ago}))})),
     communities:SEED_COMM.map(c=>({...c,joined:false})),
-    statuses:[{id:uid('st'),by:'x1',text:'Andaa shamba mapema kabla ya mvua.',bg:0,ts:now()-2*3600e3},{id:uid('st'),by:'x3',text:'Maji safi kila siku kwa mifugo wako.',bg:1,ts:now()-5*3600e3}]});
+    statuses:[]});
   u.chats.ai={id:'ai',type:'dm',name:'MIMI Assistant',unread:0,msgs:[{id:uid('m'),from:'ai',kind:'text',text:'Karibu! Mimi ni MIMI Assistant. Niulize chochote kuhusu kilimo au ufugaji.',ts:now()}]};
 }
 
@@ -327,10 +324,10 @@ async function askMore(q){const d=S.learn.doc;if(!d||d.busy)return;const a={q,a:
   d.busy=false;if(S.learn.doc===d&&S.view==='section')refreshSec()}
 
 /* --- experts --- */
-SECTAB.mtaalamu=()=>{const k=S.sec;const l=SEED_CONTACTS.filter(c=>c.demo&&c.kind===k);
-  return`<div class="note">These are example experts. Their responses are generated by AI and marked as such until real experts join.</div>
-  <div class="list" style="margin-top:.6rem">${l.map(c=>`<button class="item" data-act="openThread" data-id="${c.id}">${av(c.name,'',colorOf(c.id))}<span class="grow"><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.role)}</span></span><span class="pill">${c.online?'Active':'Offline'}</span><span class="pill">Example</span></button>`).join('')}</div>
-  <p class="muted small" style="margin:1rem 0 .3rem">Unaweza pia kuzungumza moja kwa moja na msaidizi wa AI:</p><button class="btn ghost sm" data-act="openThread" data-id="ai">Fungua MIMI Assistant</button>`};
+SECTAB.mtaalamu=()=>{const experts=EXPERTS.filter(c=>c.kind===S.sec);
+  return`<div class="note">Wasiliana na mtaalamu kwa kupiga simu. Simu itafunguliwa kwenye kifaa chako.</div>
+  <div class="list" style="margin-top:.6rem">${experts.map(c=>`<div class="item">${av(c.name,'',colorOf(c.id))}<span class="grow"><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.role)}</span><br><span class="muted small">${esc(c.displayPhone)}</span></span><a class="btn sm" href="tel:${esc(c.phone)}" aria-label="Piga simu ${esc(c.name)}">${ic('phone')} Piga simu</a></div>`).join('')}</div>
+  <p class="muted small" style="margin:1rem 0 .3rem">Unaweza pia kuzungumza na msaidizi wa AI:</p><button class="btn ghost sm" data-act="openThread" data-id="ai">Fungua MIMI Assistant</button>`};
 
 /* --- AI chat --- */
 let AIBUSY=false,AICTL=null,ATT=null;
@@ -409,7 +406,7 @@ ACT.ledDel=el=>{const o=farmOf(S.sec);o.ledger=o.ledger.filter(x=>x.id!==el.data
 ACT.farmLoc=()=>{if(!navigator.geolocation)return toast('Kivinjari hakiungi mkono eneo.');navigator.geolocation.getCurrentPosition(p=>{const o=farmOf(S.sec);o.place=`${(o.place||'').replace(/\s*\(.*?\)\s*$/,'')} (${p.coords.latitude.toFixed(2)}, ${p.coords.longitude.toFixed(2)})`.trim();save();render()},()=>toast('Imeshindwa kupata eneo. Ruhusu eneo kwenye kivinjari.'))};
 
 /* ============ account ============ */
-const creatorName=id=>(DB.users[id]&&DB.users[id].name)||(CRE[id]&&CRE[id].name)||'Mtumiaji';
+const creatorName=id=>(DB.users[id]&&DB.users[id].name)||'Mtumiaji';
 const post=id=>DB.posts.find(p=>p.id===id);
 VIEWS.account=()=>{const u=curUser();return u?profileHTML(u):authHTML()};
 function authHTML(){const reg=S.auth==='register';
@@ -486,7 +483,7 @@ ACT.follow=el=>{if(needLogin('Log in to follow.'))return;const u=curUser(),id=el
 ACT.viewCreator=el=>{const id=el.dataset.id,lu=DB.users[id],u=curUser();const n=creatorName(id),cnt=DB.posts.filter(p=>p.by===id).length;
   if(lu&&lu.id!==(u&&u.id)&&!lu.priv.allowProfile)return sheet(n,'<div class="empty"><b>Wasifu wa faragha</b>Mtumiaji huyu hajaruhusu wasifu wake kuonekana.</div>');
   const bio=lu?(lu.priv.shareInfo||(u&&u.id===lu.id)?lu.bio:''):'';
-  sheet(n,`<div class="prof">${av(n,'lg',colorOf(id))}<b>${esc(lu?lu.handle:CRE[id]?CRE[id].handle:'')}</b>${bio?`<p>${esc(bio)}</p>`:''}<span class="muted small">Machapisho: ${cnt}</span>${u&&u.id!==id?`<button class="btn sm" data-act="follow" data-id="${esc(id)}">${u.following.includes(id)?'Unafuata':'Fuata'}</button>`:''}</div>`)};
+  sheet(n,`<div class="prof">${av(n,'lg',colorOf(id))}<b>${esc(lu?lu.handle:'')}</b>${bio?`<p>${esc(bio)}</p>`:''}<span class="muted small">Machapisho: ${cnt}</span>${u&&u.id!==id?`<button class="btn sm" data-act="follow" data-id="${esc(id)}">${u.following.includes(id)?'Unafuata':'Fuata'}</button>`:''}</div>`)};
 ACT.comments=el=>{const p=post(el.dataset.id);if(!p)return;sheet('Maoni',`<div id="cmList">${cmList(p)}</div><div class="emojis" role="group" aria-label="Emoji">${EMO.map(e=>`<button type="button" data-act="emo" data-e="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div><form class="row" data-form="comment" data-id="${esc(p.id)}"><input class="field grow" name="t" placeholder="Andika maoni…" maxlength="300" aria-label="Maoni" autocomplete="off"><button class="btn" aria-label="Tuma">${ic('send')}</button></form>`)};
 const cmList=p=>p.comments.length?p.comments.map(c=>`<div class="cm">${av(c.name,'sm',colorOf(c.by))}<div><b>${esc(c.name)}</b> <span class="muted small">${ago(c.ts)}</span><p>${esc(c.text)}</p></div></div>`).join(''):'<div class="empty">Hakuna maoni bado. Kuwa wa kwanza.</div>';
 FORM.comment=f=>{if(needLogin('Log in ili utoe maoni.'))return;const p=post(f.dataset.id),t=fv(f,'t').trim();if(!p||!t)return;const u=curUser();p.comments.push({id:uid('c'),by:u.id,name:u.name,text:t,ts:now()});save();$('#cmList').innerHTML=cmList(p);f.reset();refreshPost(p.id)};
@@ -551,13 +548,13 @@ function msgsHTML(c){return c.msgs.map(m=>{if(m.kind==='sys')return`<div class="
     if(m.kind==='image')body=safeSrc(m.src)?`<img src="${safeSrc(m.src)}" alt="Photos">`:'📷 Photos haipatikani tena';
     else if(m.kind==='voice')body=safeSrc(m.src)?`<audio controls src="${safeSrc(m.src)}"></audio>`:'🎤 Ujumbe wa sauti (haupatikani tena)';
     else if(m.kind==='file')body=`📎 ${esc(m.name||'Faili')}`;else body=esc(m.text);
-    return`<div class="m ${me?'me':'them'}">${m.tag?'<span class="tag" style="display:block;font-size:.65rem;font-weight:800;opacity:.7">Jibu la AI (mfano)</span>':''}${body}<span style="display:block;text-align:right;font-size:.65rem;opacity:.65">${hhmm(m.ts)}</span></div>`}).join('')+(TYPING[c.id]?'<div class="m them"><span class="pulse"></span> Anaandika…</div>':'')}
+    return`<div class="m ${me?'me':'them'}">${body}<span style="display:block;text-align:right;font-size:.65rem;opacity:.65">${hhmm(m.ts)}</span></div>`}).join('')+(TYPING[c.id]?'<div class="m them"><span class="pulse"></span> Anaandika…</div>':'')}
 function paintThread(){const u=curUser(),c=u&&u.chats[S.thread],b=$('#msgs');if(c&&b){b.innerHTML=msgsHTML(c);b.scrollTop=b.scrollHeight}}
 function composeHTML(){if(REC)return`<button class="icon-btn" data-act="recCancel" aria-label="Ghairi">${ic('trash')}</button><span class="rec"><span class="pulse" style="background:var(--danger)"></span> Inarekodi <span id="recT">0:00</span></span><button class="btn" data-act="rec" aria-label="Tuma sauti">${ic('send')}</button>`;
   return`<button class="icon-btn" data-act="thAttach" aria-label="Ambatisha">${ic('plus')}</button><button class="icon-btn" data-act="thCamera" aria-label="Camera">${ic('camera')}</button><textarea class="field" id="msgText" rows="1" placeholder="Andika ujumbe" aria-label="Ujumbe"></textarea><button class="icon-btn" data-act="emoToggle" aria-label="Emoji">${ic('smile')}</button><button class="icon-btn" id="micBtn" data-act="rec" aria-label="Rekodi sauti">${ic('mic')}</button><button class="btn hidden" id="sendBtn" data-act="thSend" aria-label="Tuma">${ic('send')}</button>`}
 const paintCompose=()=>{const c=$('#compose');if(c)c.innerHTML=composeHTML()};
 function threadHTML(){const c=ensureChat(S.thread),ct=c.type==='dm'?contactOf(c.id):null,n=chatTitle(c);c.unread=0;
-  const sub=ct?(ct.ai?'Msaidizi wa AI':ct.demo?ct.role+' · mfano (AI)':ct.role||''):c.type==='group'?'Kundi':'';
+  const sub=ct?(ct.ai?'Msaidizi wa AI':ct.role||''):c.type==='group'?'Kundi':'';
   return`<div class="fillabs thread" data-pal="${chatPal()}" style="background:var(--bg);color:var(--text)"><div class="chead"><button class="icon-btn" data-act="thBack" aria-label="Rudi">${ic('back')}</button>${av(n,'sm',colorOf(c.id))}<div class="grow"><b>${esc(n)}</b><br><span class="muted small">${esc(sub)}</span></div>${ct&&!ct.ai?`<button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="voice" aria-label="Simu ya sauti">${ic('phone')}</button><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="video" aria-label="Simu ya video">${ic('video')}</button>`:''}<button class="icon-btn" data-act="thMenu" aria-label="Zaidi">${ic('more')}</button></div>
   <div class="msgs" id="msgs">${msgsHTML(c)}</div><div id="emoRow" class="emojis hidden" style="padding:.3rem .6rem;background:var(--surface)">${EMO.map(e=>`<button type="button" data-act="emo" data-e="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div><div class="compose" id="compose">${composeHTML()}</div></div>`}
 VIEWS.chat=()=>{if(!curUser())return gate('Chat');if(S.thread)return threadHTML();
@@ -568,12 +565,11 @@ ACT.ctab=el=>{S.ct=el.dataset.t;S.cv=null;render()};
 ACT.openThread=el=>{if(needLogin())return;ensureChat(el.dataset.id);S.ct='chats';go('chat',{thread:el.dataset.id})};
 ACT.thBack=()=>{S.thread=null;if(REC)recStop(true);render()};
 async function sendMsg(chatId,text,extra){const c=ensureChat(chatId);c.msgs.push(Object.assign({id:uid('m'),from:'me',kind:'text',text,ts:now()},extra||{}));save();if(S.view==='chat'&&S.thread===chatId)paintThread();
-  const ct=c.type==='dm'?contactOf(chatId):null;if(ct&&(ct.ai||ct.demo)&&!ct.blocked&&(!extra||!extra.kind||extra.kind==='text'))await botReply(ct,c)}
+  const ct=c.type==='dm'?contactOf(chatId):null;if(ct&&ct.ai&&!ct.blocked&&(!extra||!extra.kind||extra.kind==='text'))await botReply(ct,c)}
 async function botReply(ct,c){const key=c.id;TYPING[key]=true;if(S.view==='chat'&&S.thread===key)paintThread();
   const hist=c.msgs.filter(m=>m.kind==='text'&&m.text).slice(-12).map(m=>({role:m.from==='me'?'user':'assistant',content:m.text}));
-  const sys=ct.ai?BASE_SYS:BASE_SYS+`\nUnacheza nafasi ya mfano ya "${ct.name}" (${ct.role}) kwenye app ya demo. Jibu kwa ufupi kama mtaalamu huyo, lakini usidai kuwa binadamu halisi wala kutoa vyeti; jibu hili ni la AI.`;
-  let reply;try{reply=(await runAI(hist,{system:sys})).text}catch(e){reply=localGuide(hist.length?hist[hist.length-1].content:'')||(ct.ai?aiErr(e):'Ujumbe wako umepokelewa. Expert halisi bado hajaunganishwa kwenye huduma hii (demo).')}
-  TYPING[key]=false;const u=curUser();if(!u||!u.chats[key])return;u.chats[key].msgs.push({id:uid('m'),from:ct.id,kind:'text',text:reply,ts:now(),tag:ct.ai?null:'AI'});
+  let reply;try{reply=(await runAI(hist,{system:BASE_SYS})).text}catch(e){reply=localGuide(hist.length?hist[hist.length-1].content:'')||aiErr(e)}
+  TYPING[key]=false;const u=curUser();if(!u||!u.chats[key])return;u.chats[key].msgs.push({id:uid('m'),from:ct.id,kind:'text',text:reply,ts:now()});
   const open=S.view==='chat'&&S.thread===key;if(!open)u.chats[key].unread++;save();if(S.view==='chat'){if(open)paintThread();else if(!S.thread&&S.ct==='chats')paintChatBody()}}
 ACT.thSend=()=>{const t=$('#msgText');if(!t)return;const v=t.value.trim();if(!v)return;t.value='';t.style.height='';$('#sendBtn').classList.add('hidden');$('#micBtn').classList.remove('hidden');sendMsg(S.thread,v)};
 ACT.emoToggle=()=>{const r=$('#emoRow');if(r)r.classList.toggle('hidden')};
@@ -591,13 +587,13 @@ function recStop(cancel){if(!REC)return;REC.cancel=!!cancel;try{REC.mr.stop()}ca
 ACT.thMenu=()=>{const c=ensureChat(S.thread),ct=c.type==='dm'?contactOf(c.id):null;
   sheet(chatTitle(c),`<div class="menu">${ct?`<button data-act="viewContact">${ic('user')} Angalia mwasiliani</button><button data-act="favContact">${ic('star')} ${ct.fav?'Ondoa kwenye pendwa':'Weka pendwa'}</button>`:`<button data-act="viewContact">${ic('users')} Washiriki</button>`}<button data-act="thMedia">${ic('image')} Media</button>${ct&&!ct.ai?`<button data-act="blockContact">${ic('ban')} Zuia</button>`:''}<button data-act="clearChat">${ic('trash')} Futa mazungumzo</button></div>`)};
 ACT.viewContact=()=>{const c=ensureChat(S.thread),ct=c.type==='dm'?contactOf(c.id):null;
-  sheet(chatTitle(c),ct?`<div class="prof">${av(ct.name,'lg',colorOf(ct.id))}<b>${esc(ct.name)}</b><span class="muted">${esc(ct.role||'')}</span>${ct.demo?'<span class="pill">Expert wa mfano · majibu ya AI</span>':''}</div>`:`<div class="list">${(c.members||[]).map(id=>{const m=contactOf(id);return m?`<div class="item">${av(m.name,'sm',colorOf(id))}<span>${esc(m.name)}</span></div>`:''}).join('')||'<div class="empty">Washiriki wataonekana hapa.</div>'}</div>`)};
+  sheet(chatTitle(c),ct?`<div class="prof">${av(ct.name,'lg',colorOf(ct.id))}<b>${esc(ct.name)}</b><span class="muted">${esc(ct.role||'')}</span></div>`:`<div class="list">${(c.members||[]).map(id=>{const m=contactOf(id);return m?`<div class="item">${av(m.name,'sm',colorOf(id))}<span>${esc(m.name)}</span></div>`:''}).join('')||'<div class="empty">Washiriki wataonekana hapa.</div>'}</div>`)};
 ACT.favContact=()=>{const ct=contactOf(S.thread);ct.fav=!ct.fav;save();closeSheet();toast(ct.fav?'Imewekwa pendwa':'Imeondolewa kwenye pendwa')};
 ACT.thMedia=()=>{const c=ensureChat(S.thread),im=c.msgs.filter(m=>m.kind==='image'&&safeSrc(m.src));sheet('Media',im.length?`<div class="thumbs">${im.map(m=>`<div class="thumb"><img src="${safeSrc(m.src)}" alt="Photos"></div>`).join('')}</div>`:'<div class="empty">Hakuna picha kwenye mazungumzo haya.</div>')};
 ACT.blockContact=()=>{const ct=contactOf(S.thread);if(!ct)return;ct.blocked=true;if(PRIV().autoDelBlocked)delete curUser().chats[ct.id];save();S.thread=null;closeSheet();render();toast(ct.name+' amezuiwa')};
 ACT.clearChat=()=>{const c=ensureChat(S.thread);c.msgs=[];save();closeSheet();paintThread()};
 ACT.cmenu=()=>sheet('Chat',`<div class="menu"><button data-act="communities">${ic('users')} Communities</button><button data-act="newGroup">${ic('plus')} Create group</button><button data-act="contacts">${ic('user')} All contacts</button><button data-act="invite">${ic('send')} Invite a person</button><button data-act="blockedList">${ic('ban')} Blocked users</button><button data-act="go" data-v="settings">${ic('settings')} Mipangilio</button></div>`);
-const contactRows=(act,extra)=>curUser().contacts.filter(c=>!c.blocked&&(extra?!c.ai:true)).map(c=>`<button class="item" data-act="${act}" data-id="${esc(c.id)}">${av(c.name,'sm',colorOf(c.id))}<span class="grow"><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.role||'')}</span></span>${c.demo?'<span class="pill">Example</span>':''}</button>`).join('');
+const contactRows=(act,extra)=>curUser().contacts.filter(c=>!c.blocked&&(extra?!c.ai:true)).map(c=>`<button class="item" data-act="${act}" data-id="${esc(c.id)}">${av(c.name,'sm',colorOf(c.id))}<span class="grow"><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.role||'')}</span></span></button>`).join('');
 ACT.newChat=()=>sheet('Mazungumzo mapya',`<div class="list">${contactRows('openThread')}</div>`);
 ACT.contacts=()=>sheet('All contacts',`<div class="list">${contactRows('openThread')}</div>`);
 ACT.blockedList=()=>{const b=curUser().contacts.filter(c=>c.blocked);sheet('Blocked users',b.length?`<div class="list">${b.map(c=>`<div class="item">${av(c.name,'sm')}<span class="grow">${esc(c.name)}</span><button class="btn ghost sm" data-act="unblock" data-id="${esc(c.id)}">Fungua</button></div>`).join('')}</div>`:'<div class="empty">Hakuna uliyemzuia.</div>')};
