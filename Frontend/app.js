@@ -304,7 +304,13 @@ function learnHTML(){const k=S.sec,T=SEC[k],L=S.learn;
   return`<form class="searchbar" data-form="learn" role="search">${ic('search')}<input name="q" value="${esc(L.q)}" placeholder="${k==='kilimo'?'Search zao unalotaka':'Search mnyama unayemfuga'}" aria-label="Search" autocomplete="off"><button class="btn sm">Search</button></form>
   <div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${L.tab===i?'on':''}" data-act="ltab" data-t="${i}">${l}</button>`).join('')}</div>${body}`}
 SECTAB.jifunze=learnHTML;
-ACT.ltab=el=>{S.learn.tab=el.dataset.t;refreshSec()};
+ACT.ltab=el=>{
+  const tab=el.dataset.t,q=S.learn.q.trim();
+  S.learn.tab=tab;
+  if(q&&tab==='picha')window.open(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q+' Tanzania')}`,'_blank','noopener,noreferrer');
+  if(q&&tab==='video')window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent('shorts '+q+' Tanzania')}`,'_blank','noopener,noreferrer');
+  refreshSec()
+};
 ACT.topic=el=>openDoc(el.dataset.q);
 ACT.docBack=()=>{S.learn.doc=null;refreshSec()};
 ACT.hist=el=>{const h=P().history[+el.dataset.i];if(h)openDoc(h.q)};
