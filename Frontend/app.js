@@ -151,6 +151,7 @@ const GUIDES=[
 ];
 function localGuide(q){const s=String(q).toLowerCase();const g=GUIDES.find(g=>g.kw.some(k=>s.includes(k)));return g?`**${g.title}**\n\n${g.body}\n\n_This is the basic guide built into the app. Kwa ushauri wa kina uliza afisa ugani au daktari wa mifugo._`:null}
 
+const BGS=['linear-gradient(160deg,#20502c,#0d2415)','linear-gradient(160deg,#5a4413,#1d160a)','linear-gradient(160deg,#2c5a33,#557a1c)','linear-gradient(160deg,#4a3021,#171009)','linear-gradient(160deg,#1e4a45,#0c1d1b)'];
 const RETIRED_SEED_USERS=new Set(['s1','s2','s3','s4']);
 const RETIRED_DEMO_CONTACTS=new Set(['x1','x2','x3','x4']);
 const EXPERTS=[
@@ -245,7 +246,7 @@ async function runAI(turns,o){o=o||{};
 function aiErr(e){const c=e&&e.code;if(c==='cancelled')return'';if(c==='rate_limited')return'AI usage limit reached. Please try again later.';if(c==='upstream_error'||c==='empty_completion')return'AI service is unavailable right now. Please try again later.';if(c==='prompt_too_large')return'The message is too long. Please shorten it and try again.';return'AI service is unavailable right now. Please try again later.'}
 
 /* ============ router ============ */
-const S={view:'home',sec:'kilimo',tab:'jifunze',ltab:'muhtasari',ct:'chats',thread:null,cv:null,stream:{tab:'you',q:'',focus:null},learn:{q:'',tab:'maelezo',doc:null},auth:'login',ptab:'maudhui'};
+const S={view:'home',sec:'kilimo',tab:'jifunze',ltab:'muhtasari',ct:'chats',thread:null,cv:null,stream:{tab:'you',q:'',focus:null},learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0},auth:'login',ptab:'maudhui'};
 const VIEWS={},POST={},SECTAB={},ACT={},FORM={};
 const chatPal=()=>ST().chatTheme==='system'?(ST().dark?'dark':'light'):ST().chatTheme;
 function applyPrefs(){const s=ST(),r=document.documentElement;r.dataset.theme=s.dark?'dark':'light';r.style.setProperty('--ts',String(s.size/100));r.style.setProperty('--font-body',s.font==='serif'?"'Times New Roman',Georgia,serif":s.font==='mono'?"ui-monospace,'SF Mono',Menlo,Consolas,monospace":"'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif")}
@@ -264,7 +265,7 @@ VIEWS.home=()=>{const u=curUser();
    <button class="door" data-act="openSec" data-sec="kilimo">${ic('leaf','door-ic')}<span class="door-t">MKULIMA</span><span class="door-s">Grow Together</span><span class="chips"><i>Learn Farming</i><i>Talk to an Expert</i><i>Chat with AI</i><i>My Farm</i></span></button>
    <button class="door ochre" data-act="openSec" data-sec="ufugaji">${ic('paw','door-ic')}<span class="door-t">TUFUGE</span><span class="door-s">Raise Together</span><span class="chips"><i>Learn Livestock</i><i>Talk to an Expert</i><i>Chat with AI</i><i>My Barn</i></span></button>
   </div></div>`};
-ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'jifunze',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null}})};
+ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'jifunze',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
 
 /* ============ section ============ */
 VIEWS.section=()=>{const k=S.sec,T=SEC[k];
@@ -285,15 +286,61 @@ function docHTML(){const d=S.learn.doc;
   ${d.busy?'':`<div class="note" style="margin-top:1rem">${d.src==='ai'?'Overview haya yameandaliwa na AI kutoka maarifa ya jumla; si utafutaji wa moja kwa moja wa mtandao.':'This is the basic guide built into the app.'} Verify with an agricultural officer or livestock vet and compare with these search engines:</div><div class="engines">${engines(d.q)}</div>`}
   <div id="qaList">${d.qa.map(a=>`<div class="qa"><p class="q">${esc(a.q)}</p><div class="doc">${a.a?md(a.a):'<span class="pulse"></span>'}</div></div>`).join('')}</div>
   ${d.busy?'':`<form class="searchbar" data-form="more">${ic('chat')}<input name="q" placeholder="Ask another question…" aria-label="Ask swali zaidi" autocomplete="off"><button class="btn sm">Ask</button></form>`}`}
-function mediaHTML(kind){const q=S.learn.q;const lab=kind==='image'?'Photos':'Short videos';
+function mediaHTML(kind){const q=S.learn.q.trim(),lab=kind==='image'?'Photos':'Short videos';
   if(!q)return`<div class="empty"><b>${lab}</b>Search mada kwanza ili uone ${kind==='image'?'picha':'video'} zinazohusiana.</div>`;
-  const e=encodeURIComponent(q+' Tanzania');
-  const links=kind==='image'?[['Google Photos','https://www.google.com/search?tbm=isch&q='],['Bing Photos','https://www.bing.com/images/search?q='],['DuckDuckGo Photos','https://duckduckgo.com/?iax=images&ia=images&q=']]:[['YouTube Shorts','https://www.youtube.com/results?search_query=shorts+'],['YouTube','https://www.youtube.com/results?search_query='],['Google Video','https://www.google.com/search?tbm=vid&q=']];
-  const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>3&&!['jinsi','kulima','kufuga'].includes(w));
-  const ps=DB.posts.filter(p=>p.kind===kind&&safeSrc(p.src)&&words.some(w=>(p.text+' '+p.caption+' '+p.tag).toLowerCase().includes(w)));
-  return`<p class="muted">${lab} za “${esc(q)}”</p><div class="engines">${links.map(([n,u])=>`<a href="${u}${e}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('')}</div>
-  <h3 style="font:800 1.05rem var(--font-display);margin:1rem 0 .5rem">From fellow farmers</h3>
-  ${ps.length?`<div class="thumbs">${ps.map(thumbHTML).join('')}</div>`:`<div class="note">Bado hakuna ${kind==='image'?'picha':'video'} za mada hii kwenye Stream.</div>`}`}
+  const encoded=encodeURIComponent(q+' Tanzania');
+  if(kind==='video'){
+    const links=[
+      ['YouTube Shorts',`https://www.youtube.com/results?search_query=${encodeURIComponent('shorts '+q+' Tanzania')}`],
+      ['YouTube',`https://www.youtube.com/results?search_query=${encoded}`],
+      ['Google Videos',`https://www.google.com/search?tbm=vid&q=${encoded}`],
+      ['TikTok',`https://www.tiktok.com/search?q=${encoded}`],
+      ['Facebook',`https://www.facebook.com/search/videos/?q=${encoded}`]
+    ];
+    const words=q.toLowerCase().split(/\s+/).filter(w=>w.length>3&&!['jinsi','kulima','kufuga'].includes(w));
+    const ps=DB.posts.filter(p=>p.kind==='video'&&safeSrc(p.src)&&words.some(w=>(p.text+' '+p.caption+' '+p.tag).toLowerCase().includes(w)));
+    return`<p class="muted">Tafuta video za “${esc(q)}”</p><div class="engines">${links.map(([n,url])=>`<a href="${url}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('')}</div>
+    <h3 style="font:800 1.05rem var(--font-display);margin:1rem 0 .5rem">Video kutoka kwa wakulima</h3>
+    ${ps.length?`<div class="thumbs">${ps.map(thumbHTML).join('')}</div>`:'<div class="note">Video zilizopakiwa na wakulima zitaonekana hapa.</div>'}`;
+  }
+  const media=S.learn.media;
+  if(media.query!==q||media.loading)return`<p class="muted">Inatafuta picha za “${esc(q)}” kwenye Wikimedia Commons… <span class="pulse"></span></p>`;
+  if(media.error)return`<div class="note">${esc(media.error)} <button class="btn ghost sm" data-act="retryCommons">Jaribu tena</button></div>`;
+  if(!media.results.length)return`<div class="empty"><b>Hakuna picha zilizopatikana</b>Jaribu neno jingine la kutafuta.</div>`;
+  return`<p class="muted">Picha za “${esc(q)}” kutoka Wikimedia Commons. Picha zinaonyeshwa hapa; bofya chanzo kuona leseni na maelezo.</p>
+    <div class="media-grid">${media.results.map(image=>`<article class="media-card"><a class="media-image-link" href="${esc(image.pageUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Chanzo cha picha: ${esc(image.title)}"><img src="${esc(image.thumbnail)}" alt="${esc(image.title)}" loading="lazy" referrerpolicy="no-referrer"></a><div class="media-caption"><b>${esc(image.title)}</b>${image.artist?`<span>${esc(image.artist)}</span>`:''}${image.license?`<span>Leseni: ${esc(image.license)}</span>`:''}</div></article>`).join('')}</div>`;
+}
+async function loadCommonsImages(query){
+  const q=query.trim();if(!q)return;
+  const media=S.learn.media;
+  if(media.query===q&&(media.loading||media.results.length||media.error))return;
+  const request=++S.learn.mediaRequest;
+  Object.assign(media,{query:q,loading:true,results:[],error:null});
+  refreshSec();
+  const stopWords=new Set(['how','to','do','i','grow','raise','farm','farming','jinsi','ya','kulima','kufuga','kilimo','ufugaji','cha','wa','the','for','with','and','in','on','identify','diagnose','control','prevent','disease','diseases','management','tanzania','africa']);
+  const words=q.toLowerCase().replace(/[’']/g,'').match(/[a-z0-9]+/g)||[];
+  const term=words.filter(word=>!stopWords.has(word)).pop()||words[0]||q;
+  const searchTerms={mahindi:'maize',corn:'maize',mchele:'rice',ngombe:'cattle',kuku:'chicken',nyanya:'tomato',maharage:'beans',viazi:'potato',mbuzi:'goat',samaki:'fish'};
+  const searchTerm=searchTerms[term]||term;
+  try{
+    const response=await fetch(`/api/v1/media/images?q=${encodeURIComponent(searchTerm)}`);
+    if(!response.ok)throw new Error(`Wikimedia returned HTTP ${response.status}.`);
+    const data=await response.json();
+    const results=(data.results||[]).map(image=>({
+      title:image.title,
+      thumbnail:image.thumbnail,
+      pageUrl:image.page_url,
+      artist:image.artist,
+      license:image.license
+    }));
+    if(request!==S.learn.mediaRequest)return;
+    Object.assign(media,{query:q,loading:false,results,error:null});
+  }catch(error){
+    if(request!==S.learn.mediaRequest)return;
+    Object.assign(media,{query:q,loading:false,results:[],error:'Imeshindikana kupata picha kutoka Wikimedia Commons. Angalia intaneti kisha ujaribu tena.'});
+  }
+  if(S.view==='section'&&S.tab==='jifunze'&&S.learn.tab==='picha')refreshSec();
+}
 function historyHTML(){const h=P().history||[];if(!h.length)return`<div class="empty"><b>No history</b>Your search topics will appear here.</div>`;
   return`<div class="list">${h.map((x,i)=>`<button class="item" data-act="hist" data-i="${i}">${ic('clock')}<span class="grow">${esc(x.q)}</span><span class="muted small">${ago(x.ts)}</span></button>`).join('')}</div><p style="margin-top:1rem"><button class="btn danger sm" data-act="clearHist">Clear history</button></p>`}
 function learnHTML(){const k=S.sec,T=SEC[k],L=S.learn;
@@ -307,10 +354,10 @@ SECTAB.jifunze=learnHTML;
 ACT.ltab=el=>{
   const tab=el.dataset.t,q=S.learn.q.trim();
   S.learn.tab=tab;
-  if(q&&tab==='picha')window.open(`https://www.google.com/search?tbm=isch&q=${encodeURIComponent(q+' Tanzania')}`,'_blank','noopener,noreferrer');
-  if(q&&tab==='video')window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent('shorts '+q+' Tanzania')}`,'_blank','noopener,noreferrer');
-  refreshSec()
+  refreshSec();
+  if(q&&tab==='picha')loadCommonsImages(q)
 };
+ACT.retryCommons=()=>{S.learn.media.query='';loadCommonsImages(S.learn.q)};
 ACT.topic=el=>openDoc(el.dataset.q);
 ACT.docBack=()=>{S.learn.doc=null;refreshSec()};
 ACT.hist=el=>{const h=P().history[+el.dataset.i];if(h)openDoc(h.q)};

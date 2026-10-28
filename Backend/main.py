@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import user, ai
+from api import user, ai, media
 
 app = FastAPI(title="MIMI NI MKULIMA API")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +19,7 @@ app.add_middleware(
 
 app.include_router(user.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["ai"])
+app.include_router(media.router, prefix="/api/v1/media", tags=["media"])
 
 @app.get("/")
 async def root():
