@@ -151,13 +151,17 @@ label.lab{display:grid;gap:.3rem;font-size:.85rem;color:var(--muted);font-weight
 .thumb{aspect-ratio:3/4;border-radius:12px;overflow:hidden;background:var(--raised);position:relative;display:block;width:100%}
 .thumb img,.thumb video{width:100%;height:100%;object-fit:cover;display:block}
 .thumb .tt{position:absolute;inset:0;padding:.6rem;font-size:.8rem;font-weight:700;color:#fff;display:flex;align-items:flex-end;background:var(--bg-t)}
-.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(10rem,1fr));gap:.75rem;margin-top:.75rem}
-.media-card{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:14px;background:var(--surface)}
-.media-image-link{display:block;background:var(--raised);aspect-ratio:4/3}
-.media-image-link img{display:block;width:100%;height:100%;object-fit:cover}
-.media-caption{display:grid;gap:.2rem;padding:.55rem .65rem;font-size:.76rem;overflow-wrap:anywhere}
-.media-caption b{font-size:.84rem}
+.media-grid{columns:2;column-gap:.8rem;margin-top:.85rem}
+.media-card{display:inline-block;width:100%;min-width:0;break-inside:avoid;margin:0 0 .8rem;overflow:hidden;border-radius:16px;background:var(--surface)}
+.media-image-link{display:block;overflow:hidden;background:var(--raised);border-radius:16px}
+.media-image-link img{display:block;width:100%;height:auto;min-height:7rem;object-fit:cover;transition:transform .2s ease}
+.media-image-link:hover img{transform:scale(1.035)}
+.media-caption{display:grid;gap:.2rem;padding:.45rem .2rem .25rem;font-size:.76rem;overflow-wrap:anywhere}
+.media-caption b{font-size:.84rem;line-height:1.35;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .media-caption span{color:var(--muted)}
+@media(min-width:600px){.media-grid{columns:3;column-gap:1rem}}
+@media(min-width:900px){.media-grid{columns:4}}
+@media(min-width:1200px){.media-grid{columns:5}}
 .pulse{display:inline-block;width:.5rem;height:.5rem;border-radius:50%;background:var(--acc);animation:pl 1s infinite alternate}
 @keyframes pl{to{opacity:.2}}
 
