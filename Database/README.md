@@ -115,4 +115,3 @@ See `Database/queries.sql` for production query templates:
 * GIN-indexed Full-Text Search with `ts_rank`.
 * HNSW-indexed vector semantic search.
 * Hybrid search (Reciprocal Rank Fusion) combining keyword and semantic ranking.
-

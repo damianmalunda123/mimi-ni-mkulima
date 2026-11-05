@@ -109,7 +109,31 @@ const I18N = {
     lbl_name: 'Full name',
     lbl_id: 'Phone or email',
     lbl_pw: 'Password',
-    auth_note: 'Accounts are stored locally on this device. If browser data is cleared, accounts will be reset.',
+    lbl_email: 'Email address',
+    lbl_phone: 'Phone number',
+    lbl_confirm_pw: 'Confirm password',
+    lbl_new_pw: 'New password',
+    forgot_password: 'Forgot password?',
+    forgot_unavailable: 'Password reset service is not available right now.',
+    reset_title: 'Reset your password',
+    reset_account_missing: 'No matching account is stored on this device.',
+    reset_success: 'Password reset. You are now logged in.',
+    btn_show_pw: 'Show password',
+    btn_hide_pw: 'Hide password',
+    verification_code: 'Verification code',
+    verification_sent_to: 'Enter the 6-digit code sent to',
+    verification_sent: 'Verification code sent.',
+    btn_verify_create: 'Verify code',
+    btn_send_code: 'Send reset code',
+    btn_reset_password: 'Reset password',
+    btn_resend_code: 'Resend code',
+    btn_change_details: 'Back',
+    password_mismatch: 'Passwords do not match.',
+    auth_contact_required: 'Enter an email address or phone number.',
+    verification_failed: 'The code is incorrect or expired. Request a new code and try again.',
+    verification_unavailable: 'Email/SMS verification is unavailable. Check the backend and delivery settings.',
+    otp_retry_later: 'Too many requests. Wait and try again later.',
+    auth_note: 'Accounts are stored on this device. Password reset is available in the browser where the account is stored.',
     guest_note: 'Without an account you can browse guides, use AI, and view Stream. Chat, My Farm, and posting require an account.',
     btn_edit_profile: 'Edit profile',
     btn_new_post: 'New post',
@@ -120,6 +144,12 @@ const I18N = {
     stat_posts: 'Posts',
     stat_following: 'Following',
     stat_followers: 'Followers',
+    btn_unfollow: 'Unfollow',
+    btn_follow_back: 'Follow back',
+    follows_you: 'Follows you',
+    no_followers: 'No followers yet.',
+    no_following: 'Not following anyone yet.',
+    btn_message: 'Message',
     no_content: 'Nothing here yet',
     no_content_sub: 'Your items will appear here.',
     btn_add_product: 'Add product',
@@ -198,6 +228,15 @@ const I18N = {
     st_account: 'Account',
     st_logout: 'Log out',
     st_login: 'Log in',
+    delete_account: 'Delete account',
+    delete_account_note: 'This permanently deletes your account, posts, and profile data. Enter the username and email used for this account, plus your password.',
+    delete_username: 'Username',
+    delete_email: 'Email address used to sign up',
+    delete_password: 'Password',
+    delete_confirm: 'Permanently delete account',
+    delete_verify_failed: 'The username, email, or password does not match this account.',
+    delete_email_missing: 'No email is saved for this account. This form can only verify accounts registered with an email address.',
+    delete_account_success: 'Account and its posts have been deleted.',
     toast_logged_out: 'Logged out successfully.',
     st_priv_note: 'Settings are stored locally on this device.',
     about_title: 'MIMI NI MKULIMA',
@@ -208,7 +247,7 @@ const I18N = {
     about_goal_3: 'Help farmers plan tasks, log daily income and expenses, and calculate net farm profitability.',
     about_goal_4: 'Build a collaborative community for peer-to-peer trade, expert Q&A, and agricultural streaming.',
     about_dev_title: 'Developer',
-    about_dev_desc: '<b>Daxon Technology</b>, Mbeya, Tanzania.<br>Damian Daud Malunda, Founder & CEO.',
+    about_dev_desc: '<b>Daxon Technology</b>, Mbeya, Tanzania.<br>Damian Daud Malunda, Founder & CEO.<br><a href="mailto:daxontech1@gmail.com">daxontech1@gmail.com</a><br><a href="https://damianmalunda.isroot.in/" target="_blank" rel="noopener noreferrer">damianmalunda.isroot.in</a>',
     about_services: 'Daxon Technology services: Software development, Graphic design, IT infrastructure, and Electronics maintenance.',
     about_version: 'Version 1.0. AI outputs provide general agricultural advice; for critical diseases and prescription medications, always consult a certified veterinarian or agricultural extension officer.',
     toast_lang_changed: 'Language set to English',
@@ -323,7 +362,31 @@ const I18N = {
     lbl_name: 'Jina kamili',
     lbl_id: 'Simu au barua pepe',
     lbl_pw: 'Nenosiri',
-    auth_note: 'Akaunti huhifadhiwa kwenye kifaa hiki tu. Ukifuta data ya kivinjari, akaunti itapotea.',
+    lbl_email: 'Barua pepe',
+    lbl_phone: 'Namba ya simu',
+    lbl_confirm_pw: 'Thibitisha nenosiri',
+    lbl_new_pw: 'Nenosiri jipya',
+    forgot_password: 'Umesahau nenosiri?',
+    forgot_unavailable: 'Huduma ya kubadili nenosiri haipatikani kwa sasa.',
+    reset_title: 'Badili nenosiri',
+    reset_account_missing: 'Akaunti inayolingana haipo kwenye kifaa hiki.',
+    reset_success: 'Nenosiri limebadilishwa. Umeingia kwenye akaunti.',
+    btn_show_pw: 'Onyesha nenosiri',
+    btn_hide_pw: 'Ficha nenosiri',
+    verification_code: 'Code ya uthibitisho',
+    verification_sent_to: 'Andika code ya tarakimu 6 iliyotumwa kwa',
+    verification_sent: 'Code ya uthibitisho imetumwa.',
+    btn_verify_create: 'Thibitisha code',
+    btn_send_code: 'Tuma code ya kubadili nenosiri',
+    btn_reset_password: 'Badili nenosiri',
+    btn_resend_code: 'Tuma code tena',
+    btn_change_details: 'Rudi',
+    password_mismatch: 'Nenosiri halifanani.',
+    auth_contact_required: 'Weka barua pepe au namba ya simu.',
+    verification_failed: 'Code si sahihi au muda wake umeisha. Omba code mpya ujaribu tena.',
+    verification_unavailable: 'Uthibitisho wa email/SMS haupatikani. Kagua backend na mipangilio ya kutuma.',
+    otp_retry_later: 'Maombi ni mengi sana. Subiri kisha ujaribu tena.',
+    auth_note: 'Akaunti huhifadhiwa kwenye kifaa hiki. Kubadili nenosiri kunapatikana kwenye kivinjari chenye akaunti hiyo.',
     guest_note: 'Bila akaunti unaweza kujifunza, kutumia AI, na kuona Stream. Gumzo, Shamba Langu na kuchapisha vinahitaji akaunti.',
     btn_edit_profile: 'Hariri wasifu',
     btn_new_post: 'Chapisho jipya',
@@ -334,6 +397,12 @@ const I18N = {
     stat_posts: 'Machapisho',
     stat_following: 'Unaowafuata',
     stat_followers: 'Wanaokufuata',
+    btn_unfollow: 'Acha kumfuata',
+    btn_follow_back: 'Fuata pia',
+    follows_you: 'Anakufuata',
+    no_followers: 'Bado huna wanaokufuata.',
+    no_following: 'Bado humfuati mtu yeyote.',
+    btn_message: 'Ujumbe',
     no_content: 'Hakuna kitu bado',
     no_content_sub: 'Vitu vyako vitaonekana hapa.',
     btn_add_product: 'Ongeza bidhaa',
@@ -412,6 +481,15 @@ const I18N = {
     st_account: 'Akaunti',
     st_logout: 'Ondoka',
     st_login: 'Ingia',
+    delete_account: 'Futa akaunti',
+    delete_account_note: 'Akaunti yako, machapisho na taarifa za wasifu zitafutwa kabisa. Weka jina la mtumiaji na email ulizotumia kujisajili, pamoja na password yako.',
+    delete_username: 'Jina la mtumiaji',
+    delete_email: 'Anwani ya email uliyotumia kujisajili',
+    delete_password: 'Password',
+    delete_confirm: 'Futa akaunti kabisa',
+    delete_verify_failed: 'Jina la mtumiaji, email au password hailingani na akaunti hii.',
+    delete_email_missing: 'Email haijahifadhiwa kwenye akaunti hii. Fomu hii inaweza kuthibitisha akaunti zilizosajiliwa kwa email pekee.',
+    delete_account_success: 'Akaunti na machapisho yake yamefutwa.',
     toast_logged_out: 'Umetoka kwenye akaunti.',
     st_priv_note: 'Mipangilio yote inahifadhiwa kwenye kifaa hiki tu.',
     about_title: 'MIMI NI MKULIMA',
@@ -422,7 +500,7 @@ const I18N = {
     about_goal_3: 'Kusaidia kupanga kazi za shambani, kurekodi mapato na matumizi ya kila siku, na kuhesabu faida halisi.',
     about_goal_4: 'Kuunganisha jamii ya wakulima na wafugaji kwa biashara, msaada, na ushirikiano.',
     about_dev_title: 'Msanidi Programu',
-    about_dev_desc: '<b>Daxon Technology</b>, Mbeya, Tanzania.<br>Damian Daud Malunda, Mwanzilishi na Mkurugenzi Mkuu.',
+    about_dev_desc: '<b>Daxon Technology</b>, Mbeya, Tanzania.<br>Damian Daud Malunda, Mwanzilishi na Mkurugenzi Mkuu.<br><a href="mailto:daxontech1@gmail.com">daxontech1@gmail.com</a><br><a href="https://damianmalunda.isroot.in/" target="_blank" rel="noopener noreferrer">damianmalunda.isroot.in</a>',
     about_services: 'Huduma za Daxon Technology: Uundaji wa programu, Usanifu wa picha (graphic design), Msaada wa IT, na Matengenezo ya vifaa vya elektroniki.',
     about_version: 'Toleo 1.0. Majibu ya AI ni ya ushauri wa jumla; kwa magonjwa makali na dawa zilizoidhinishwa, wasiliana na daktari wa mifugo au afisa ugani.',
     toast_lang_changed: 'Lugha imebadilishwa kuwa Kiswahili',
@@ -672,7 +750,7 @@ const EXPERTS=[
  {id:'extension',name:'Bwana Shamba D. Kilawe',role:'Crop Agronomy, Soil Health & Pest Control',kind:'kilimo',phone:'+255796236053',displayPhone:'+255 796 236 053'}
 ];
 const SEED_CONTACTS=[
- {id:'ai',name:'MIMI Assistant',role:'AI Agricultural & Livestock Advisor',ai:true,online:true}
+ {id:'ai',name:'Agro AI',role:'AI Agricultural & Livestock Advisor',ai:true,online:true}
 ];
 const SEED_CHANNELS=[
  {id:'ch1',name:'Daily Farming Tips',desc:'Actionable field advice and seasonal techniques.',posts:[{id:'a1',text:'Prepare fields ahead of rains to plant during the primary moisture window.',ago:86400e3},{id:'a2',text:'Use certified seeds suited to your regional altitude.',ago:2*86400e3}]},
@@ -694,6 +772,8 @@ function loadDB(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse
   d.posts=(d.posts||[]).filter(p=>!p.seed&&!RETIRED_SEED_USERS.has(p.by));
   Object.values(d.users||{}).forEach(u=>{
     u.contacts=(u.contacts||[]).filter(c=>!c.demo&&!RETIRED_DEMO_CONTACTS.has(c.id));
+    const aiContact=u.contacts.find(c=>c.id==='ai');if(aiContact)aiContact.name='Agro AI';
+    const aiChat=(u.chats||{}).ai;if(aiChat){aiChat.name='Agro AI';const welcome=aiChat.msgs&&aiChat.msgs[0];if(welcome&&welcome.from==='ai'&&typeof welcome.text==='string')welcome.text=welcome.text.replace('MIMI Assistant','Agro AI')}
     u.statuses=(u.statuses||[]).filter(s=>!RETIRED_DEMO_CONTACTS.has(s.by));
     u.following=(u.following||[]).filter(id=>!RETIRED_SEED_USERS.has(id));
     u.reposts=(u.reposts||[]).filter(id=>d.posts.some(p=>p.id===id));
@@ -714,7 +794,7 @@ function newUserData(u){
     channels:SEED_CHANNELS.map(c=>({id:c.id,name:c.name,desc:c.desc,followed:false,mine:false,posts:c.posts.map(p=>({id:p.id,text:p.text,ts:now()-p.ago}))})),
     communities:SEED_COMM.map(c=>({...c,joined:false})),
     statuses:[]});
-  u.chats.ai={id:'ai',type:'dm',name:'MIMI Assistant',unread:0,msgs:[{id:uid('m'),from:'ai',kind:'text',text:curLang()==='en'?'Welcome! I am MIMI Assistant. Ask me any question about farming or livestock.':'Karibu! Mimi ni MIMI Assistant. Niulize chochote kuhusu kilimo au ufugaji.',ts:now()}]};
+  u.chats.ai={id:'ai',type:'dm',name:'Agro AI',unread:0,msgs:[{id:uid('m'),from:'ai',kind:'text',text:curLang()==='en'?'Welcome! I am Agro AI. Ask me any question about farming or livestock.':'Karibu! Mimi ni Agro AI. Niulize chochote kuhusu kilimo au ufugaji.',ts:now()}]};
 }
 
 /* ============ AI ============ */
@@ -1045,23 +1125,44 @@ const creatorName=id=>(DB.users[id]&&DB.users[id].name)||'User';
 const post=id=>DB.posts.find(p=>p.id===id);
 VIEWS.account=()=>{const u=curUser();return u?profileHTML(u):authHTML()};
 
-function authHTML(){const reg=S.auth==='register';
-  return`<div class="view" style="max-width:460px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${reg?t('register_title'):t('login_title')}</h2>
-  <div class="tabs" role="tablist"><button class="${!reg?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div>
-  <form class="form" data-form="auth">${reg?`<label class="lab">${t('lbl_name')}<input class="field" name="name" required maxlength="60" autocomplete="name"></label>`:''}
-  <label class="lab">${t('lbl_id')}<input class="field" name="id" required maxlength="80" autocomplete="username"></label>
-  <label class="lab">${t('lbl_pw')}<input class="field" name="pw" type="password" required minlength="6" autocomplete="${reg?'new-password':'current-password'}"></label>
-  <button class="btn">${reg?t('register_tab'):t('login_tab')}</button>
-  <p class="note">${t('auth_note')}</p></form>
-  <p class="muted small" style="margin-top:1rem">${t('guest_note')}</p></div>`}
+let PENDING_RESET=null;
+const AUTH_API_BASE=location.protocol==='file:'?'http://127.0.0.1:8000/api/v1':'/api/v1';
+const normalizePhone=value=>{let number=value.replace(/[^\d+]/g,'');if(number.startsWith('00'))number='+'+number.slice(2);else if(number.startsWith('0'))number='+255'+number.slice(1);else if(!number.startsWith('+'))number='+'+number;return number};
+function maskContact(value,channel){if(channel==='email'){const [name,domain]=value.split('@');return `${name.slice(0,1)}***@${domain}`}return `${'*'.repeat(Math.max(0,value.length-3))}${value.slice(-3)}`}
+function passwordField(name,label,autocomplete){return`<label class="lab">${label}<span class="password-field"><input class="field" id="${name}" name="${name}" type="password" required minlength="6" maxlength="100" autocomplete="${autocomplete}"><button type="button" class="icon-btn" data-act="togglePassword" data-target="${name}" aria-label="${t('btn_show_pw')}" title="${t('btn_show_pw')}">${ic('eye')}</button></span></label>`}
+async function authPost(path,data){let response;try{response=await fetch(`${AUTH_API_BASE}${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(response.status===503||response.status>=500?t('verification_unavailable'):response.status===429?t('otp_retry_later'):t('verification_failed'));return result}
+function accountExists(email,phone){return Object.values(DB.users).some(x=>email&&((x.login||'').toLowerCase()===email||(x.email||'').toLowerCase()===email)||phone&&(x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone))}
+function findResetAccount(value){const id=value.trim().toLowerCase();if(id.includes('@')){const account=Object.values(DB.users).find(x=>(x.email||x.login||'').toLowerCase()===id);return account?{account,channel:'email',destination:account.email||account.login}:null}const phone=normalizePhone(id),account=Object.values(DB.users).find(x=>x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone);return account?{account,channel:'sms',destination:account.phone||normalizePhone(account.login)}:null}
+function authHTML(){const reg=S.auth==='register',login=S.auth==='login';let body='';
+  if(S.auth==='forgot')body=`<form class="form" data-form="requestReset"><label class="lab">${t('lbl_id')}<input class="field" name="id" required maxlength="254" autocomplete="username"></label><button class="btn">${t('btn_send_code')}</button><button type="button" class="btn ghost" data-act="backToLogin">${t('btn_change_details')}</button></form>`;
+  else if(S.auth==='forgotCode')body=`<p class="note">${t('verification_sent_to')} <b>${esc(maskContact(PENDING_RESET.destination,PENDING_RESET.channel))}</b></p><form class="form" data-form="confirmResetCode"><label class="lab">${t('verification_code')}<input class="field" name="code" required inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code"></label><button class="btn">${t('btn_verify_create')}</button><div class="row wrap"><button type="button" class="btn ghost sm" data-act="resendResetCode">${t('btn_resend_code')}</button><button type="button" class="btn ghost sm" data-act="backToForgot">${t('btn_change_details')}</button></div></form>`;
+  else if(S.auth==='resetPassword')body=`<form class="form" data-form="resetPassword">${passwordField('newPw',t('lbl_new_pw'),'new-password')}${passwordField('confirmNewPw',t('lbl_confirm_pw'),'new-password')}<button class="btn">${t('btn_reset_password')}</button></form>`;
+  else body=`<div class="tabs" role="tablist"><button class="${login?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div><form class="form" data-form="auth">${reg?`<label class="lab">${t('lbl_name')}<input class="field" name="name" required maxlength="60" autocomplete="name"></label><label class="lab">${t('lbl_email')}<input class="field" name="email" type="email" maxlength="254" autocomplete="email"></label><label class="lab">${t('lbl_phone')}<input class="field" name="phone" type="tel" maxlength="24" placeholder="+255 7XX XXX XXX" autocomplete="tel"></label>`:`<label class="lab">${t('lbl_id')}<input class="field" name="id" required maxlength="80" autocomplete="username"></label>`}${passwordField('pw',t('lbl_pw'),reg?'new-password':'current-password')}${reg?passwordField('confirmPw',t('lbl_confirm_pw'),'new-password'):''}<button class="btn">${reg?t('register_tab'):t('login_tab')}</button>${login?`<button type="button" class="btn ghost" data-act="forgotPassword">${t('forgot_password')}</button>`:''}<p class="note">${t('auth_note')}</p></form>`;
+  const title=reg?t('register_title'):login?t('login_title'):t('reset_title');
+  return`<div class="view" style="max-width:460px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${title}</h2>${body}<p class="muted small" style="margin-top:1rem">${t('guest_note')}</p></div>`}
 
-ACT.authTab=el=>{S.auth=el.dataset.t;render()};
-FORM.auth=async f=>{const id=fv(f,'id').trim().toLowerCase(),pw=fv(f,'pw');
-  if(S.auth==='register'){const name=fv(f,'name').trim();if(!name)return toast('Please enter your name.');
-    if(Object.values(DB.users).some(x=>x.login===id))return toast('This account already exists. Please log in.');
-    const salt=uid('s'),u={id:uid('u'),name,login:id,salt,hash:await sha(salt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};
-    newUserData(u);u.ai=DB.guest.ai||{};u.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[u.id]=u;DB.session=u.id;save();toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');go('account')}
-  else{const u=Object.values(DB.users).find(x=>x.login===id);if(!u||u.hash!==await sha(u.salt+pw))return toast('Invalid phone/email or password.');DB.session=u.id;save();go('account')}};
+ACT.authTab=el=>{PENDING_RESET=null;S.auth=el.dataset.t;render()};
+ACT.togglePassword=el=>{const input=document.getElementById(el.dataset.target);if(!input)return;const visible=input.type==='password';input.type=visible?'text':'password';el.innerHTML=ic(visible?'eye-off':'eye');el.setAttribute('aria-label',t(visible?'btn_hide_pw':'btn_show_pw'));el.title=t(visible?'btn_hide_pw':'btn_show_pw')};
+ACT.forgotPassword=()=>toast(t('forgot_unavailable'));
+ACT.backToLogin=()=>{PENDING_RESET=null;S.auth='login';render()};
+ACT.backToForgot=()=>{if(PENDING_RESET)delete PENDING_RESET.challengeId;S.auth='forgot';render()};
+ACT.resendResetCode=async()=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/send',{channel:PENDING_RESET.channel,destination:PENDING_RESET.destination});PENDING_RESET.challengeId=result.challenge_id;toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
+FORM.auth=async f=>{const pw=fv(f,'pw');
+  if(S.auth==='register'){
+    const name=fv(f,'name').trim(),email=fv(f,'email').trim().toLowerCase(),phone=fv(f,'phone').trim()?normalizePhone(fv(f,'phone').trim()):'',confirm=fv(f,'confirmPw');
+    if(!name)return toast(t('lbl_name'));
+    if(!email&&!phone)return toast(t('auth_contact_required'));
+    if(pw!==confirm)return toast(t('password_mismatch'));
+    if(accountExists(email,phone))return toast('This account already exists. Please log in.');
+    const salt=uid('s'),u={id:uid('u'),name,login:email||phone,email,phone,salt,hash:await sha(salt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};
+    newUserData(u);u.ai=DB.guest.ai||{};u.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[u.id]=u;DB.session=u.id;save();toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');go('account')
+  }else{
+    const id=fv(f,'id').trim().toLowerCase(),phone=normalizePhone(id),u=Object.values(DB.users).find(x=>x.login===id||x.email===id||x.phone===id||x.phone&&normalizePhone(x.phone)===phone);
+    if(!u||u.hash!==await sha(u.salt+pw))return toast('Invalid phone/email or password.');DB.session=u.id;save();go('account')
+  }};
+FORM.requestReset=async f=>{const target=findResetAccount(fv(f,'id'));if(!target)return toast(t('reset_account_missing'));try{const result=await authPost('/users/password-reset/send',{channel:target.channel,destination:target.destination});PENDING_RESET={accountId:target.account.id,channel:target.channel,destination:target.destination,challengeId:result.challenge_id};S.auth='forgotCode';render();toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
+FORM.confirmResetCode=async f=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/confirm',{challenge_id:PENDING_RESET.challengeId,code:fv(f,'code').trim()});PENDING_RESET.resetToken=result.reset_token;S.auth='resetPassword';render()}catch(e){toast(e.message||t('verification_failed'))}};
+FORM.resetPassword=async f=>{if(!PENDING_RESET)return;const password=fv(f,'newPw'),confirm=fv(f,'confirmNewPw');if(password!==confirm)return toast(t('password_mismatch'));const account=DB.users[PENDING_RESET.accountId];if(!account){PENDING_RESET=null;S.auth='login';render();return toast(t('reset_account_missing'))}const salt=uid('s'),hash=await sha(salt+password);try{await authPost('/users/password-reset/complete',{reset_token:PENDING_RESET.resetToken});account.salt=salt;account.hash=hash;DB.session=account.id;PENDING_RESET=null;save();toast(t('reset_success'));go('account')}catch(e){toast(e.message||t('verification_failed'))}};
 
 function profileHTML(u){
   const followers=Object.values(DB.users).filter(x=>x.id!==u.id&&x.following.includes(u.id)).length;
@@ -1074,7 +1175,7 @@ function profileHTML(u){
   return`<div class="view" style="max-width:640px"><div class="row" style="justify-content:flex-end"><button class="icon-btn" data-act="profMenu" aria-label="Profile menu">${ic('more')}</button></div>
   <div class="prof">${av(u.name,'lg',colorOf(u.id))}<h2 style="font:800 1.5rem var(--font-display)">${esc(u.name)}</h2><span class="muted">${esc(u.handle)}</span>
   <p style="max-width:40ch">${u.bio?esc(u.bio):'<span class="muted">Add a short bio about yourself.</span>'}</p>
-  <div class="counts"><button><b>${mine.length}</b><span class="muted small">${t('stat_posts')}</span></button><button data-act="followSheet"><b>${u.following.length}</b><span class="muted small">${t('stat_following')}</span></button><button><b>${followers}</b><span class="muted small">${t('stat_followers')}</span></button></div>
+  <div class="counts"><button><b>${mine.length}</b><span class="muted small">${t('stat_posts')}</span></button><button data-act="followSheet"><b>${u.following.length}</b><span class="muted small">${t('stat_following')}</span></button><button data-act="followersSheet"><b>${followers}</b><span class="muted small">${t('stat_followers')}</span></button></div>
   <div class="row wrap" style="justify-content:center"><button class="btn ghost sm" data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button class="btn sm" data-act="newPost">${ic('plus')} ${t('btn_new_post')}</button></div></div>
   <div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${S.ptab===i?'on':''}" data-act="ptab" data-t="${i}">${l}</button>`).join('')}</div>${b}</div>`}
 
@@ -1083,7 +1184,15 @@ ACT.profMenu=()=>sheet('Profile Menu',`<div class="menu"><button data-act="editP
 ACT.ptabGo=el=>{closeSheet();S.ptab=el.dataset.t;render()};
 ACT.editProfile=()=>{const u=curUser();sheet(t('btn_edit_profile'),`<form class="form" data-form="profile"><label class="lab">${t('lbl_name')}<input class="field" name="name" value="${esc(u.name)}" maxlength="60" required></label><label class="lab">${t('lbl_notes')} (bio)<textarea class="field" name="bio" maxlength="160">${esc(u.bio)}</textarea></label><button class="btn">${t('btn_save')}</button></form>`)};
 FORM.profile=f=>{const u=curUser();u.name=fv(f,'name').trim()||u.name;u.bio=fv(f,'bio').trim();DB.posts.forEach(p=>{if(p.by===u.id)p.name=u.name});save();closeSheet();render()};
-ACT.followSheet=()=>{const u=curUser();sheet(t('stat_following'),u.following.length?`<div class="list">${u.following.map(id=>`<div class="item">${av(creatorName(id),'sm',colorOf(id))}<span class="grow">${esc(creatorName(id))}</span><button class="btn ghost sm" data-act="follow" data-id="${id}">Unfollow</button></div>`).join('')}</div>`:`<div class="empty">Not following anyone yet. Open Stream and tap Follow.</div>`)};
+function followRows(ids,u,emptyKey){
+  const people=ids.filter(id=>id!==u.id&&DB.users[id]);
+  if(!people.length)return`<div class="empty">${t(emptyKey)}</div>`;
+  return`<div class="list">${people.map(id=>{const person=DB.users[id],following=u.following.includes(id),mutual=(person.following||[]).includes(u.id);
+    return`<div class="item">${av(person.name,'sm',colorOf(id))}<span class="grow"><button data-act="viewCreator" data-id="${esc(id)}"><b>${esc(person.name)}</b></button><br><span class="muted small">${esc(person.handle||'')}</span>${mutual?`<br><span class="pill">${t('follows_you')}</span>`:''}</span><button class="icon-btn" data-act="messageCreator" data-id="${esc(id)}" aria-label="${t('btn_message')} ${esc(person.name)}" title="${t('btn_message')}">${ic('chat')}</button><button class="btn ghost sm" data-act="follow" data-id="${esc(id)}">${following?t('btn_unfollow'):t('btn_follow_back')}</button></div>`}).join('')}</div>`;
+}
+ACT.followSheet=()=>{const u=curUser();sheet(t('stat_following'),followRows(u.following,u,'no_following'))};
+ACT.followersSheet=()=>{const u=curUser(),followers=Object.values(DB.users).filter(person=>(person.following||[]).includes(u.id)).map(person=>person.id);sheet(t('stat_followers'),followRows(followers,u,'no_followers'))};
+ACT.messageCreator=el=>{const u=curUser(),peer=DB.users[el.dataset.id];if(!u||!peer||peer.id===u.id)return;u.chats[peer.id]=u.chats[peer.id]||{id:peer.id,type:'dm',name:peer.name,unread:0,msgs:[]};S.ct='chats';go('chat',{thread:peer.id})};
 ACT.logout=()=>{DB.session=null;save();closeSheet();S.thread=null;go('home');toast(t('toast_logged_out'))};
 ACT.addListing=()=>sheet(t('btn_add_product'),`<form class="form" data-form="listing"><label class="lab">${t('lbl_prod_name')}<input class="field" name="name" required maxlength="60" placeholder="${t('ph_prod_name')}"></label><label class="lab">${t('lbl_prod_price')}<input class="field" name="price" type="number" min="0" required></label><label class="lab">${t('lbl_prod_qty')}<input class="field" name="qty" maxlength="40" placeholder="${t('ph_prod_qty')}"></label><label class="lab">${t('lbl_prod_place')}<input class="field" name="place" maxlength="60"></label><button class="btn">${t('btn_add_product')}</button></form>`);
 FORM.listing=f=>{curUser().listings.unshift({id:uid('l'),name:fv(f,'name').trim(),price:Math.round(+fv(f,'price')),qty:fv(f,'qty').trim(),place:fv(f,'place').trim(),ts:now()});save();closeSheet();S.ptab='soko';render()};
@@ -1306,8 +1415,37 @@ VIEWS.settings=()=>{const s=ST(),pv=PRIV(),u=curUser();
   
   <h3 class="sgroup">${t('st_permissions')}</h3>${sw('file',s.perm.file,t('st_perm_file'),'perm')}${sw('camera',s.perm.camera,t('st_perm_camera'),'perm')}${sw('mic',s.perm.mic,t('st_perm_mic'),'perm')}
   
-  <h3 class="sgroup">${t('st_account')}</h3>${u?`<div class="srow"><span>${esc(u.name)}<br><span class="muted small">${esc(u.handle)}</span></span><button class="btn danger sm" data-act="logout">${ic('logout')} ${t('st_logout')}</button></div>`:`<div class="srow"><span class="muted">Not logged in</span><button class="btn sm" data-act="go" data-v="account">${t('st_login')}</button></div>`}
+  <h3 class="sgroup">${t('st_account')}</h3>${u?`<div class="srow"><span>${esc(u.name)}<br><span class="muted small">${esc(u.handle)}</span></span><button class="btn danger sm" data-act="logout">${ic('logout')} ${t('st_logout')}</button></div><div class="srow"><span class="grow">${t('delete_account')}</span><button class="btn danger sm" data-act="deleteAccount">${ic('trash')} ${t('delete_account')}</button></div>`:`<div class="srow"><span class="muted">Not logged in</span><button class="btn sm" data-act="go" data-v="account">${t('st_login')}</button></div>`}
   <p class="muted small" style="margin-top:1.2rem">${t('st_priv_note')}</p></div>`};
+
+ACT.deleteAccount=()=>{if(!curUser())return;sheet(t('delete_account'),`<p class="note" style="margin-bottom:.8rem">${t('delete_account_note')}</p><form class="form" data-form="deleteAccount"><label class="lab">${t('delete_username')}<input class="field" name="username" required autocomplete="username"></label><label class="lab">${t('delete_email')}<input class="field" name="email" type="email" required autocomplete="email"></label><label class="lab">${t('delete_password')}<input class="field" name="password" type="password" required autocomplete="current-password"></label><button class="btn danger">${ic('trash')} ${t('delete_confirm')}</button></form>`)};
+FORM.deleteAccount=async f=>{
+  const u=curUser();if(!u)return;
+  const username=fv(f,'username').trim().replace(/^@/,'').toLowerCase();
+  const expectedUsername=String(u.handle||'').trim().replace(/^@/,'').toLowerCase();
+  const email=fv(f,'email').trim().toLowerCase();
+  const accountEmail=String(u.email||u.login||'').trim().toLowerCase();
+  if(!accountEmail.includes('@'))return toast(t('delete_email_missing'));
+  if(username!==expectedUsername||email!==accountEmail||await sha(u.salt+fv(f,'password'))!==u.hash)return toast(t('delete_verify_failed'));
+
+  const deletedPosts=new Set(DB.posts.filter(p=>p.by===u.id).map(p=>p.id));
+  DB.posts=DB.posts.filter(p=>p.by!==u.id).map(p=>{
+    p.comments=(p.comments||[]).filter(c=>c.by!==u.id);
+    p.likedBy=(p.likedBy||[]).filter(id=>id!==u.id);
+    if((u.reposts||[]).includes(p.id))p.reposts=Math.max(0,(p.reposts||0)-1);
+    return p;
+  });
+  Object.values(DB.users).forEach(other=>{
+    if(other.id===u.id)return;
+    other.following=(other.following||[]).filter(id=>id!==u.id);
+    other.liked=(other.liked||[]).filter(id=>!deletedPosts.has(id));
+    other.saved=(other.saved||[]).filter(id=>!deletedPosts.has(id));
+    other.reposts=(other.reposts||[]).filter(id=>!deletedPosts.has(id));
+    other.statuses=(other.statuses||[]).filter(status=>status.by!==u.id);
+    if(other.chats)delete other.chats[u.id];
+  });
+  delete DB.users[u.id];DB.session=null;save();closeSheet();S.thread=null;go('account',{auth:'login'});toast(t('delete_account_success'));
+};
 
 async function setPref(tEl){const k=tEl.dataset.set,src=tEl.dataset.src,val=tEl.type==='checkbox'?tEl.checked:tEl.type==='radio'?tEl.value:tEl.tagName==='SELECT'&&k==='size'?+tEl.value:tEl.value;
   if(src==='perm'){if(val&&(k==='camera'||k==='mic')&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){try{const s=await navigator.mediaDevices.getUserMedia(k==='camera'?{video:true}:{audio:true});s.getTracks().forEach(x=>x.stop())}catch(e){tEl.checked=false;return toast('Browser denied permission.')}}DB.settings.perm[k]=val}

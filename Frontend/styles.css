@@ -73,6 +73,9 @@ h1,h2,h3,h4,p{margin:0}
 .icon-btn:hover{background:var(--raised)}
 .field{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.65rem .85rem;min-height:2.6rem}
 .field:focus{outline:2px solid var(--acc);outline-offset:0;border-color:transparent}
+.password-field{display:flex;align-items:center;position:relative}
+.password-field .field{padding-right:3rem}
+.password-field .icon-btn{position:absolute;right:.2rem;width:2.2rem;height:2.2rem;color:var(--muted)}
 textarea.field{resize:vertical;min-height:4.5rem}
 label.lab{display:grid;gap:.3rem;font-size:.85rem;color:var(--muted);font-weight:600}
 .form{display:grid;gap:.8rem}
