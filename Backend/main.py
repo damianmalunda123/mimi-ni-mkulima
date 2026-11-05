@@ -1,4 +1,9 @@
+import sys
 from pathlib import Path
+
+BACKEND_DIR = Path(__file__).resolve().parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
 
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
@@ -30,4 +35,5 @@ async def health_check():
     return {"status": "healthy"}
 
 app.mount("/Assets", StaticFiles(directory=PROJECT_ROOT / "Assets"), name="assets")
+app.mount("/assets", StaticFiles(directory=PROJECT_ROOT / "Assets"), name="assets_lower")
 app.mount("/", StaticFiles(directory=PROJECT_ROOT / "Frontend"), name="frontend")

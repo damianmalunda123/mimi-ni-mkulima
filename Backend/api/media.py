@@ -50,10 +50,13 @@ async def search_images(q: str = Query(min_length=1, max_length=120)):
             thumbnail = thumbnail_info.get("url")
             mimetype = thumbnail_info.get("mimetype", "")
             page_url = f"https://commons.wikimedia.org/wiki/{quote(key, safe=':')}"
+            if not isinstance(thumbnail, str):
+                continue
+            if thumbnail.startswith("//"):
+                thumbnail = f"https:{thumbnail}"
             if (
                 not key.startswith("File:")
                 or not mimetype.startswith("image/")
-                or not isinstance(thumbnail, str)
                 or not thumbnail.startswith("https://")
             ):
                 continue

@@ -66,23 +66,42 @@ async def chat(request: ChatRequest):
         for message in request.messages
     ]
 
+    while contents and contents[0]["role"] == "model":
+        contents.pop(0)
+
+    if not contents:
+        raise HTTPException(status_code=422, detail="No user message provided.")
+
+    merged_contents = []
+    for item in contents:
+        if merged_contents and merged_contents[-1]["role"] == item["role"]:
+            merged_contents[-1]["parts"].extend(item["parts"])
+        else:
+            merged_contents.append(item)
+    contents = merged_contents
+
     if request.image_data:
         image_match = re.fullmatch(
-            r"data:image/(jpeg|png|webp);base64,([A-Za-z0-9+/]+={0,2})",
-            request.image_data,
+            r"data:image/(jpeg|jpg|png|webp);base64,\s*([A-Za-z0-9+/=\s]+)",
+            request.image_data.strip(),
         )
         if not image_match:
             raise HTTPException(status_code=422, detail="Invalid image data.")
 
         try:
-            image_bytes = base64.b64decode(image_match.group(2), validate=True)
+            clean_b64 = re.sub(r"\s+", "", image_match.group(2))
+            image_bytes = base64.b64decode(clean_b64, validate=True)
         except ValueError as exc:
             raise HTTPException(status_code=422, detail="Invalid image data.") from exc
+
+        mime_sub = image_match.group(1)
+        if mime_sub == "jpg":
+            mime_sub = "jpeg"
 
         contents[-1]["parts"].append(
             {
                 "inlineData": {
-                    "mimeType": f"image/{image_match.group(1)}",
+                    "mimeType": f"image/{mime_sub}",
                     "data": base64.b64encode(image_bytes).decode("ascii"),
                 }
             }

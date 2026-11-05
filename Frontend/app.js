@@ -275,6 +275,7 @@ VIEWS.section=()=>{const k=S.sec,T=SEC[k];
   <div id="secBody">${SECTAB[S.tab]()}</div></div>`};
 ACT.stab=el=>{S.tab=el.dataset.t;render()};
 ACT.go=el=>go(el.dataset.v);
+ACT.closeSheet=()=>closeSheet();
 
 /* --- learn --- */
 const engines=q=>{const e=encodeURIComponent(q+' Tanzania');return[['Google','https://www.google.com/search?q='],['Bing','https://www.bing.com/search?q='],['DuckDuckGo','https://duckduckgo.com/?q='],['Yahoo','https://search.yahoo.com/search?p='],['Brave','https://search.brave.com/search?q=']].map(([n,u])=>`<a href="${u}${e}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('')};
@@ -621,7 +622,8 @@ async function sendMsg(chatId,text,extra){const c=ensureChat(chatId);c.msgs.push
   const ct=c.type==='dm'?contactOf(chatId):null;if(ct&&ct.ai&&!ct.blocked&&(!extra||!extra.kind||extra.kind==='text'))await botReply(ct,c)}
 async function botReply(ct,c){const key=c.id;TYPING[key]=true;if(S.view==='chat'&&S.thread===key)paintThread();
   const hist=c.msgs.filter(m=>m.kind==='text'&&m.text).slice(-12).map(m=>({role:m.from==='me'?'user':'assistant',content:m.text}));
-  let reply;try{reply=(await runAI(hist,{system:BASE_SYS})).text}catch(e){reply=localGuide(hist.length?hist[hist.length-1].content:'')||aiErr(e)}
+  while(hist.length&&hist[0].role==='assistant')hist.shift();
+  let reply;try{reply=(await runAI(hist,{system:BASE_SYS})).text}catch(e){reply=(e&&e.text)||localGuide(hist.length?hist[hist.length-1].content:'')||aiErr(e)}
   TYPING[key]=false;const u=curUser();if(!u||!u.chats[key])return;u.chats[key].msgs.push({id:uid('m'),from:ct.id,kind:'text',text:reply,ts:now()});
   const open=S.view==='chat'&&S.thread===key;if(!open)u.chats[key].unread++;save();if(S.view==='chat'){if(open)paintThread();else if(!S.thread&&S.ct==='chats')paintChatBody()}}
 ACT.thSend=()=>{const t=$('#msgText');if(!t)return;const v=t.value.trim();if(!v)return;t.value='';t.style.height='';$('#sendBtn').classList.add('hidden');$('#micBtn').classList.remove('hidden');sendMsg(S.thread,v)};
