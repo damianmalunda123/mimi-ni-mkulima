@@ -18,6 +18,10 @@ class Settings(BaseSettings):
     TWILIO_ACCOUNT_SID: str = ""
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_FROM_NUMBER: str = ""
+    COMMS_DB_PATH: str = str(Path(__file__).resolve().parents[1] / "communications.sqlite3")
+    COOKIE_SECURE: bool = False
+    CORS_ORIGINS: str = "http://127.0.0.1:5500,http://localhost:5500,http://127.0.0.1:8765,http://localhost:8765,http://127.0.0.1:8000,http://localhost:8000"
+    WEBRTC_ICE_SERVERS: str = '[{"urls":"stun:stun.l.google.com:19302"}]'
 
     model_config = SettingsConfigDict(
         env_file=Path(__file__).resolve().parents[1] / ".env",

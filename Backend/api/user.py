@@ -14,6 +14,7 @@ import httpx
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, Field
 
+from api.communication import disconnect_user, update_password_by_destination
 from core.config import settings
 
 router = APIRouter()
@@ -41,6 +42,7 @@ class VerificationConfirmation(BaseModel):
 
 class PasswordResetCompletion(BaseModel):
     reset_token: str = Field(min_length=30, max_length=100)
+    new_password: str = Field(min_length=8, max_length=100)
 
 
 def normalize_destination(channel: str, destination: str) -> str:
@@ -178,7 +180,11 @@ async def complete_password_reset(payload: PasswordResetCompletion):
     reset = OTP_RESET_TOKENS.pop(payload.reset_token, None)
     if not reset or reset["expires_at"] <= time.monotonic():
         raise HTTPException(status_code=400, detail="Password reset authorization is invalid or expired.")
-    return {"reset_allowed": True}
+    user_id = update_password_by_destination(reset["channel"], reset["destination"], payload.new_password)
+    if user_id:
+        await disconnect_user(user_id)
+    account_updated = user_id is not None
+    return {"reset_allowed": True, "account_updated": account_updated}
 
 @router.get("/me")
 async def read_user_me():

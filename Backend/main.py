@@ -9,15 +9,16 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from api import user, ai, media
+from api import user, ai, media, communication
+from core.config import settings
 
 app = FastAPI(title="MIMI NI MKULIMA API")
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
-    allow_credentials=False,
+    allow_origins=[origin.strip() for origin in settings.CORS_ORIGINS.split(",") if origin.strip()],
+    allow_credentials=True,
     allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
@@ -25,6 +26,7 @@ app.add_middleware(
 app.include_router(user.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["ai"])
 app.include_router(media.router, prefix="/api/v1/media", tags=["media"])
+app.include_router(communication.router, prefix="/api/v1/communications", tags=["communications"])
 
 @app.get("/")
 async def root():

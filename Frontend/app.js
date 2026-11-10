@@ -31,6 +31,13 @@ const I18N = {
     tab_ai: 'Chat with AI',
     tab_my_farm: 'My Farm',
     tab_my_barn: 'My Barn',
+    section_learn_farm_desc: 'Build stronger harvests with practical farming guides.',
+    section_learn_livestock_desc: 'Keep healthier animals with useful care guides.',
+    section_expert_desc: 'Ask about real crop or animal challenges.',
+    section_ai_desc: 'Get quick answers about farming and livestock, anytime.',
+    section_farm_desc: 'Plan field work, record costs and follow your farm progress.',
+    section_barn_desc: 'Track animal care, feeding and farm expenses.',
+    section_photo_source: 'Photo source: Wikimedia Commons',
     back_home: 'Back home',
     another_topic: 'Another topic',
     ask_another: 'Ask another question…',
@@ -58,8 +65,28 @@ const I18N = {
     videos_farmers: 'Videos from farmers',
     no_videos: 'Videos uploaded by farmers will appear here.',
     search_first_note: 'Search for a topic first to see related photos or videos.',
-    expert_note: 'Contact an agricultural or veterinary specialist by phone. The call will open directly on your device.',
+    expert_note: 'Choose a specialist to chat or start an in-app audio or video call.',
     btn_call: 'Call',
+    btn_chat: 'Chat',
+    lbl_role: 'I am joining as',
+    role_note: 'Expert roles are self-declared and are not independently verified.',
+    role_farmer: 'Farmer',
+    role_livestock_keeper: 'Livestock keeper',
+    role_crop_expert: 'Crop expert',
+    role_livestock_expert: 'Livestock expert',
+    no_experts: 'No specialists have registered yet.',
+    expert_inbox_note: 'Your expert profile is active. Incoming conversations appear in Chat.',
+    expert_online: 'Available in app',
+    expert_offline: 'Offline · chat anytime',
+    call_connecting: 'Connecting in app…',
+    call_ringing: 'Calling in app…',
+    incoming_call: 'Incoming in-app call',
+    call_accept: 'Answer',
+    call_decline: 'Decline',
+    call_unavailable: 'This person is offline or cannot be reached right now.',
+    call_media_error: 'Allow microphone or camera access to start the in-app call.',
+    remote_text_only: 'Only text messages are available in expert conversations right now.',
+    communications_sign_in: 'Sign in again to activate secure expert chat and calls on this account.',
     open_ai_assistant: 'Open MIMI Assistant',
     also_chat_ai: 'You can also chat with our AI assistant:',
     ai_history: 'History',
@@ -107,7 +134,7 @@ const I18N = {
     login_title: 'Welcome back',
     register_title: 'Create an account',
     lbl_name: 'Full name',
-    lbl_id: 'Phone or email',
+    lbl_id: 'Email address',
     lbl_pw: 'Password',
     lbl_email: 'Email address',
     lbl_phone: 'Phone number',
@@ -133,7 +160,7 @@ const I18N = {
     verification_failed: 'The code is incorrect or expired. Request a new code and try again.',
     verification_unavailable: 'Email/SMS verification is unavailable. Check the backend and delivery settings.',
     otp_retry_later: 'Too many requests. Wait and try again later.',
-    auth_note: 'Accounts are stored on this device. Password reset is available in the browser where the account is stored.',
+    auth_note: 'Your account and expert conversations are available across devices. Use a valid email address.',
     guest_note: 'Without an account you can browse guides, use AI, and view Stream. Chat, My Farm, and posting require an account.',
     btn_edit_profile: 'Edit profile',
     btn_new_post: 'New post',
@@ -164,6 +191,7 @@ const I18N = {
     stream_tab_you: 'For You',
     stream_tab_friends: 'Friends',
     search_stream_ph: 'Search content',
+    stream_search_web: 'Search on',
     no_stream_results: 'No results found',
     no_stream_friends: 'Follow creators on "For You" to see their updates here.',
     comments_title: 'Comments',
@@ -284,6 +312,13 @@ const I18N = {
     tab_ai: 'Gumzo la AI',
     tab_my_farm: 'Shamba Langu',
     tab_my_barn: 'Banda Langu',
+    section_learn_farm_desc: 'Jifunze mbinu za vitendo za kuongeza mavuno.',
+    section_learn_livestock_desc: 'Jifunze kutunza mifugo na kuimarisha afya yao.',
+    section_expert_desc: 'Uliza kuhusu changamoto za mazao au mifugo.',
+    section_ai_desc: 'Pata majibu ya haraka kuhusu kilimo na ufugaji.',
+    section_farm_desc: 'Panga kazi, hifadhi matumizi na fuatilia shamba lako.',
+    section_barn_desc: 'Fuatilia afya, chakula na matumizi ya mifugo.',
+    section_photo_source: 'Chanzo cha picha: Wikimedia Commons',
     back_home: 'Rudi nyumbani',
     another_topic: 'Mada nyingine',
     ask_another: 'Uliza swali zaidi…',
@@ -311,8 +346,28 @@ const I18N = {
     videos_farmers: 'Video kutoka kwa wakulima',
     no_videos: 'Video zilizopakiwa na wakulima zitaonekana hapa.',
     search_first_note: 'Tafuta mada kwanza ili uone picha au video zinazohusiana.',
-    expert_note: 'Wasiliana na mtaalamu kwa kupiga simu. Simu itafunguliwa moja kwa moja kwenye kifaa chako.',
+    expert_note: 'Chagua mtaalamu ili kuchat au kupiga simu ya sauti/video ndani ya app.',
     btn_call: 'Piga simu',
+    btn_chat: 'Chat',
+    lbl_role: 'Ninajisajili kama',
+    role_note: 'Nafasi za kitaalamu huchaguliwa mwenyewe na hazijathibitishwa na mfumo.',
+    role_farmer: 'Mkulima',
+    role_livestock_keeper: 'Mfugaji',
+    role_crop_expert: 'Mtaalamu wa kilimo',
+    role_livestock_expert: 'Mtaalamu wa mifugo',
+    no_experts: 'Bado hakuna wataalamu waliosajiliwa.',
+    expert_inbox_note: 'Wasifu wako wa mtaalamu umewezeshwa. Mazungumzo yanayoingia yataonekana kwenye Gumzo.',
+    expert_online: 'Anapatikana kwenye app',
+    expert_offline: 'Hayupo mtandaoni · tuma ujumbe',
+    call_connecting: 'Inaunganisha ndani ya app…',
+    call_ringing: 'Inapiga ndani ya app…',
+    incoming_call: 'Simu inayoingia ndani ya app',
+    call_accept: 'Pokea',
+    call_decline: 'Kataa',
+    call_unavailable: 'Mtu huyu hayupo mtandaoni au hapatikani kwa sasa.',
+    call_media_error: 'Ruhusu maikrofoni au kamera ili kuanza simu ndani ya app.',
+    remote_text_only: 'Kwa sasa mazungumzo na wataalamu yanatumia ujumbe wa maandishi pekee.',
+    communications_sign_in: 'Ingia tena ili kuanzisha chat na simu salama za wataalamu kwenye akaunti hii.',
     open_ai_assistant: 'Fungua MIMI Assistant',
     also_chat_ai: 'Unaweza pia kuzungumza na msaidizi wetu wa AI:',
     ai_history: 'Historia',
@@ -360,7 +415,7 @@ const I18N = {
     login_title: 'Karibu tena',
     register_title: 'Fungua akaunti',
     lbl_name: 'Jina kamili',
-    lbl_id: 'Simu au barua pepe',
+    lbl_id: 'Barua pepe',
     lbl_pw: 'Nenosiri',
     lbl_email: 'Barua pepe',
     lbl_phone: 'Namba ya simu',
@@ -386,7 +441,7 @@ const I18N = {
     verification_failed: 'Code si sahihi au muda wake umeisha. Omba code mpya ujaribu tena.',
     verification_unavailable: 'Uthibitisho wa email/SMS haupatikani. Kagua backend na mipangilio ya kutuma.',
     otp_retry_later: 'Maombi ni mengi sana. Subiri kisha ujaribu tena.',
-    auth_note: 'Akaunti huhifadhiwa kwenye kifaa hiki. Kubadili nenosiri kunapatikana kwenye kivinjari chenye akaunti hiyo.',
+    auth_note: 'Akaunti na mazungumzo yako na wataalamu vitapatikana kwenye vifaa vyako. Tumia barua pepe halali.',
     guest_note: 'Bila akaunti unaweza kujifunza, kutumia AI, na kuona Stream. Gumzo, Shamba Langu na kuchapisha vinahitaji akaunti.',
     btn_edit_profile: 'Hariri wasifu',
     btn_new_post: 'Chapisho jipya',
@@ -417,6 +472,7 @@ const I18N = {
     stream_tab_you: 'Kwa Ajili Yako',
     stream_tab_friends: 'Marafiki',
     search_stream_ph: 'Tafuta maudhui',
+    stream_search_web: 'Tafuta pia:',
     no_stream_results: 'Hakuna matokeo yaliyopatikana',
     no_stream_friends: 'Fuata watu kwenye "Kwa Ajili Yako" ili uone machapisho yao hapa.',
     comments_title: 'Maoni',
@@ -745,10 +801,6 @@ function localGuide(q){
 const BGS=['linear-gradient(160deg,#20502c,#0d2415)','linear-gradient(160deg,#5a4413,#1d160a)','linear-gradient(160deg,#2c5a33,#557a1c)','linear-gradient(160deg,#4a3021,#171009)','linear-gradient(160deg,#1e4a45,#0c1d1b)'];
 const RETIRED_SEED_USERS=new Set(['s1','s2','s3','s4']);
 const RETIRED_DEMO_CONTACTS=new Set(['x1','x2','x3','x4']);
-const EXPERTS=[
- {id:'vet',name:'Dr. J. Mwangi (Veterinarian)',role:'Livestock Health, Disease Diagnosis & Vaccination',kind:'ufugaji',phone:'+255749763095',displayPhone:'+255 749 763 095'},
- {id:'extension',name:'Bwana Shamba D. Kilawe',role:'Crop Agronomy, Soil Health & Pest Control',kind:'kilimo',phone:'+255796236053',displayPhone:'+255 796 236 053'}
-];
 const SEED_CONTACTS=[
  {id:'ai',name:'Agro AI',role:'AI Agricultural & Livestock Advisor',ai:true,online:true}
 ];
@@ -816,7 +868,7 @@ async function runAI(turns,o){o=o||{};
   while(t.length&&t[0].role==='assistant')t.shift();
   try {
     const imageData=o.images?await imgToData(o.images):undefined;
-    const res=await fetch('/api/v1/ai/chat',{
+    const res=await fetch(`${API_BASE}/api/v1/ai/chat`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       signal:o.signal,
@@ -896,8 +948,10 @@ VIEWS.home=()=>{const u=curUser();
    <button class="door ochre" data-act="openSec" data-sec="ufugaji">${ic('paw','door-ic')}<span class="door-t">${t('door_raise_t')}</span><span class="door-s">${t('door_raise_s')}</span><span class="chips"><i>${t('door_raise_c1')}</i><i>${t('door_raise_c2')}</i><i>${t('door_raise_c3')}</i><i>${t('door_raise_c4')}</i></span></button>
   </div></div>`};
 
-ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'jifunze',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
+ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'menu',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
 ACT.stab=el=>{S.tab=el.dataset.t;render()};
+ACT.sectionEntry=el=>{S.tab=el.dataset.t;render()};
+ACT.sectionMenu=()=>{S.tab='menu';render()};
 ACT.go=el=>go(el.dataset.v);
 ACT.closeSheet=()=>closeSheet();
 ACT.toggleLang=()=>{
@@ -908,18 +962,33 @@ ACT.toggleLang=()=>{
 };
 
 /* ============ section ============ */
+const SECTION_PHOTOS={
+  kilimo:{
+    jifunze:['https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Maize_field_in_Canterbury.jpg/960px-Maize_field_in_Canterbury.jpg','https://commons.wikimedia.org/wiki/File:Maize_field_in_Canterbury.jpg'],
+    mtaalamu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg/960px-Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg','https://commons.wikimedia.org/wiki/File:Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg'],
+    ai:['https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Technology_Contributing_to_Agriculture.jpg/960px-Technology_Contributing_to_Agriculture.jpg','https://commons.wikimedia.org/wiki/File:Technology_Contributing_to_Agriculture.jpg'],
+    langu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Silage_windrows_and_two_tractors_2.jpg/960px-Silage_windrows_and_two_tractors_2.jpg','https://commons.wikimedia.org/wiki/File:Silage_windrows_and_two_tractors_2.jpg']
+  },
+  ufugaji:{
+    jifunze:['https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Cattle_grazing_20251.jpg/960px-Cattle_grazing_20251.jpg','https://commons.wikimedia.org/wiki/File:Cattle_grazing_20251.jpg'],
+    mtaalamu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg/960px-Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg','https://commons.wikimedia.org/wiki/File:Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg'],
+    ai:['https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg/960px-Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg','https://commons.wikimedia.org/wiki/File:Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg'],
+    langu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Foraging_Backyard_Poultry.jpg/960px-Foraging_Backyard_Poultry.jpg','https://commons.wikimedia.org/wiki/File:Foraging_Backyard_Poultry.jpg']
+  }
+};
 VIEWS.section=()=>{const k=S.sec,T=SEC[k],isSw=curLang()==='sw';
   const title=isSw?(k==='kilimo'?'Kilimo Bora':'Ufugaji Bora'):T.title;
   const sub=isSw?(k==='kilimo'?'Mbinu za Kilimo':'Mbinu za Mifugo'):T.sub;
-  const tabs=[
-    ['jifunze',k==='kilimo'?t('learn_farming'):t('learn_livestock')],
-    ['mtaalamu',t('tab_expert')],
-    ['ai',t('tab_ai')],
-    ['langu',k==='kilimo'?t('tab_my_farm'):t('tab_my_barn')]
+  const sections=[
+    ['jifunze',k==='kilimo'?t('door_grow_c1'):t('door_raise_c1'),k==='kilimo'?t('section_learn_farm_desc'):t('section_learn_livestock_desc'),k==='kilimo'?'leaf':'paw'],
+    ['mtaalamu',t('tab_expert'),t('section_expert_desc'),'user'],
+    ['ai',t('tab_ai'),t('section_ai_desc'),'chat'],
+    ['langu',k==='kilimo'?t('tab_my_farm'):t('tab_my_barn'),k==='kilimo'?t('section_farm_desc'):t('section_barn_desc'),'home']
   ];
-  return`<div class="view" data-sec="${k}"><div class="sec-head"><button class="icon-btn" data-act="go" data-v="home" aria-label="${t('back_home')}">${ic('back')}</button><div><h2>${title}</h2><p class="muted small">${sub}</p></div></div>
-  <div class="tabs" role="tablist">${tabs.map(([id,l])=>`<button role="tab" aria-selected="${S.tab===id}" class="${S.tab===id?'on':''}" data-act="stab" data-t="${id}">${l}</button>`).join('')}</div>
-  <div id="secBody">${SECTAB[S.tab]()}</div></div>`};
+  const inSection=S.tab!=='menu';
+  const body=inSection?SECTAB[S.tab]():`<div class="section-menu">${sections.map(([id,label,description,icon])=>{const [image,source]=SECTION_PHOTOS[k][id];return`<article class="section-entry"><button class="section-entry-main" data-act="sectionEntry" data-t="${id}"><span class="section-entry-image"><img src="${image}" alt="" loading="eager" decoding="async"><span class="section-entry-icon">${ic(icon)}</span></span><span class="section-entry-copy"><b class="section-entry-label">${label}</b><span class="section-entry-description">${description}</span></span>${ic('back','section-entry-arrow')}</button><a class="section-entry-credit" href="${source}" target="_blank" rel="noopener noreferrer">${t('section_photo_source')}</a></article>`}).join('')}</div>`;
+  return`<div class="view" data-sec="${k}"><div class="sec-head"><button class="icon-btn" data-act="${inSection?'sectionMenu':'go'}" ${inSection?'':'data-v="home"'} aria-label="${inSection?t('another_topic'):t('back_home')}">${ic('back')}</button><div><h2>${title}</h2><p class="muted small">${sub}</p></div></div>
+  <div id="secBody">${body}</div></div>`};
 
 /* --- learn --- */
 const engines=q=>{const e=encodeURIComponent(q+' Tanzania');return[['Google','https://www.google.com/search?q='],['Bing','https://www.bing.com/search?q='],['DuckDuckGo','https://duckduckgo.com/?q='],['Yahoo','https://search.yahoo.com/search?p='],['Brave','https://search.brave.com/search?q=']].map(([n,u])=>`<a href="${u}${e}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('')};
@@ -971,7 +1040,7 @@ async function loadCommonsImages(query){
   const searchTerms={mahindi:'maize',corn:'maize',mchele:'rice',mpunga:'rice',ngombe:'cattle',kuku:'chicken',nyanya:'tomato',maharage:'beans',viazi:'potato',mbuzi:'goat',samaki:'fish'};
   const searchTerm=searchTerms[term]||term;
   try{
-    const response=await fetch(`/api/v1/media/images?q=${encodeURIComponent(searchTerm)}`);
+    const response=await fetch(`${API_BASE}/api/v1/media/images?q=${encodeURIComponent(searchTerm)}`);
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
     const data=await response.json();
     const results=(data.results||[]).map(image=>({
@@ -1033,10 +1102,10 @@ async function askMore(q){const d=S.learn.doc;if(!d||d.busy)return;const a={q,a:
   d.busy=false;if(S.learn.doc===d&&S.view==='section')refreshSec()}
 
 /* --- experts --- */
-SECTAB.mtaalamu=()=>{const experts=EXPERTS.filter(c=>c.kind===S.sec);
-  return`<div class="note">${t('expert_note')}</div>
-  <div class="list" style="margin-top:.6rem">${experts.map(c=>`<div class="item">${av(c.name,'',colorOf(c.id))}<span class="grow"><b>${esc(c.name)}</b><br><span class="muted small">${esc(c.role)}</span><br><span class="muted small">${esc(c.displayPhone)}</span></span><a class="btn sm" href="tel:${esc(c.phone)}" aria-label="${t('btn_call')} ${esc(c.name)}">${ic('phone')} ${t('btn_call')}</a></div>`).join('')}</div>
-  <p class="muted small" style="margin:1rem 0 .3rem">${t('also_chat_ai')}</p><button class="btn ghost sm" data-act="openThread" data-id="ai">${t('open_ai_assistant')}</button>`};
+const roleLabel=role=>t(`role_${role}`);
+function renderExperts(experts){const list=$('#expertList');if(!list)return;list.innerHTML=experts.length?experts.map(expert=>`<div class="item expert-item">${av(expert.name,'',colorOf(expert.id))}<span class="grow"><b>${esc(expert.name)}</b><br><span class="muted small">${roleLabel(expert.role)}</span><br><span class="muted small">${expert.online?t('expert_online'):t('expert_offline')}</span></span><button class="icon-btn" data-act="expertChat" data-id="${esc(expert.id)}" data-name="${esc(expert.name)}" data-role="${esc(expert.role)}" aria-label="${t('btn_chat')} ${esc(expert.name)}" title="${t('btn_chat')}">${ic('chat')}</button><button class="icon-btn" data-act="expertCall" data-id="${esc(expert.id)}" data-name="${esc(expert.name)}" data-role="${esc(expert.role)}" aria-label="${t('btn_call')} ${esc(expert.name)}" title="${t('btn_call')}">${ic('phone')}</button></div>`).join(''):`<div class="empty">${t('no_experts')}</div>`}
+async function loadExperts(){const list=$('#expertList');if(!list)return;const user=curUser();if(user&&['crop_expert','livestock_expert'].includes(user.role)){list.innerHTML=`<div class="empty">${t('expert_inbox_note')}</div>`;return}try{const result=await communicationsRequest(`/experts?kind=${encodeURIComponent(S.sec)}`);renderExperts(result.experts||[])}catch(e){if($('#expertList'))$('#expertList').innerHTML=`<div class="empty">${t('verification_unavailable')}</div>`}}
+SECTAB.mtaalamu=()=>`<div class="note">${t('expert_note')}</div><div class="list" id="expertList" style="margin-top:.6rem"><div class="empty"><span class="pulse"></span></div></div><p class="muted small" style="margin:1rem 0 .3rem">${t('also_chat_ai')}</p><button class="btn ghost sm" data-act="openThread" data-id="ai">${t('open_ai_assistant')}</button>`;
 
 /* --- AI chat --- */
 let AIBUSY=false,AICTL=null,ATT=null;
@@ -1053,7 +1122,7 @@ function aiChatHTML(mode){const s=aiSess(mode,false),k=(mode==='kilimo'||mode===
   <div class="ai-in"><button class="icon-btn" data-act="aiAttach" aria-label="Attachment">${ic('plus')}</button><textarea class="field" id="aiText" rows="1" placeholder="${t('ai_input_ph')}" aria-label="Message"></textarea><button class="btn" id="aiGo" data-act="aiSend" aria-label="Send">${ic('send')}</button></div></section>`}
 
 SECTAB.ai=()=>aiChatHTML(SEC[S.sec].ai);
-POST.section=()=>{const b=$('#aiMsgs');if(b)b.scrollTop=b.scrollHeight};
+POST.section=()=>{const b=$('#aiMsgs');if(b)b.scrollTop=b.scrollHeight;if(S.tab==='mtaalamu')loadExperts()};
 function setGo(busy){const b=$('#aiGo');if(b){b.dataset.act=busy?'aiStop':'aiSend';b.innerHTML=ic(busy?'stop':'send');b.setAttribute('aria-label',busy?'Stop':'Send')}}
 
 async function aiSend(text){const root=$('.aichat');if(!root||AIBUSY)return;const mode=root.dataset.mode,ta=$('#aiText');
@@ -1126,18 +1195,24 @@ const post=id=>DB.posts.find(p=>p.id===id);
 VIEWS.account=()=>{const u=curUser();return u?profileHTML(u):authHTML()};
 
 let PENDING_RESET=null;
-const AUTH_API_BASE=location.protocol==='file:'?'http://127.0.0.1:8000/api/v1':'/api/v1';
+const API_ORIGIN=location.protocol==='file:'?'http://127.0.0.1:8000':['5500','8765'].includes(location.port)?`${location.protocol}//${location.hostname}:8000`:'';
+const API_BASE=API_ORIGIN;
+const AUTH_API_BASE=`${API_BASE}/api/v1`;
 const normalizePhone=value=>{let number=value.replace(/[^\d+]/g,'');if(number.startsWith('00'))number='+'+number.slice(2);else if(number.startsWith('0'))number='+255'+number.slice(1);else if(!number.startsWith('+'))number='+'+number;return number};
 function maskContact(value,channel){if(channel==='email'){const [name,domain]=value.split('@');return `${name.slice(0,1)}***@${domain}`}return `${'*'.repeat(Math.max(0,value.length-3))}${value.slice(-3)}`}
-function passwordField(name,label,autocomplete){return`<label class="lab">${label}<span class="password-field"><input class="field" id="${name}" name="${name}" type="password" required minlength="6" maxlength="100" autocomplete="${autocomplete}"><button type="button" class="icon-btn" data-act="togglePassword" data-target="${name}" aria-label="${t('btn_show_pw')}" title="${t('btn_show_pw')}">${ic('eye')}</button></span></label>`}
+function passwordField(name,label,autocomplete){return`<label class="lab">${label}<span class="password-field"><input class="field" id="${name}" name="${name}" type="password" required minlength="8" maxlength="100" autocomplete="${autocomplete}"><button type="button" class="icon-btn" data-act="togglePassword" data-target="${name}" aria-label="${t('btn_show_pw')}" title="${t('btn_show_pw')}">${ic('eye')}</button></span></label>`}
 async function authPost(path,data){let response;try{response=await fetch(`${AUTH_API_BASE}${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(response.status===503||response.status>=500?t('verification_unavailable'):response.status===429?t('otp_retry_later'):t('verification_failed'));return result}
+async function communicationsRequest(path,data,method=data?'POST':'GET'){let response;try{response=await fetch(`${AUTH_API_BASE}/communications${path}`,{method,credentials:'include',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok){const error=new Error(result.detail||t('verification_unavailable'));error.status=response.status;throw error}return result}
 function accountExists(email,phone){return Object.values(DB.users).some(x=>email&&((x.login||'').toLowerCase()===email||(x.email||'').toLowerCase()===email)||phone&&(x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone))}
+function localAccountForEmail(email){return Object.values(DB.users).find(x=>(x.email||x.login||'').toLowerCase()===email)}
+function activateRemoteUser(remote,existing){let u=existing||localAccountForEmail(remote.email);if(!u){u={id:uid('u'),name:remote.name,login:remote.email,email:remote.email,phone:'',salt:uid('s'),hash:'',bio:'',handle:'@'+(remote.name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};newUserData(u);DB.users[u.id]=u}u.name=remote.name;u.email=remote.email;u.login=remote.email;u.remoteId=remote.id;u.role=remote.role;DB.session=u.id;save();connectCommunicationSocket();loadRemoteThreads();return u}
+async function restoreCommunicationSession(){const existing=curUser();if(!existing||!existing.email)return;try{const result=await communicationsRequest('/me'),remote=result.user;if((existing.email||'').toLowerCase()===remote.email.toLowerCase())activateRemoteUser(remote,existing)}catch(e){if(e.status===401)expireCommunicationSession()}}
 function findResetAccount(value){const id=value.trim().toLowerCase();if(id.includes('@')){const account=Object.values(DB.users).find(x=>(x.email||x.login||'').toLowerCase()===id);return account?{account,channel:'email',destination:account.email||account.login}:null}const phone=normalizePhone(id),account=Object.values(DB.users).find(x=>x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone);return account?{account,channel:'sms',destination:account.phone||normalizePhone(account.login)}:null}
 function authHTML(){const reg=S.auth==='register',login=S.auth==='login';let body='';
   if(S.auth==='forgot')body=`<form class="form" data-form="requestReset"><label class="lab">${t('lbl_id')}<input class="field" name="id" required maxlength="254" autocomplete="username"></label><button class="btn">${t('btn_send_code')}</button><button type="button" class="btn ghost" data-act="backToLogin">${t('btn_change_details')}</button></form>`;
   else if(S.auth==='forgotCode')body=`<p class="note">${t('verification_sent_to')} <b>${esc(maskContact(PENDING_RESET.destination,PENDING_RESET.channel))}</b></p><form class="form" data-form="confirmResetCode"><label class="lab">${t('verification_code')}<input class="field" name="code" required inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" autocomplete="one-time-code"></label><button class="btn">${t('btn_verify_create')}</button><div class="row wrap"><button type="button" class="btn ghost sm" data-act="resendResetCode">${t('btn_resend_code')}</button><button type="button" class="btn ghost sm" data-act="backToForgot">${t('btn_change_details')}</button></div></form>`;
   else if(S.auth==='resetPassword')body=`<form class="form" data-form="resetPassword">${passwordField('newPw',t('lbl_new_pw'),'new-password')}${passwordField('confirmNewPw',t('lbl_confirm_pw'),'new-password')}<button class="btn">${t('btn_reset_password')}</button></form>`;
-  else body=`<div class="tabs" role="tablist"><button class="${login?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div><form class="form" data-form="auth">${reg?`<label class="lab">${t('lbl_name')}<input class="field" name="name" required maxlength="60" autocomplete="name"></label><label class="lab">${t('lbl_email')}<input class="field" name="email" type="email" maxlength="254" autocomplete="email"></label><label class="lab">${t('lbl_phone')}<input class="field" name="phone" type="tel" maxlength="24" placeholder="+255 7XX XXX XXX" autocomplete="tel"></label>`:`<label class="lab">${t('lbl_id')}<input class="field" name="id" required maxlength="80" autocomplete="username"></label>`}${passwordField('pw',t('lbl_pw'),reg?'new-password':'current-password')}${reg?passwordField('confirmPw',t('lbl_confirm_pw'),'new-password'):''}<button class="btn">${reg?t('register_tab'):t('login_tab')}</button>${login?`<button type="button" class="btn ghost" data-act="forgotPassword">${t('forgot_password')}</button>`:''}<p class="note">${t('auth_note')}</p></form>`;
+  else body=`<div class="tabs" role="tablist"><button class="${login?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div><form class="form" data-form="auth">${reg?`<label class="lab">${t('lbl_name')}<input class="field" name="name" required maxlength="60" autocomplete="name"></label><label class="lab">${t('lbl_email')}<input class="field" name="email" type="email" required maxlength="254" autocomplete="email"></label><label class="lab">${t('lbl_phone')}<input class="field" name="phone" type="tel" maxlength="24" placeholder="+255 7XX XXX XXX" autocomplete="tel"></label><label class="lab">${t('lbl_role')}<select class="field" name="role" required><option value="farmer">${t('role_farmer')}</option><option value="livestock_keeper">${t('role_livestock_keeper')}</option><option value="crop_expert">${t('role_crop_expert')}</option><option value="livestock_expert">${t('role_livestock_expert')}</option></select></label><p class="muted small">${t('role_note')}</p>`:`<label class="lab">${t('lbl_id')}<input class="field" name="id" type="email" required maxlength="254" autocomplete="username"></label>`}${passwordField('pw',t('lbl_pw'),reg?'new-password':'current-password')}${reg?passwordField('confirmPw',t('lbl_confirm_pw'),'new-password'):''}<button class="btn">${reg?t('register_tab'):t('login_tab')}</button>${login?`<button type="button" class="btn ghost" data-act="forgotPassword">${t('forgot_password')}</button>`:''}<p class="note">${t('auth_note')}</p></form>`;
   const title=reg?t('register_title'):login?t('login_title'):t('reset_title');
   return`<div class="view" style="max-width:460px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${title}</h2>${body}<p class="muted small" style="margin-top:1rem">${t('guest_note')}</p></div>`}
 
@@ -1149,20 +1224,29 @@ ACT.backToForgot=()=>{if(PENDING_RESET)delete PENDING_RESET.challengeId;S.auth='
 ACT.resendResetCode=async()=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/send',{channel:PENDING_RESET.channel,destination:PENDING_RESET.destination});PENDING_RESET.challengeId=result.challenge_id;toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
 FORM.auth=async f=>{const pw=fv(f,'pw');
   if(S.auth==='register'){
-    const name=fv(f,'name').trim(),email=fv(f,'email').trim().toLowerCase(),phone=fv(f,'phone').trim()?normalizePhone(fv(f,'phone').trim()):'',confirm=fv(f,'confirmPw');
+    const name=fv(f,'name').trim(),email=fv(f,'email').trim().toLowerCase(),phone=fv(f,'phone').trim()?normalizePhone(fv(f,'phone').trim()):'',role=fv(f,'role'),confirm=fv(f,'confirmPw');
     if(!name)return toast(t('lbl_name'));
-    if(!email&&!phone)return toast(t('auth_contact_required'));
     if(pw!==confirm)return toast(t('password_mismatch'));
-    if(accountExists(email,phone))return toast('This account already exists. Please log in.');
-    const salt=uid('s'),u={id:uid('u'),name,login:email||phone,email,phone,salt,hash:await sha(salt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};
-    newUserData(u);u.ai=DB.guest.ai||{};u.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[u.id]=u;DB.session=u.id;save();toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');go('account')
+    try{
+      const result=await communicationsRequest('/register',{name,email,phone,password:pw,role});
+      const localSalt=uid('s'),local={id:uid('u'),name,login:email,email,phone,salt:localSalt,hash:await sha(localSalt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};
+      newUserData(local);local.ai=DB.guest.ai||{};local.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[local.id]=local;activateRemoteUser(result.user,local);toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');go('account')
+    }catch(e){toast(e.message||t('verification_unavailable'))}
   }else{
-    const id=fv(f,'id').trim().toLowerCase(),phone=normalizePhone(id),u=Object.values(DB.users).find(x=>x.login===id||x.email===id||x.phone===id||x.phone&&normalizePhone(x.phone)===phone);
-    if(!u||u.hash!==await sha(u.salt+pw))return toast('Invalid phone/email or password.');DB.session=u.id;save();go('account')
+    const email=fv(f,'id').trim().toLowerCase(),local=localAccountForEmail(email);
+    try{
+      let result;
+      try{result=await communicationsRequest('/login',{email,password:pw})}
+      catch(e){
+        if(e.status!==401||!local||!local.hash||local.hash!==await sha(local.salt+pw))throw e;
+        result=await communicationsRequest('/register',{name:local.name,email,phone:local.phone||'',password:pw,role:local.role||'farmer'});
+      }
+      activateRemoteUser(result.user,local);toast((curLang()==='en'?'Welcome back, ':'Karibu tena, ')+(result.user.name||'').split(' ')[0]+'!');go('account')
+    }catch(e){toast(e.message||t('verification_unavailable'))}
   }};
-FORM.requestReset=async f=>{const target=findResetAccount(fv(f,'id'));if(!target)return toast(t('reset_account_missing'));try{const result=await authPost('/users/password-reset/send',{channel:target.channel,destination:target.destination});PENDING_RESET={accountId:target.account.id,channel:target.channel,destination:target.destination,challengeId:result.challenge_id};S.auth='forgotCode';render();toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
+FORM.requestReset=async f=>{const value=fv(f,'id').trim(),local=findResetAccount(value);if(!value)return toast(t('reset_account_missing'));const target=value.includes('@')?{account:local&&local.account,channel:'email',destination:value.toLowerCase()}:local;if(!target)return toast(t('reset_account_missing'));try{const result=await authPost('/password-reset/send',{channel:target.channel,destination:target.destination});PENDING_RESET={accountId:target.account&&target.account.id,channel:target.channel,destination:target.destination,challengeId:result.challenge_id};S.auth='forgotCode';render();toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
 FORM.confirmResetCode=async f=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/confirm',{challenge_id:PENDING_RESET.challengeId,code:fv(f,'code').trim()});PENDING_RESET.resetToken=result.reset_token;S.auth='resetPassword';render()}catch(e){toast(e.message||t('verification_failed'))}};
-FORM.resetPassword=async f=>{if(!PENDING_RESET)return;const password=fv(f,'newPw'),confirm=fv(f,'confirmNewPw');if(password!==confirm)return toast(t('password_mismatch'));const account=DB.users[PENDING_RESET.accountId];if(!account){PENDING_RESET=null;S.auth='login';render();return toast(t('reset_account_missing'))}const salt=uid('s'),hash=await sha(salt+password);try{await authPost('/users/password-reset/complete',{reset_token:PENDING_RESET.resetToken});account.salt=salt;account.hash=hash;DB.session=account.id;PENDING_RESET=null;save();toast(t('reset_success'));go('account')}catch(e){toast(e.message||t('verification_failed'))}};
+FORM.resetPassword=async f=>{if(!PENDING_RESET)return;const password=fv(f,'newPw'),confirm=fv(f,'confirmNewPw');if(password!==confirm)return toast(t('password_mismatch'));const pending=PENDING_RESET,account=DB.users[pending.accountId],salt=uid('s'),hash=await sha(salt+password);try{const result=await authPost('/password-reset/complete',{reset_token:pending.resetToken,new_password:password});if(account){account.salt=salt;account.hash=hash}if(result.account_updated){const login=await communicationsRequest('/login',{email:pending.destination,password});activateRemoteUser(login.user,account)}else if(account){DB.session=account.id;save()}PENDING_RESET=null;toast(t('reset_success'));if(account)go('account');else{S.auth='login';render()}}catch(e){toast(e.message||t('verification_failed'))}};
 
 function profileHTML(u){
   const followers=Object.values(DB.users).filter(x=>x.id!==u.id&&x.following.includes(u.id)).length;
@@ -1173,7 +1257,7 @@ function profileHTML(u){
   else if(S.ptab==='saved')b=grid(DB.posts.filter(p=>u.saved.includes(p.id)));
   else b=`<p style="margin-bottom:.6rem"><button class="btn sm" data-act="addListing">${ic('plus')} ${t('btn_add_product')}</button></p>${u.listings.length?`<div class="list">${u.listings.map(l=>`<div class="item"><span class="grow"><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.qty||'')}${l.place?' · '+esc(l.place):''}</span></span><b>TZS ${money(l.price)}</b><button class="icon-btn" data-act="delListing" data-id="${l.id}" aria-label="Delete">${ic('trash')}</button></div>`).join('')}</div>`:`<div class="empty"><b>${t('no_products')}</b>${t('no_products_sub')}</div>`}`;
   return`<div class="view" style="max-width:640px"><div class="row" style="justify-content:flex-end"><button class="icon-btn" data-act="profMenu" aria-label="Profile menu">${ic('more')}</button></div>
-  <div class="prof">${av(u.name,'lg',colorOf(u.id))}<h2 style="font:800 1.5rem var(--font-display)">${esc(u.name)}</h2><span class="muted">${esc(u.handle)}</span>
+  <div class="prof">${av(u.name,'lg',colorOf(u.id))}<h2 style="font:800 1.5rem var(--font-display)">${esc(u.name)}</h2><span class="muted">${esc(u.handle)}</span>${u.role?`<span class="pill">${esc(roleLabel(u.role))}</span>`:''}
   <p style="max-width:40ch">${u.bio?esc(u.bio):'<span class="muted">Add a short bio about yourself.</span>'}</p>
   <div class="counts"><button><b>${mine.length}</b><span class="muted small">${t('stat_posts')}</span></button><button data-act="followSheet"><b>${u.following.length}</b><span class="muted small">${t('stat_following')}</span></button><button data-act="followersSheet"><b>${followers}</b><span class="muted small">${t('stat_followers')}</span></button></div>
   <div class="row wrap" style="justify-content:center"><button class="btn ghost sm" data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button class="btn sm" data-act="newPost">${ic('plus')} ${t('btn_new_post')}</button></div></div>
@@ -1193,7 +1277,7 @@ function followRows(ids,u,emptyKey){
 ACT.followSheet=()=>{const u=curUser();sheet(t('stat_following'),followRows(u.following,u,'no_following'))};
 ACT.followersSheet=()=>{const u=curUser(),followers=Object.values(DB.users).filter(person=>(person.following||[]).includes(u.id)).map(person=>person.id);sheet(t('stat_followers'),followRows(followers,u,'no_followers'))};
 ACT.messageCreator=el=>{const u=curUser(),peer=DB.users[el.dataset.id];if(!u||!peer||peer.id===u.id)return;u.chats[peer.id]=u.chats[peer.id]||{id:peer.id,type:'dm',name:peer.name,unread:0,msgs:[]};S.ct='chats';go('chat',{thread:peer.id})};
-ACT.logout=()=>{DB.session=null;save();closeSheet();S.thread=null;go('home');toast(t('toast_logged_out'))};
+ACT.logout=async()=>{if(curUser()&&curUser().remoteId)try{await communicationsRequest('/logout',{},'POST')}catch(e){}if(COMM_SOCKET){COMM_SOCKET.onclose=null;COMM_SOCKET.close();COMM_SOCKET=null}clearTimeout(COMM_RETRY);DB.session=null;save();closeSheet();S.thread=null;go('home');toast(t('toast_logged_out'))};
 ACT.addListing=()=>sheet(t('btn_add_product'),`<form class="form" data-form="listing"><label class="lab">${t('lbl_prod_name')}<input class="field" name="name" required maxlength="60" placeholder="${t('ph_prod_name')}"></label><label class="lab">${t('lbl_prod_price')}<input class="field" name="price" type="number" min="0" required></label><label class="lab">${t('lbl_prod_qty')}<input class="field" name="qty" maxlength="40" placeholder="${t('ph_prod_qty')}"></label><label class="lab">${t('lbl_prod_place')}<input class="field" name="place" maxlength="60"></label><button class="btn">${t('btn_add_product')}</button></form>`);
 FORM.listing=f=>{curUser().listings.unshift({id:uid('l'),name:fv(f,'name').trim(),price:Math.round(+fv(f,'price')),qty:fv(f,'qty').trim(),place:fv(f,'place').trim(),ts:now()});save();closeSheet();S.ptab='soko';render()};
 ACT.delListing=el=>{const u=curUser();u.listings=u.listings.filter(l=>l.id!==el.dataset.id);save();render()};
@@ -1215,10 +1299,11 @@ function postHTML(p){const u=curUser(),liked=u&&u.liked.includes(p.id),saved=u&&
   <button class="rp ${rep?'on':''}" data-act="repost" data-id="${esc(p.id)}" aria-label="Repost">${ic('repeat')}<span>${p.reposts||0}</span></button>
   ${own?`<button data-act="postMenu" data-id="${esc(p.id)}" aria-label="More">${ic('more')}</button>`:''}</div></section>`}
 
-VIEWS.stream=()=>{const a=feedPosts();
+VIEWS.stream=()=>{const a=feedPosts(),q=S.stream.q.trim();
   return`<div class="stream fillabs" data-pal="dark"><div class="stop"><div class="tabs" role="tablist"><button class="${S.stream.tab==='you'?'on':''}" data-act="sTab" data-t="you">${t('stream_tab_you')}</button><button class="${S.stream.tab==='friends'?'on':''}" data-act="sTab" data-t="friends">${t('stream_tab_friends')}</button></div>
-  <form class="searchbar" data-form="ssearch" role="search">${ic('search')}<input name="q" value="${esc(S.stream.q)}" placeholder="${t('search_stream_ph')}" aria-label="Search content" autocomplete="off"></form><button class="icon-btn" data-act="newPost" aria-label="New post">${ic('plus')}</button></div>
-  ${a.length?`<div class="feed" id="feed">${a.map(postHTML).join('')}</div>`:`<div class="empty" style="position:absolute;inset:0;display:grid;place-content:center;color:#fff"><b style="color:#fff">${S.stream.tab==='friends'?(curUser()?'Not following anyone yet':t('farm_login_btn')):t('no_stream_results')}</b>${S.stream.tab==='friends'?t('no_stream_friends'):'Try searching for another topic or create your own post.'}</div>`}</div>`};
+  <form class="searchbar" data-form="ssearch" role="search">${ic('search')}<input name="q" value="${esc(S.stream.q)}" placeholder="${t('search_stream_ph')}" aria-label="Search content" autocomplete="off"></form><button class="icon-btn" data-act="newPost" aria-label="New post">${ic('plus')}</button>
+  ${q?`<div class="stream-engines"><span>${t('stream_search_web')}</span>${engines(q)}</div>`:''}</div>
+  ${a.length?`<div class="feed" id="feed">${a.map(postHTML).join('')}</div>`:`<div class="stream-empty empty"><b>${S.stream.tab==='friends'?(curUser()?'Not following anyone yet':t('farm_login_btn')):t('no_stream_results')}</b><span>${S.stream.tab==='friends'?t('no_stream_friends'):'Try searching for another topic or create your own post.'}</span></div>`}</div>`};
 
 POST.stream=()=>{const id=S.stream.focus;if(id){const el=$('#p_'+CSS.escape(id));if(el)el.scrollIntoView();S.stream.focus=null}};
 ACT.sTab=el=>{S.stream.tab=el.dataset.t;render()};
@@ -1272,8 +1357,16 @@ FORM.post=f=>{const text=fv(f,'text').trim();if(!text&&(!NP||NP.kind==='text'))r
   const v=NP.kind==='video';NP=null;save();closeSheet();S.stream={tab:'you',q:'',focus:null};render();toast(v?'Published. Video is viewable for this active session.':'Published successfully.')};
 
 /* ============ chat ============ */
-const TYPING={};let REC=null,recT=null,CALL=null;
+const TYPING={};let REC=null,recT=null,CALL=null,COMM_SOCKET=null,COMM_RETRY=null,PENDING_CALL=null;
 const contactOf=id=>{const u=curUser();return u&&u.contacts.find(c=>c.id===id)};
+function rememberRemotePeer(peer){const u=curUser();if(!u||!peer)return null;let contact=contactOf(peer.id);if(!contact){contact={id:peer.id,name:peer.name,role:roleLabel(peer.role),roleCode:peer.role,remote:true,online:!!peer.online,fav:false,blocked:false};u.contacts.push(contact)}else Object.assign(contact,{name:peer.name,role:roleLabel(peer.role),roleCode:peer.role,remote:true,online:!!peer.online});u.chats[peer.id]=u.chats[peer.id]||{id:peer.id,type:'dm',name:peer.name,unread:0,msgs:[],remote:true};u.chats[peer.id].remote=true;u.chats[peer.id].name=peer.name;return u.chats[peer.id]}
+function mapRemoteMessage(message,peerId){const u=curUser();return{id:String(message.id),from:message.sender_id===u.remoteId?'me':peerId,kind:'text',text:message.text,ts:message.created_at}}
+async function syncRemoteThread(){const u=curUser(),chat=u&&u.chats[S.thread];if(!u||!chat||!chat.remote)return;try{const result=await communicationsRequest(`/threads/${encodeURIComponent(S.thread)}/messages`);chat.msgs=(result.messages||[]).map(message=>mapRemoteMessage(message,S.thread));save();if(S.view==='chat'&&S.thread===chat.id)paintThread()}catch(e){if(e.status===401)toast(t('verification_unavailable'))}}
+async function loadRemoteThreads(){const u=curUser();if(!u||!u.remoteId)return;try{const result=await communicationsRequest('/threads');for(const thread of result.threads||[]){const chat=rememberRemotePeer(thread.peer);if(thread.last_message){chat.msgs=[mapRemoteMessage(thread.last_message,thread.peer.id)]}}save();if(S.view==='chat'&&!S.thread)render()}catch(e){}}
+function expireCommunicationSession(){const user=curUser();if(!user)return;delete user.remoteId;DB.session=null;save();S.thread=null;S.auth='login';go('account',{auth:'login'});toast(t('communications_sign_in'))}
+function connectCommunicationSocket(){const u=curUser();if(!u||!u.remoteId||COMM_SOCKET&&(COMM_SOCKET.readyState===WebSocket.OPEN||COMM_SOCKET.readyState===WebSocket.CONNECTING))return;clearTimeout(COMM_RETRY);const url=new URL(`${AUTH_API_BASE}/communications/ws`,location.href);url.protocol=url.protocol==='https:'?'wss:':'ws:';COMM_SOCKET=new WebSocket(url);COMM_SOCKET.onmessage=event=>{let payload;try{payload=JSON.parse(event.data)}catch(e){return}if(payload.type==='message')receiveRemoteMessage(payload);else if(payload.type==='signal')handleCallSignal(payload).catch(()=>toast(t('call_unavailable')));else if(payload.type==='error'){if(CALL&&payload.code==='peer_offline')finishCall(false);toast(payload.code==='peer_offline'?t('call_unavailable'):payload.detail||t('call_unavailable'))}};COMM_SOCKET.onclose=event=>{COMM_SOCKET=null;if(event.code===1008){expireCommunicationSession();return}if(curUser()&&curUser().remoteId)COMM_RETRY=setTimeout(connectCommunicationSocket,3000)}}
+function receiveRemoteMessage(payload){const u=curUser(),peer=payload.peer,message=payload.message;if(!u||!peer||!message)return;const chat=rememberRemotePeer(peer);if(!chat.msgs.some(item=>String(item.id)===String(message.id)))chat.msgs.push(mapRemoteMessage(message,peer.id));const active=S.view==='chat'&&S.thread===peer.id;if(active)paintThread();else chat.unread++;save();if(S.view==='chat'&&!S.thread)paintChatBody()}
+function openExpertConversation(peer,callKind){if(needLogin())return;if(!curUser().remoteId){toast(t('communications_sign_in'));DB.session=null;save();S.auth='login';go('account',{auth:'login'});return}const chat=rememberRemotePeer(peer);save();if(callKind)PENDING_CALL={peerId:peer.id,kind:callKind};S.ct='chats';go('chat',{thread:chat.id})}
 function ensureChat(id){const u=curUser();let c=u.chats[id];if(!c){const ct=contactOf(id);c=u.chats[id]={id,type:'dm',name:ct?ct.name:'Conversation',unread:0,msgs:[]}}return c}
 const chatTitle=c=>{if(c.type==='dm'){const ct=contactOf(c.id);return ct?ct.name:c.name}return c.name};
 const gate=heading=>`<div class="view"><div class="empty"><b>${heading}</b>You need an account to use this feature.<p style="margin-top:1rem"><button class="btn" data-act="go" data-v="account">Log in or sign up</button></p></div></div>`;
@@ -1312,26 +1405,29 @@ function msgsHTML(c){return c.msgs.map(m=>{if(m.kind==='sys')return`<div class="
     return`<div class="m ${me?'me':'them'}">${body}<span style="display:block;text-align:right;font-size:.65rem;opacity:.65">${hhmm(m.ts)}</span></div>`}).join('')+(TYPING[c.id]?'<div class="m them"><span class="pulse"></span> Typing…</div>':'')}
 
 function paintThread(){const u=curUser(),c=u&&u.chats[S.thread],b=$('#msgs');if(c&&b){b.innerHTML=msgsHTML(c);b.scrollTop=b.scrollHeight}}
-function composeHTML(){if(REC)return`<button class="icon-btn" data-act="recCancel" aria-label="Cancel">${ic('trash')}</button><span class="rec"><span class="pulse" style="background:var(--danger)"></span> ${t('recording_label')} <span id="recT">0:00</span></span><button class="btn" data-act="rec" aria-label="Send audio">${ic('send')}</button>`;
+function composeHTML(remote=false){if(REC)return`<button class="icon-btn" data-act="recCancel" aria-label="Cancel">${ic('trash')}</button><span class="rec"><span class="pulse" style="background:var(--danger)"></span> ${t('recording_label')} <span id="recT">0:00</span></span><button class="btn" data-act="rec" aria-label="Send audio">${ic('send')}</button>`;
+  if(remote)return`<textarea class="field" id="msgText" rows="1" placeholder="${t('ph_message')}" aria-label="Message"></textarea><button class="icon-btn" data-act="emoToggle" aria-label="Emoji">${ic('smile')}</button><button class="btn hidden" id="sendBtn" data-act="thSend" aria-label="Send">${ic('send')}</button>`;
   return`<button class="icon-btn" data-act="thAttach" aria-label="Attach">${ic('plus')}</button><button class="icon-btn" data-act="thCamera" aria-label="Camera">${ic('camera')}</button><textarea class="field" id="msgText" rows="1" placeholder="${t('ph_message')}" aria-label="Message"></textarea><button class="icon-btn" data-act="emoToggle" aria-label="Emoji">${ic('smile')}</button><button class="icon-btn" id="micBtn" data-act="rec" aria-label="Record">${ic('mic')}</button><button class="btn hidden" id="sendBtn" data-act="thSend" aria-label="Send">${ic('send')}</button>`}
 const paintCompose=()=>{const c=$('#compose');if(c)c.innerHTML=composeHTML()};
 
-function threadHTML(){const c=ensureChat(S.thread),ct=c.type==='dm'?contactOf(c.id):null,n=chatTitle(c);c.unread=0;
+function threadHTML(){const c=ensureChat(S.thread),ct=c.type==='dm'?contactOf(c.id):null,n=chatTitle(c),remote=!!(ct&&ct.remote);c.unread=0;
   const sub=ct?(ct.ai?'AI Assistant':ct.role||''):c.type==='group'?'Group':'';
-  return`<div class="fillabs thread" data-pal="${chatPal()}" style="background:var(--bg);color:var(--text)"><div class="chead"><button class="icon-btn" data-act="thBack" aria-label="Back">${ic('back')}</button>${av(n,'sm',colorOf(c.id))}<div class="grow"><b>${esc(n)}</b><br><span class="muted small">${esc(sub)}</span></div>${ct&&!ct.ai?`<button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="voice" aria-label="Audio call">${ic('phone')}</button><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="video" aria-label="Video call">${ic('video')}</button>`:''}<button class="icon-btn" data-act="thMenu" aria-label="Menu">${ic('more')}</button></div>
-  <div class="msgs" id="msgs">${msgsHTML(c)}</div><div id="emoRow" class="emojis hidden" style="padding:.3rem .6rem;background:var(--surface)">${EMO.map(e=>`<button type="button" data-act="emo" data-e="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div><div class="compose" id="compose">${composeHTML()}</div></div>`}
+  return`<div class="fillabs thread" data-pal="${chatPal()}" style="background:var(--bg);color:var(--text)"><div class="chead"><button class="icon-btn" data-act="thBack" aria-label="Back">${ic('back')}</button>${av(n,'sm',colorOf(c.id))}<div class="grow"><b>${esc(n)}</b><br><span class="muted small">${esc(sub)}</span></div>${remote?`<button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="voice" aria-label="In-app audio call" title="${t('btn_call')}">${ic('phone')}</button><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="video" aria-label="In-app video call" title="${t('btn_call')}">${ic('video')}</button>`:''}<button class="icon-btn" data-act="thMenu" aria-label="Menu">${ic('more')}</button></div>
+  <div class="msgs" id="msgs">${msgsHTML(c)}</div><div id="emoRow" class="emojis hidden" style="padding:.3rem .6rem;background:var(--surface)">${EMO.map(e=>`<button type="button" data-act="emo" data-e="${e}" aria-label="Emoji ${e}">${e}</button>`).join('')}</div><div class="compose" id="compose">${composeHTML(remote)}</div></div>`}
 
 VIEWS.chat=()=>{if(!curUser())return gate(t('nav_chat'));if(S.thread)return threadHTML();
   const titles={chats:t('ct_chats'),calls:t('ct_calls'),status:t('ct_status'),channels:t('ct_channels')};
   return`<div class="fillabs" data-pal="${chatPal()}" style="background:var(--bg);color:var(--text)"><div class="chead"><h2>${titles[S.ct]}</h2>${S.ct==='chats'?`<button class="icon-btn" data-act="cmenu" aria-label="Menu">${ic('more')}</button>`:''}</div><div class="cbody" id="cbody" style="position:relative">${chatBodyFor()}</div>
   <div class="ctabs" role="tablist">${[['chats','chat',t('ct_chats')],['calls','phone',t('ct_calls')],['status','status',t('ct_status')],['channels','mega',t('ct_channels')]].map(([i,c,l])=>`<button role="tab" class="${S.ct===i?'on':''}" data-act="ctab" data-t="${i}">${ic(c)}<span>${l}</span></button>`).join('')}</div></div>`};
 
-POST.chat=()=>{const b=$('#msgs');if(b)b.scrollTop=b.scrollHeight};
+POST.chat=()=>{const b=$('#msgs');if(b)b.scrollTop=b.scrollHeight;syncRemoteThread();if(PENDING_CALL){const pending=PENDING_CALL;PENDING_CALL=null;startInternalCall(pending.peerId,pending.kind)}};
 ACT.ctab=el=>{S.ct=el.dataset.t;S.cv=null;render()};
 ACT.openThread=el=>{if(needLogin())return;ensureChat(el.dataset.id);S.ct='chats';go('chat',{thread:el.dataset.id})};
+ACT.expertChat=el=>openExpertConversation({id:el.dataset.id,name:el.dataset.name,role:el.dataset.role});
+ACT.expertCall=el=>openExpertConversation({id:el.dataset.id,name:el.dataset.name,role:el.dataset.role},'voice');
 ACT.thBack=()=>{S.thread=null;if(REC)recStop(true);render()};
 
-async function sendMsg(chatId,text,extra){const c=ensureChat(chatId);c.msgs.push(Object.assign({id:uid('m'),from:'me',kind:'text',text,ts:now()},extra||{}));save();if(S.view==='chat'&&S.thread===chatId)paintThread();
+async function sendMsg(chatId,text,extra){const c=ensureChat(chatId);if(c.remote){if(extra&&extra.kind)return toast(t('remote_text_only'));try{const result=await communicationsRequest(`/threads/${encodeURIComponent(chatId)}/messages`,{text},'POST');const message=mapRemoteMessage(result.message,chatId);if(!c.msgs.some(item=>String(item.id)===String(message.id)))c.msgs.push(message);save();if(S.view==='chat'&&S.thread===chatId)paintThread()}catch(e){toast(e.message||t('verification_unavailable'))}return}c.msgs.push(Object.assign({id:uid('m'),from:'me',kind:'text',text,ts:now()},extra||{}));save();if(S.view==='chat'&&S.thread===chatId)paintThread();
   const ct=c.type==='dm'?contactOf(chatId):null;if(ct&&ct.ai&&!ct.blocked&&(!extra||!extra.kind||extra.kind==='text'))await botReply(ct,c)}
 
 async function botReply(ct,c){const key=c.id;TYPING[key]=true;if(S.view==='chat'&&S.thread===key)paintThread();
@@ -1341,7 +1437,7 @@ async function botReply(ct,c){const key=c.id;TYPING[key]=true;if(S.view==='chat'
   TYPING[key]=false;const u=curUser();if(!u||!u.chats[key])return;u.chats[key].msgs.push({id:uid('m'),from:ct.id,kind:'text',text:reply,ts:now()});
   const open=S.view==='chat'&&S.thread===key;if(!open)u.chats[key].unread++;save();if(S.view==='chat'){if(open)paintThread();else if(!S.thread&&S.ct==='chats')paintChatBody()}}
 
-ACT.thSend=()=>{const tBox=$('#msgText');if(!tBox)return;const v=tBox.value.trim();if(!v)return;tBox.value='';tBox.style.height='';$('#sendBtn').classList.add('hidden');$('#micBtn').classList.remove('hidden');sendMsg(S.thread,v)};
+ACT.thSend=()=>{const tBox=$('#msgText');if(!tBox)return;const v=tBox.value.trim();if(!v)return;tBox.value='';tBox.style.height='';const send=$('#sendBtn'),mic=$('#micBtn');if(send)send.classList.add('hidden');if(mic)mic.classList.remove('hidden');sendMsg(S.thread,v)};
 ACT.emoToggle=()=>{const r=$('#emoRow');if(r)r.classList.toggle('hidden')};
 ACT.thAttach=()=>sheet(t('attach_title'),`<div class="menu"><button data-act="thFile" data-k="image">${ic('image')} ${t('attach_photo')}</button><button data-act="thFile" data-k="file">${ic('clip')} ${t('attach_file')}</button></div>`);
 ACT.thCamera=()=>attachTo('image','environment');
@@ -1378,14 +1474,20 @@ ACT.invite=()=>sheet(t('menu_invite'),`<form class="form" data-form="invite"><la
 FORM.invite=f=>{const u=curUser(),name=fv(f,'name').trim(),ph=fv(f,'phone').replace(/\D/g,''),txt='Join me on MIMI NI MKULIMA, the agricultural and livestock platform: '+location.href.split('#')[0];
   if(name){u.contacts.push({id:uid('c'),name,role:ph?'+'+ph:'Invited Contact',online:false,fav:false,blocked:false});save()}
   sheet('Invite Ready',`<p class="muted small" style="margin-bottom:.6rem">${esc(txt)}</p><div class="menu"><a href="https://wa.me/${ph}?text=${encodeURIComponent(txt)}" target="_blank" rel="noopener noreferrer">${ic('phone')} Share via WhatsApp</a><button data-act="copyLink" data-url="${esc(txt)}">${ic('link')} Copy message</button></div>${name?`<p class="note">${esc(name)} has been added to your contacts.</p>`:''}`)};
-ACT.newCall=()=>sheet(t('btn_new_call'),`<div class="list">${curUser().contacts.filter(c=>!c.ai&&!c.blocked).map(c=>`<div class="item">${av(c.name,'sm',colorOf(c.id))}<span class="grow">${esc(c.name)}</span><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="voice" aria-label="Audio">${ic('phone')}</button><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="video" aria-label="Video">${ic('video')}</button></div>`).join('')}</div>`);
-ACT.call=el=>{const id=el.dataset.id||S.thread,kind=el.dataset.k,ct=contactOf(id);if(!ct||CALL)return;closeSheet();
-  if(kind==='video'&&!ST().perm.camera)return toast(t('perm_camera_disabled'));
-  const d=document.createElement('div');d.className='callscr';d.innerHTML=`<div class="who">${av(ct.name,'lg',colorOf(ct.id))}<h2>${esc(ct.name)}</h2><p id="callSt">Calling…</p></div><button class="endcall" data-act="endCall" aria-label="End call">${ic('phone')}</button>`;document.body.appendChild(d);
-  CALL={el:d,stream:null,t:setTimeout(()=>{const s=$('#callSt');if(s)s.textContent='Call unavailable. Live streaming calls require an active WebRTC signaling gateway.'},3500)};
-  if(kind==='video'&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia)navigator.mediaDevices.getUserMedia({video:true}).then(s=>{if(!CALL){s.getTracks().forEach(tTr=>tTr.stop());return}CALL.stream=s;const v=document.createElement('video');v.muted=true;v.autoplay=true;v.playsInline=true;v.srcObject=s;d.prepend(v)}).catch(()=>{});
-  curUser().calls.unshift({id:uid('c'),contactId:id,kind,ts:now(),res:'Not answered'});save()};
-ACT.endCall=()=>{if(!CALL)return;clearTimeout(CALL.t);if(CALL.stream)CALL.stream.getTracks().forEach(tTr=>tTr.stop());CALL.el.remove();CALL=null;if(S.view==='chat'&&S.ct==='calls'&&!S.thread)paintChatBody()};
+ACT.newCall=()=>sheet(t('btn_new_call'),`<div class="list">${curUser().contacts.filter(c=>c.remote&&!c.blocked).map(c=>`<div class="item">${av(c.name,'sm',colorOf(c.id))}<span class="grow">${esc(c.name)}</span><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="voice" aria-label="Audio">${ic('phone')}</button><button class="icon-btn" data-act="call" data-id="${esc(c.id)}" data-k="video" aria-label="Video">${ic('video')}</button></div>`).join('')||`<div class="empty">${t('no_experts')}</div>`}</div>`);
+function sendCallSignal(event,data){if(!CALL||!COMM_SOCKET||COMM_SOCKET.readyState!==WebSocket.OPEN)return false;COMM_SOCKET.send(JSON.stringify({type:'signal',to:CALL.peerId,event,data}));return true}
+function waitForCommunicationSocket(){connectCommunicationSocket();if(COMM_SOCKET&&COMM_SOCKET.readyState===WebSocket.OPEN)return Promise.resolve();return new Promise((resolve,reject)=>{const socket=COMM_SOCKET,timer=setTimeout(()=>reject(new Error(t('verification_unavailable'))),8000);if(!socket)return reject(new Error(t('verification_unavailable')));socket.addEventListener('open',()=>{clearTimeout(timer);resolve()},{once:true});socket.addEventListener('close',()=>{clearTimeout(timer);reject(new Error(t('verification_unavailable')));},{once:true})})}
+function callOverlay(peer,incoming){const overlay=document.createElement('div');overlay.className='callscr';overlay.id='callOverlay';overlay.innerHTML=`<video id="callRemoteVideo" autoplay playsinline hidden></video><video id="callLocalVideo" autoplay playsinline muted hidden></video><audio id="callRemoteAudio" autoplay></audio><div class="who">${av(peer.name,'lg',colorOf(peer.id))}<h2>${esc(peer.name)}</h2><p id="callSt">${incoming?t('incoming_call'):t('call_connecting')}</p></div><div class="call-controls">${incoming?`<button class="answercall" data-act="answerCall" aria-label="${t('call_accept')}" title="${t('call_accept')}">${ic('phone')}</button><button class="endcall" data-act="declineCall" aria-label="${t('call_decline')}" title="${t('call_decline')}">${ic('phone')}</button>`:`<button class="endcall" data-act="endCall" aria-label="${t('call_decline')}" title="${t('call_decline')}">${ic('phone')}</button>`}</div>`;document.body.appendChild(overlay);CALL.overlay=overlay}
+async function createCallPeer(peerId,kind){const config=await communicationsRequest('/ice-servers');const pc=new RTCPeerConnection({iceServers:config.ice_servers});CALL.pc=pc;pc.onicecandidate=event=>{if(event.candidate)sendCallSignal('candidate',event.candidate.toJSON())};pc.ontrack=event=>{const stream=event.streams[0];if(kind==='video'){const video=$('#callRemoteVideo');if(video){video.srcObject=stream;video.hidden=false}}else{const audio=$('#callRemoteAudio');if(audio)audio.srcObject=stream}};pc.onconnectionstatechange=()=>{const state=pc.connectionState,st=$('#callSt');if(state==='connected'&&st)st.textContent=curLang()==='en'?'Connected in app':'Imeunganishwa ndani ya app';if(state==='failed'){toast(t('call_unavailable'));finishCall(false)}};if(CALL.stream)CALL.stream.getTracks().forEach(track=>pc.addTrack(track,CALL.stream));return pc}
+async function addPendingIceCandidates(){if(!CALL||!CALL.pc||!CALL.pc.remoteDescription)return;for(const candidate of CALL.pendingCandidates.splice(0))await CALL.pc.addIceCandidate(candidate)}
+async function startInternalCall(peerId,kind='voice'){const contact=contactOf(peerId);if(!contact||!contact.remote||CALL)return;if(!ST().perm.mic)return toast(t('perm_mic_disabled'));if(kind==='video'&&!ST().perm.camera)return toast(t('perm_camera_disabled'));if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia||!window.RTCPeerConnection)return toast(t('call_unavailable'));try{await waitForCommunicationSocket();const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:kind==='video'});CALL={peerId,kind,stream,pc:null,pendingCandidates:[],incoming:false};callOverlay(contact,false);const local=$('#callLocalVideo');if(local&&kind==='video'){local.srcObject=stream;local.hidden=false}const pc=await createCallPeer(peerId,kind),offer=await pc.createOffer();await pc.setLocalDescription(offer);if(!sendCallSignal('offer',{description:{type:offer.type,sdp:offer.sdp},kind}))throw new Error(t('verification_unavailable'));const status=$('#callSt');if(status)status.textContent=t('call_ringing');curUser().calls.unshift({id:uid('c'),contactId:peerId,kind,ts:now(),res:'Calling'});save()}catch(e){finishCall(false);toast(e.message||t('call_media_error'))}}
+async function acceptIncomingCall(){if(!CALL||!CALL.incoming)return;try{await waitForCommunicationSocket();if(!ST().perm.mic)return toast(t('perm_mic_disabled'));if(CALL.kind==='video'&&!ST().perm.camera)return toast(t('perm_camera_disabled'));const stream=await navigator.mediaDevices.getUserMedia({audio:true,video:CALL.kind==='video'});CALL.stream=stream;const local=$('#callLocalVideo');if(local&&CALL.kind==='video'){local.srcObject=stream;local.hidden=false}const pc=await createCallPeer(CALL.peerId,CALL.kind);await pc.setRemoteDescription(CALL.offer);await addPendingIceCandidates();const answer=await pc.createAnswer();await pc.setLocalDescription(answer);CALL.incoming=false;const controls=$('.call-controls');if(controls)controls.innerHTML=`<button class="endcall" data-act="endCall" aria-label="${t('call_decline')}" title="${t('call_decline')}">${ic('phone')}</button>`;sendCallSignal('answer',{type:answer.type,sdp:answer.sdp});const status=$('#callSt');if(status)status.textContent=t('call_connecting')}catch(e){finishCall(true,'decline');toast(e.message||t('call_media_error'))}}
+async function handleCallSignal(payload){if(payload.event==='offer'){if(CALL){COMM_SOCKET.send(JSON.stringify({type:'signal',to:payload.from,event:'decline'}));return}const peer=rememberRemotePeer({id:payload.from,name:payload.name,role:payload.role});if(!peer)return;CALL={peerId:payload.from,kind:payload.data.kind,pc:null,stream:null,pendingCandidates:[],incoming:true,offer:payload.data.description};callOverlay(contactOf(payload.from),true);return}if(!CALL||CALL.peerId!==payload.from)return;if(payload.event==='answer'&&CALL.pc){await CALL.pc.setRemoteDescription(payload.data);await addPendingIceCandidates();const status=$('#callSt');if(status)status.textContent=t('call_connecting')}else if(payload.event==='candidate'&&payload.data){const candidate=new RTCIceCandidate(payload.data);if(CALL.pc&&CALL.pc.remoteDescription)await CALL.pc.addIceCandidate(candidate);else CALL.pendingCandidates.push(candidate)}else if(payload.event==='hangup'||payload.event==='decline'){finishCall(false);toast(payload.event==='decline'?t('call_unavailable'):'') }}
+function finishCall(notify=true,event='hangup'){if(!CALL)return;const call=CALL;if(notify&&COMM_SOCKET&&COMM_SOCKET.readyState===WebSocket.OPEN)COMM_SOCKET.send(JSON.stringify({type:'signal',to:call.peerId,event}));if(call.pc)call.pc.close();if(call.stream)call.stream.getTracks().forEach(track=>track.stop());if(call.overlay)call.overlay.remove();CALL=null}
+ACT.call=el=>startInternalCall(el.dataset.id||S.thread,el.dataset.k==='video'?'video':'voice');
+ACT.answerCall=()=>acceptIncomingCall();
+ACT.declineCall=()=>finishCall(true,'decline');
+ACT.endCall=()=>finishCall(true);
 ACT.addStatus=()=>sheet(t('lbl_add_status'),`<form class="form" data-form="status"><label class="lab">Write your status<textarea class="field" name="text" maxlength="140"></textarea></label><div class="row wrap">${BGS.map((b,i)=>`<label class="radio"><input type="radio" name="bg" value="${i}" ${i===0?'checked':''} aria-label="Color ${i+1}"><span style="width:1.6rem;height:1.6rem;border-radius:50%;background:${b};display:inline-block"></span></label>`).join('')}</div><div class="row"><button type="button" class="btn ghost sm" data-act="stImg">${ic('image')} Photos</button><span id="stName" class="muted small"></span></div><button class="btn">Post status</button></form><p class="muted small" style="margin-top:.6rem">Status updates disappear after 24 hours.</p>`);
 let STIMG=null;
 ACT.stImg=async()=>{const f=await pickFile('image/*');if(!f)return;try{STIMG=await imgToData(f,800,.7);$('#stName').textContent=f.name}catch(e){toast('Could not read image.')}};
@@ -1427,6 +1529,7 @@ FORM.deleteAccount=async f=>{
   const accountEmail=String(u.email||u.login||'').trim().toLowerCase();
   if(!accountEmail.includes('@'))return toast(t('delete_email_missing'));
   if(username!==expectedUsername||email!==accountEmail||await sha(u.salt+fv(f,'password'))!==u.hash)return toast(t('delete_verify_failed'));
+  if(u.remoteId)try{await communicationsRequest('/me',{email,password:fv(f,'password')},'DELETE')}catch(e){return toast(e.message||t('verification_unavailable'))}
 
   const deletedPosts=new Set(DB.posts.filter(p=>p.by===u.id).map(p=>p.id));
   DB.posts=DB.posts.filter(p=>p.by!==u.id).map(p=>{
@@ -1467,7 +1570,7 @@ document.addEventListener('submit',e=>{const f=e.target.closest('form[data-form]
 document.addEventListener('change',e=>{const tEl=e.target;if(tEl.dataset&&tEl.dataset.set)setPref(tEl)});
 document.addEventListener('input',e=>{const tEl=e.target;
   if(tEl.tagName==='TEXTAREA'&&(tEl.id==='aiText'||tEl.id==='msgText')){tEl.style.height='auto';tEl.style.height=Math.min(tEl.scrollHeight,140)+'px'}
-  if(tEl.id==='msgText'){const has=!!tEl.value.trim();$('#sendBtn').classList.toggle('hidden',!has);$('#micBtn').classList.toggle('hidden',has)}
+  if(tEl.id==='msgText'){const has=!!tEl.value.trim(),send=$('#sendBtn'),mic=$('#micBtn');if(send)send.classList.toggle('hidden',!has);if(mic)mic.classList.toggle('hidden',has)}
   if(tEl.id==='cq'){S.cq=tEl.value;$('#clist').innerHTML=chatList()}
   if(tEl.id==='chq'){S.chq=tEl.value;$('#chlist').innerHTML=chList(tEl.value.toLowerCase())}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();return}
@@ -1475,4 +1578,5 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeSheet();return
 if(/^#post=/.test(location.hash)){S.stream.focus=decodeURIComponent(location.hash.slice(6));S.view='stream'}
 
 render();
+restoreCommunicationSession();
 })();
