@@ -6,6 +6,7 @@ import secrets
 import sqlite3
 import time
 from contextlib import contextmanager
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
@@ -65,7 +66,15 @@ def connect() -> sqlite3.Connection:
             role TEXT NOT NULL,
             password_salt TEXT NOT NULL,
             password_hash TEXT NOT NULL,
-            created_at INTEGER NOT NULL
+            created_at INTEGER NOT NULL,
+            last_username_changed_at INTEGER DEFAULT NULL,
+            last_active_at INTEGER DEFAULT NULL
+        );
+        CREATE TABLE IF NOT EXISTS comm_user_activity (
+            user_id TEXT NOT NULL,
+            active_date TEXT NOT NULL,
+            PRIMARY KEY (user_id, active_date),
+            FOREIGN KEY (user_id) REFERENCES comm_users(id) ON DELETE CASCADE
         );
         CREATE TABLE IF NOT EXISTS comm_sessions (
             token_hash TEXT PRIMARY KEY,
@@ -84,8 +93,18 @@ def connect() -> sqlite3.Connection:
             ON comm_messages(conversation_key, id);
         CREATE INDEX IF NOT EXISTS idx_comm_sessions_expiry
             ON comm_sessions(expires_at);
+        CREATE INDEX IF NOT EXISTS idx_comm_user_activity_user
+            ON comm_user_activity(user_id, active_date);
         """
     )
+    try:
+        conn.execute("ALTER TABLE comm_users ADD COLUMN last_username_changed_at INTEGER DEFAULT NULL")
+    except sqlite3.OperationalError:
+        pass
+    try:
+        conn.execute("ALTER TABLE comm_users ADD COLUMN last_active_at INTEGER DEFAULT NULL")
+    except sqlite3.OperationalError:
+        pass
     return conn
 
 
@@ -102,8 +121,31 @@ def database():
         conn.close()
 
 
-def public_user(row: sqlite3.Row) -> dict[str, str]:
-    return {"id": row["id"], "name": row["name"], "email": row["email"], "role": row["role"]}
+def log_user_activity(user_id: str) -> None:
+    now_ts = int(time.time())
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    try:
+        with database() as conn:
+            conn.execute("UPDATE comm_users SET last_active_at=? WHERE id=?", (now_ts, user_id))
+            conn.execute(
+                "INSERT OR IGNORE INTO comm_user_activity(user_id, active_date) VALUES (?, ?)",
+                (user_id, today),
+            )
+    except Exception:
+        pass
+
+
+def public_user(row: sqlite3.Row) -> dict:
+    keys = row.keys() if hasattr(row, "keys") else []
+    return {
+        "id": row["id"],
+        "name": row["name"],
+        "email": row["email"],
+        "role": row["role"],
+        "created_at": row["created_at"] if "created_at" in keys else None,
+        "last_username_changed_at": row["last_username_changed_at"] if "last_username_changed_at" in keys else None,
+        "last_active_at": row["last_active_at"] if "last_active_at" in keys else None,
+    }
 
 
 def public_peer(row: sqlite3.Row) -> dict[str, str]:
@@ -144,6 +186,7 @@ def current_user(request: Request) -> dict[str, str]:
         ).fetchone()
     if row is None:
         raise HTTPException(status_code=401, detail="Your session has expired. Sign in again.")
+    log_user_activity(row["id"])
     return public_user(row)
 
 

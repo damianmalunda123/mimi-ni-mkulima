@@ -24,6 +24,7 @@ app.add_middleware(
 )
 
 app.include_router(user.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(user.router, prefix="/api/v1", tags=["users_compat"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["ai"])
 app.include_router(media.router, prefix="/api/v1/media", tags=["media"])
 app.include_router(communication.router, prefix="/api/v1/communications", tags=["communications"])

@@ -8,7 +8,11 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     DATABASE_URL: str = "sqlite:///./sql_app.db" # Default to SQLite for simplicity
     GEMINI_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_MODEL: str = "gemini-3.5-flash"
+    GEMINI_FALLBACK_MODELS: str = "gemini-3.5-flash,gemini-3.5-flash-lite,gemini-3-flash-preview,gemini-flash-lite-latest"
+    BREVO_API_KEY: str = ""
+    BREVO_SENDER_EMAIL: str = "damianmalunda123@gmail.com"
+    BREVO_SENDER_NAME: str = "MIMI NI MKULIMA"
     SMTP_HOST: str = ""
     SMTP_PORT: int = 587
     SMTP_USERNAME: str = ""

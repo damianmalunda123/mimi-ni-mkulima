@@ -863,34 +863,62 @@ function sysFor(mode){let s=BASE_SYS;const k=(mode==='kilimo'||mode==='shamba')?
   if(mode==='shamba'||mode==='banda')s+='\nUser profile context:\n'+farmContext(k)+'\nUse this profile to personalize your recommendation.';
   return s}
 
+let AI_QUEUE_CHAIN = Promise.resolve();
+const AI_CLIENT_CACHE = new Map();
+
 async function runAI(turns,o){o=o||{};
   const t=turns.slice(-14).map(x=>({role:x.role,content:String(x.content).slice(0,6000)}));
   while(t.length&&t[0].role==='assistant')t.shift();
-  try {
-    const imageData=o.images?await imgToData(o.images):undefined;
-    const res=await fetch(`${API_BASE}/api/v1/ai/chat`,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      signal:o.signal,
-      body:JSON.stringify({
-        messages:t,
-        system_prompt:o.system||BASE_SYS,
-        mode:o.mode||'kilimo',
-        ...(imageData?{image_data:imageData}:{})
-      })
-    });
-    if(!res.ok){
-      const err=await res.json().catch(()=>({}));
-      throw{code:res.status===429?'rate_limited':'upstream_error',text:err.detail||'AI service is currently unavailable. Please try again.'};
-    }
-    const data=await res.json();
-    if(typeof data.text!=='string'||!data.text.trim())throw{code:'empty_completion'};
-    return{text:data.text};
-  }catch(e){
-    if(e&&e.code)throw e;
-    if(e&&e.name==='AbortError')throw{code:'cancelled',text:curLang()==='en'?'Request was stopped.':'Ombi lako limesimamishwa.'};
-    throw{code:'backend_error',text:curLang()==='en'?'Could not connect to the backend server. Make sure it is running on port 8000.':'Imeshindwa kuunganishwa na seva ya backend kwenye port 8000.'};
+  if(!t.length)return{text:''};
+
+  const cacheKey=JSON.stringify({
+    m:t.map(m=>({r:m.role,c:m.content.trim().toLowerCase()})),
+    s:(o.system||BASE_SYS).slice(0,500),
+    hasImg:!!o.images
+  });
+
+  if(!o.images&&AI_CLIENT_CACHE.has(cacheKey)){
+    return{text:AI_CLIENT_CACHE.get(cacheKey)};
   }
+
+  const executeCall=async()=>{
+    try {
+      const imageData=o.images?await imgToData(o.images):undefined;
+      const res=await fetch(`${API_BASE}/api/v1/ai/chat`,{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        signal:o.signal,
+        body:JSON.stringify({
+          messages:t,
+          system_prompt:o.system||BASE_SYS,
+          mode:o.mode||S.sec||'kilimo',
+          ...(imageData?{image_data:imageData}:{})
+        })
+      });
+      if(!res.ok){
+        const err=await res.json().catch(()=>({}));
+        throw{code:res.status===429?'rate_limited':'upstream_error',text:err.detail||(curLang()==='sw'?'Huduma ya AI inashughulikia maombi. Tafadhali subiri kidogo.':'AI service is busy. Please wait a moment.')};
+      }
+      const data=await res.json();
+      if(typeof data.text!=='string'||!data.text.trim())throw{code:'empty_completion'};
+      if(!o.images){
+        AI_CLIENT_CACHE.set(cacheKey,data.text);
+        if(AI_CLIENT_CACHE.size>60){
+          const firstKey=AI_CLIENT_CACHE.keys().next().value;
+          AI_CLIENT_CACHE.delete(firstKey);
+        }
+      }
+      return{text:data.text};
+    }catch(e){
+      if(e&&e.code)throw e;
+      if(e&&e.name==='AbortError')throw{code:'cancelled',text:curLang()==='sw'?'Ombi limesimamishwa.':'Request was stopped.'};
+      throw{code:'backend_error',text:curLang()==='sw'?'Haikuweza kuunganishwa na seva ya AI. Tafadhali jaribu tena.':'Could not connect to the AI server. Please try again.'};
+    }
+  };
+
+  const currentChain=AI_QUEUE_CHAIN.then(executeCall,executeCall);
+  AI_QUEUE_CHAIN=currentChain.catch(()=>{});
+  return currentChain;
 }
 
 function aiErr(e){const c=e&&e.code;if(c==='cancelled')return'';if(c==='rate_limited')return'AI usage limit reached. Please try again later.';if(c==='upstream_error'||c==='empty_completion')return'AI service is unavailable right now. Please try again.';if(c==='prompt_too_large')return'The message is too long. Please shorten it and try again.';return'AI service is currently offline or unreachable.'}
@@ -940,12 +968,40 @@ const refreshSec=()=>{const b=$('#secBody');if(b)b.innerHTML=SECTAB[S.tab]();els
 /* ============ home ============ */
 const furrows=()=>Array.from({length:9},(_,i)=>{const y=30+i*26;return`<path d="M0 ${y} C 180 ${y-38}, 420 ${y+38}, 800 ${y-12}"/>`}).join('');
 VIEWS.home=()=>{const u=curUser();
-  return`<div class="view"><header class="hero"><svg class="furrows" viewBox="0 0 800 260" preserveAspectRatio="none" aria-hidden="true">${furrows()}</svg>
-  <p class="hello">${u?t('hello_back')+', '+esc(u.name.split(' ')[0]):t('hello_guest')}</p>
-  <h1 class="mark"><span>MIMI NI</span>MKULIMA</h1><p class="lede">${t('home_lede')}</p></header>
+  return`<div class="view"><header class="hero">
+    <img class="hero-bg" src="../Assets/images/hero_banner.jpg" alt="" loading="eager" decoding="async">
+    <div class="hero-overlay"></div>
+    <svg class="furrows" viewBox="0 0 800 260" preserveAspectRatio="none" aria-hidden="true">${furrows()}</svg>
+    <div class="hero-content">
+      <div class="hero-welcome-pill">
+        <span class="hero-status-dot"></span>
+        <p class="hello">${u?t('hello_back')+', '+esc(u.name.split(' ')[0]):t('hello_guest')}</p>
+      </div>
+      <h1 class="mark"><span>MIMI NI</span>MKULIMA</h1>
+      <p class="lede">${t('home_lede')}</p>
+    </div>
+  </header>
   <div class="split">
-   <button class="door" data-act="openSec" data-sec="kilimo">${ic('leaf','door-ic')}<span class="door-t">${t('door_grow_t')}</span><span class="door-s">${t('door_grow_s')}</span><span class="chips"><i>${t('door_grow_c1')}</i><i>${t('door_grow_c2')}</i><i>${t('door_grow_c3')}</i><i>${t('door_grow_c4')}</i></span></button>
-   <button class="door ochre" data-act="openSec" data-sec="ufugaji">${ic('paw','door-ic')}<span class="door-t">${t('door_raise_t')}</span><span class="door-s">${t('door_raise_s')}</span><span class="chips"><i>${t('door_raise_c1')}</i><i>${t('door_raise_c2')}</i><i>${t('door_raise_c3')}</i><i>${t('door_raise_c4')}</i></span></button>
+   <button class="door" data-act="openSec" data-sec="kilimo">
+     <img class="door-bg" src="../Assets/images/home_farming.jpg" alt="" loading="eager">
+     <div class="door-overlay"></div>
+     <div class="door-content">
+       ${ic('leaf','door-ic')}
+       <span class="door-t">${t('door_grow_t')}</span>
+       <span class="door-s">${t('door_grow_s')}</span>
+       <span class="chips"><i>${t('door_grow_c1')}</i><i>${t('door_grow_c2')}</i><i>${t('door_grow_c3')}</i><i>${t('door_grow_c4')}</i></span>
+     </div>
+   </button>
+   <button class="door ochre" data-act="openSec" data-sec="ufugaji">
+     <img class="door-bg" src="../Assets/images/home_livestock.jpg" alt="" loading="eager">
+     <div class="door-overlay"></div>
+     <div class="door-content">
+       ${ic('paw','door-ic')}
+       <span class="door-t">${t('door_raise_t')}</span>
+       <span class="door-s">${t('door_raise_s')}</span>
+       <span class="chips"><i>${t('door_raise_c1')}</i><i>${t('door_raise_c2')}</i><i>${t('door_raise_c3')}</i><i>${t('door_raise_c4')}</i></span>
+     </div>
+   </button>
   </div></div>`};
 
 ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'menu',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
@@ -964,16 +1020,16 @@ ACT.toggleLang=()=>{
 /* ============ section ============ */
 const SECTION_PHOTOS={
   kilimo:{
-    jifunze:['https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Maize_field_in_Canterbury.jpg/960px-Maize_field_in_Canterbury.jpg','https://commons.wikimedia.org/wiki/File:Maize_field_in_Canterbury.jpg'],
-    mtaalamu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg/960px-Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg','https://commons.wikimedia.org/wiki/File:Bartlett_-_Extension_Meeting_-_Laos%282006%29.jpg'],
-    ai:['https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Technology_Contributing_to_Agriculture.jpg/960px-Technology_Contributing_to_Agriculture.jpg','https://commons.wikimedia.org/wiki/File:Technology_Contributing_to_Agriculture.jpg'],
-    langu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/9/97/Silage_windrows_and_two_tractors_2.jpg/960px-Silage_windrows_and_two_tractors_2.jpg','https://commons.wikimedia.org/wiki/File:Silage_windrows_and_two_tractors_2.jpg']
+    jifunze:['../Assets/images/farming_learn.jpg','https://commons.wikimedia.org/wiki/File:Maize_field_in_Canterbury.jpg'],
+    mtaalamu:['../Assets/images/farming_expert.jpg','https://commons.wikimedia.org/wiki/File:Agronomist_%26_Farmer_Inspecting_Weeds_%2813782437474%29.jpg'],
+    ai:['../Assets/images/farming_ai.jpg','https://commons.wikimedia.org/wiki/File:Technology_Contributing_to_Agriculture.jpg'],
+    langu:['../Assets/images/farming_farm.jpg','https://commons.wikimedia.org/wiki/File:Silage_windrows_and_two_tractors_2.jpg']
   },
   ufugaji:{
-    jifunze:['https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Cattle_grazing_20251.jpg/960px-Cattle_grazing_20251.jpg','https://commons.wikimedia.org/wiki/File:Cattle_grazing_20251.jpg'],
-    mtaalamu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7d/Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg/960px-Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg','https://commons.wikimedia.org/wiki/File:Pacific_Partnership_2022_veterinarians_operate_at_Solomon_Islands_Ministry_of_Agriculture_and_Livestock_%287408314%29.jpg'],
-    ai:['https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg/960px-Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg','https://commons.wikimedia.org/wiki/File:Dairy_cattle_in_fields_near_Kennels_Dairy_-_geograph.org.uk_-_2471643.jpg'],
-    langu:['https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Foraging_Backyard_Poultry.jpg/960px-Foraging_Backyard_Poultry.jpg','https://commons.wikimedia.org/wiki/File:Foraging_Backyard_Poultry.jpg']
+    jifunze:['../Assets/images/livestock_learn.jpg','https://commons.wikimedia.org/wiki/File:Cattle_grazing_20251.jpg'],
+    mtaalamu:['../Assets/images/livestock_expert.jpg','https://commons.wikimedia.org/wiki/File:Ethiopia%2C_U.S._partner_for_veterinarian_project_%288144860257%29.jpg'],
+    ai:['../Assets/images/livestock_ai.jpg','https://commons.wikimedia.org/wiki/File:Dairy_Campus_Ljouwert05.jpg'],
+    langu:['../Assets/images/livestock_barn.jpg','https://commons.wikimedia.org/wiki/File:Foraging_Backyard_Poultry.jpg']
   }
 };
 VIEWS.section=()=>{const k=S.sec,T=SEC[k],isSw=curLang()==='sw';
@@ -986,9 +1042,49 @@ VIEWS.section=()=>{const k=S.sec,T=SEC[k],isSw=curLang()==='sw';
     ['langu',k==='kilimo'?t('tab_my_farm'):t('tab_my_barn'),k==='kilimo'?t('section_farm_desc'):t('section_barn_desc'),'home']
   ];
   const inSection=S.tab!=='menu';
-  const body=inSection?SECTAB[S.tab]():`<div class="section-menu">${sections.map(([id,label,description,icon])=>{const [image,source]=SECTION_PHOTOS[k][id];return`<article class="section-entry"><button class="section-entry-main" data-act="sectionEntry" data-t="${id}"><span class="section-entry-image"><img src="${image}" alt="" loading="eager" decoding="async"><span class="section-entry-icon">${ic(icon)}</span></span><span class="section-entry-copy"><b class="section-entry-label">${label}</b><span class="section-entry-description">${description}</span></span>${ic('back','section-entry-arrow')}</button><a class="section-entry-credit" href="${source}" target="_blank" rel="noopener noreferrer">${t('section_photo_source')}</a></article>`}).join('')}</div>`;
-  return`<div class="view" data-sec="${k}"><div class="sec-head"><button class="icon-btn" data-act="${inSection?'sectionMenu':'go'}" ${inSection?'':'data-v="home"'} aria-label="${inSection?t('another_topic'):t('back_home')}">${ic('back')}</button><div><h2>${title}</h2><p class="muted small">${sub}</p></div></div>
-  <div id="secBody">${body}</div></div>`};
+  const tabInfo=inSection?sections.find(s=>s[0]===S.tab):null;
+  const tabPhoto=tabInfo?SECTION_PHOTOS[k][S.tab]:null;
+
+  const headerHtml=inSection&&tabPhoto?`
+    <div class="sec-tab-banner">
+      <img class="sec-tab-banner-bg" src="${tabPhoto[0]}" alt="" loading="eager">
+      <div class="sec-tab-banner-overlay"></div>
+      <div class="sec-tab-banner-content">
+        <button class="icon-btn sec-tab-banner-back" data-act="sectionMenu" aria-label="${t('another_topic')}">${ic('back')}</button>
+        <div class="sec-tab-banner-meta">
+          <span class="sec-badge">${k==='kilimo'?(isSw?'Kilimo':'Farming'):(isSw?'Ufugaji':'Livestock')}</span>
+          <h2>${tabInfo[1]}</h2>
+          <p class="sec-tab-banner-sub">${tabInfo[2]}</p>
+        </div>
+      </div>
+    </div>`:
+    `<div class="sec-head">
+      <button class="icon-btn" data-act="${inSection?'sectionMenu':'go'}" ${inSection?'':'data-v="home"'} aria-label="${inSection?t('another_topic'):t('back_home')}">${ic('back')}</button>
+      <div><h2>${title}</h2><p class="muted small">${sub}</p></div>
+    </div>`;
+
+  const body=inSection?SECTAB[S.tab]():`<div class="section-menu">${sections.map(([id,label,description,icon])=>{
+    const [image,source]=SECTION_PHOTOS[k][id];
+    return`<article class="section-entry">
+      <button class="section-entry-main" data-act="sectionEntry" data-t="${id}">
+        <img class="section-entry-bg" src="${image}" alt="" loading="eager" decoding="async">
+        <div class="section-entry-overlay"></div>
+        <div class="section-entry-content">
+          <div class="section-entry-top">
+            <span class="section-entry-icon">${ic(icon)}</span>
+            <span class="section-entry-arrow-pill">${ic('back','section-entry-arrow')}</span>
+          </div>
+          <div class="section-entry-copy">
+            <b class="section-entry-label">${label}</b>
+            <span class="section-entry-description">${description}</span>
+          </div>
+        </div>
+      </button>
+      <a class="section-entry-credit" href="${source}" target="_blank" rel="noopener noreferrer">${t('section_photo_source')}</a>
+    </article>`}).join('')}</div>`;
+
+  return`<div class="view" data-sec="${k}">${headerHtml}<div id="secBody">${body}</div></div>`;
+};
 
 /* --- learn --- */
 const engines=q=>{const e=encodeURIComponent(q+' Tanzania');return[['Google','https://www.google.com/search?q='],['Bing','https://www.bing.com/search?q='],['DuckDuckGo','https://duckduckgo.com/?q='],['Yahoo','https://search.yahoo.com/search?p='],['Brave','https://search.brave.com/search?q=']].map(([n,u])=>`<a href="${u}${e}" target="_blank" rel="noopener noreferrer">${n}</a>`).join('')};
@@ -1201,7 +1297,8 @@ const AUTH_API_BASE=`${API_BASE}/api/v1`;
 const normalizePhone=value=>{let number=value.replace(/[^\d+]/g,'');if(number.startsWith('00'))number='+'+number.slice(2);else if(number.startsWith('0'))number='+255'+number.slice(1);else if(!number.startsWith('+'))number='+'+number;return number};
 function maskContact(value,channel){if(channel==='email'){const [name,domain]=value.split('@');return `${name.slice(0,1)}***@${domain}`}return `${'*'.repeat(Math.max(0,value.length-3))}${value.slice(-3)}`}
 function passwordField(name,label,autocomplete){return`<label class="lab">${label}<span class="password-field"><input class="field" id="${name}" name="${name}" type="password" required minlength="8" maxlength="100" autocomplete="${autocomplete}"><button type="button" class="icon-btn" data-act="togglePassword" data-target="${name}" aria-label="${t('btn_show_pw')}" title="${t('btn_show_pw')}">${ic('eye')}</button></span></label>`}
-async function authPost(path,data){let response;try{response=await fetch(`${AUTH_API_BASE}${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok)throw new Error(response.status===503||response.status>=500?t('verification_unavailable'):response.status===429?t('otp_retry_later'):t('verification_failed'));return result}
+async function authPost(path,data){let response;try{response=await fetch(`${AUTH_API_BASE}${path}`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok){const err=new Error((result.detail&&result.detail.message)||result.detail||(response.status===503||response.status>=500?t('verification_unavailable'):response.status===429?t('otp_retry_later'):t('verification_failed')));err.status=response.status;err.data=result.detail||result;throw err}return result}
+async function authGet(path){let response;try{response=await fetch(`${AUTH_API_BASE}${path}`,{method:'GET',credentials:'include',headers:{'Accept':'application/json'}})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok){const err=new Error((result.detail&&result.detail.message)||result.detail||t('verification_unavailable'));err.status=response.status;err.data=result.detail||result;throw err}return result}
 async function communicationsRequest(path,data,method=data?'POST':'GET'){let response;try{response=await fetch(`${AUTH_API_BASE}/communications${path}`,{method,credentials:'include',headers:data?{'Content-Type':'application/json'}:{},body:data?JSON.stringify(data):undefined})}catch(e){throw new Error(t('verification_unavailable'))}const result=await response.json().catch(()=>({}));if(!response.ok){const error=new Error(result.detail||t('verification_unavailable'));error.status=response.status;throw error}return result}
 function accountExists(email,phone){return Object.values(DB.users).some(x=>email&&((x.login||'').toLowerCase()===email||(x.email||'').toLowerCase()===email)||phone&&(x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone))}
 function localAccountForEmail(email){return Object.values(DB.users).find(x=>(x.email||x.login||'').toLowerCase()===email)}
@@ -1218,7 +1315,7 @@ function authHTML(){const reg=S.auth==='register',login=S.auth==='login';let bod
 
 ACT.authTab=el=>{PENDING_RESET=null;S.auth=el.dataset.t;render()};
 ACT.togglePassword=el=>{const input=document.getElementById(el.dataset.target);if(!input)return;const visible=input.type==='password';input.type=visible?'text':'password';el.innerHTML=ic(visible?'eye-off':'eye');el.setAttribute('aria-label',t(visible?'btn_hide_pw':'btn_show_pw'));el.title=t(visible?'btn_hide_pw':'btn_show_pw')};
-ACT.forgotPassword=()=>toast(t('forgot_unavailable'));
+ACT.forgotPassword=()=>{PENDING_RESET=null;S.auth='forgot';render()};
 ACT.backToLogin=()=>{PENDING_RESET=null;S.auth='login';render()};
 ACT.backToForgot=()=>{if(PENDING_RESET)delete PENDING_RESET.challengeId;S.auth='forgot';render()};
 ACT.resendResetCode=async()=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/send',{channel:PENDING_RESET.channel,destination:PENDING_RESET.destination});PENDING_RESET.challengeId=result.challenge_id;toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
@@ -1244,7 +1341,7 @@ FORM.auth=async f=>{const pw=fv(f,'pw');
       activateRemoteUser(result.user,local);toast((curLang()==='en'?'Welcome back, ':'Karibu tena, ')+(result.user.name||'').split(' ')[0]+'!');go('account')
     }catch(e){toast(e.message||t('verification_unavailable'))}
   }};
-FORM.requestReset=async f=>{const value=fv(f,'id').trim(),local=findResetAccount(value);if(!value)return toast(t('reset_account_missing'));const target=value.includes('@')?{account:local&&local.account,channel:'email',destination:value.toLowerCase()}:local;if(!target)return toast(t('reset_account_missing'));try{const result=await authPost('/password-reset/send',{channel:target.channel,destination:target.destination});PENDING_RESET={accountId:target.account&&target.account.id,channel:target.channel,destination:target.destination,challengeId:result.challenge_id};S.auth='forgotCode';render();toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
+FORM.requestReset=async f=>{const value=fv(f,'id').trim(),local=findResetAccount(value);if(!value)return toast(t('reset_account_missing'));const target=value.includes('@')?{account:local&&local.account,channel:'email',destination:value.toLowerCase()}:local;if(!target)return toast(t('reset_account_missing'));try{const result=await authPost('/users/password-reset/send',{channel:target.channel,destination:target.destination});PENDING_RESET={accountId:target.account&&target.account.id,channel:target.channel,destination:target.destination,challengeId:result.challenge_id};S.auth='forgotCode';render();toast(t('verification_sent'))}catch(e){toast(e.message||t('verification_unavailable'))}};
 FORM.confirmResetCode=async f=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/confirm',{challenge_id:PENDING_RESET.challengeId,code:fv(f,'code').trim()});PENDING_RESET.resetToken=result.reset_token;S.auth='resetPassword';render()}catch(e){toast(e.message||t('verification_failed'))}};
 FORM.resetPassword=async f=>{if(!PENDING_RESET)return;const password=fv(f,'newPw'),confirm=fv(f,'confirmNewPw');if(password!==confirm)return toast(t('password_mismatch'));const pending=PENDING_RESET,account=DB.users[pending.accountId],salt=uid('s'),hash=await sha(salt+password);try{const result=await authPost('/password-reset/complete',{reset_token:pending.resetToken,new_password:password});if(account){account.salt=salt;account.hash=hash}if(result.account_updated){const login=await communicationsRequest('/login',{email:pending.destination,password});activateRemoteUser(login.user,account)}else if(account){DB.session=account.id;save()}PENDING_RESET=null;toast(t('reset_success'));if(account)go('account');else{S.auth='login';render()}}catch(e){toast(e.message||t('verification_failed'))}};
 
@@ -1264,10 +1361,150 @@ function profileHTML(u){
   <div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${S.ptab===i?'on':''}" data-act="ptab" data-t="${i}">${l}</button>`).join('')}</div>${b}</div>`}
 
 ACT.ptab=el=>{S.ptab=el.dataset.t;render()};
-ACT.profMenu=()=>sheet('Profile Menu',`<div class="menu"><button data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button data-act="followSheet">${ic('users')} ${t('stat_following')}</button><button data-act="ptabGo" data-t="soko">${ic('tag')} ${t('tab_market')}</button><button data-act="go" data-v="settings">${ic('settings')} ${t('nav_settings')}</button><button data-act="logout">${ic('logout')} ${t('st_logout')}</button></div>`);
+ACT.profMenu=()=>sheet('Profile Menu',`<div class="menu"><button data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button data-act="startUsernameChange">${ic('user')} ${curLang()==='sw'?'Badilisha Jina la Mtumiaji':'Change Username'}</button><button data-act="followSheet">${ic('users')} ${t('stat_following')}</button><button data-act="ptabGo" data-t="soko">${ic('tag')} ${t('tab_market')}</button><button data-act="openTermsPolicy">${ic('info')} ${curLang()==='sw'?'Vigezo na Masharti':'Terms & Policies'}</button><button data-act="go" data-v="settings">${ic('settings')} ${t('nav_settings')}</button><button data-act="logout">${ic('logout')} ${t('st_logout')}</button></div>`);
 ACT.ptabGo=el=>{closeSheet();S.ptab=el.dataset.t;render()};
-ACT.editProfile=()=>{const u=curUser();sheet(t('btn_edit_profile'),`<form class="form" data-form="profile"><label class="lab">${t('lbl_name')}<input class="field" name="name" value="${esc(u.name)}" maxlength="60" required></label><label class="lab">${t('lbl_notes')} (bio)<textarea class="field" name="bio" maxlength="160">${esc(u.bio)}</textarea></label><button class="btn">${t('btn_save')}</button></form>`)};
-FORM.profile=f=>{const u=curUser();u.name=fv(f,'name').trim()||u.name;u.bio=fv(f,'bio').trim();DB.posts.forEach(p=>{if(p.by===u.id)p.name=u.name});save();closeSheet();render()};
+ACT.editProfile=()=>{const u=curUser(),isSw=curLang()==='sw';sheet(t('btn_edit_profile'),`<form class="form" data-form="profile"><label class="lab">${t('lbl_name')} (Username)<input class="field" name="name" value="${esc(u.name)}" maxlength="60" required readonly style="opacity:0.85;cursor:not-allowed"></label><div style="margin:-.3rem 0 .9rem;display:flex;justify-content:space-between;align-items:center;background:var(--raised);padding:.55rem .75rem;border-radius:10px;gap:.5rem"><span class="small muted">${isSw?'Kubadilisha jina kunahitaji vigezo na uthibitisho wa barua pepe.':'Changing username requires eligibility and email verification.'}</span><button type="button" class="btn sm soft" data-act="startUsernameChange" style="white-space:nowrap">${ic('edit')} ${isSw?'Badilisha':'Change'}</button></div><label class="lab">${t('lbl_notes')} (bio)<textarea class="field" name="bio" maxlength="160">${esc(u.bio)}</textarea></label><button class="btn">${t('btn_save')}</button></form>`)};
+FORM.profile=f=>{const u=curUser();u.bio=fv(f,'bio').trim();save();closeSheet();render()};
+
+let PENDING_USER_CHANGE = null;
+
+ACT.startUsernameChange=async()=>{
+  const u=curUser();
+  if(!u)return needLogin();
+  closeSheet();
+  try{await communicationsRequest('/me')}catch(e){}
+  try{
+    const res=await authGet('/users/username/eligibility');
+    if(!res.eligible){
+      showIneligibleModal(res.criteria);
+    }else{
+      showUsernameChangeForm();
+    }
+  }catch(err){
+    const criteria=err.data&&err.data.criteria;
+    if(criteria){
+      showIneligibleModal(criteria);
+    }else{
+      const ageDays=Math.floor((now()-(u.ts||0))/86400);
+      const isSixMonths=ageDays>=180;
+      showIneligibleModal([
+        {id:'six_months',title:curLang()==='sw'?'Umri wa Akaunti (Miezi 6)':'Account Age (6 Months)',met:isSixMonths,message:isSixMonths?(curLang()==='sw'?'Kigezo kimekamilika.':'Criterion met.'):(curLang()==='sw'?`Akaunti haijafikisha miezi 6 tangu kusajiliwa (imebaki siku ${Math.max(0,180-ageDays)}).`:`Account has not reached 6 months yet (${Math.max(0,180-ageDays)} days remaining).`)},
+        {id:'two_weeks_active',title:curLang()==='sw'?'Utendaji Mfululizo (Wiki 2)':'Consecutive Activity (2 Weeks)',met:false,message:curLang()==='sw'?'Akaunti lazima iwe active kwa wiki 2 mfululizo kabla ya kuomba mabadiliko.':'Account must be active for 2 consecutive weeks before requesting change.'},
+        {id:'two_months_cooldown',title:curLang()==='sw'?'Muda wa Subira (Miezi 2)':'Cooldown Period (2 Months)',met:true,message:curLang()==='sw'?'Hujabadilisha jina katika miezi 2 iliyopita.':'No recent changes in past 2 months.'}
+      ]);
+    }
+  }
+};
+
+function showIneligibleModal(criteria){
+  const isSw=curLang()==='sw';
+  const items=(criteria||[]).map(c=>`
+    <div class="criterion-item ${c.met?'met':'unmet'}">
+      <div class="criterion-badge">${c.met?ic('check'):ic('x')}</div>
+      <div class="criterion-text">
+        <b>${esc(isSw?(c.title||c.id):(c.title_en||c.title||c.id))}</b>
+        <p class="small muted">${esc(c.message||c.required||'')}</p>
+      </div>
+    </div>
+  `).join('');
+
+  sheet(isSw?'Vigezo vya Kubadilisha Jina':'Username Change Requirements',`
+    <div class="criteria-sheet">
+      <div class="criteria-alert">
+        <span class="criteria-alert-icon">⚠️</span>
+        <div>
+          <h4>${isSw?'Vigezo Havijakamilika':'Requirements Not Met'}</h4>
+          <p class="small muted">${isSw?'Mfumo umekataa ombi lako kwa sababu akaunti yako haijakidhi vigezo vyote vinavyohitajika kubadilisha jina la mtumiaji:':'The system has declined your request because your account does not currently meet all criteria required to change username:'}</p>
+        </div>
+      </div>
+      <div class="criteria-list">${items}</div>
+      <div class="criteria-footer">
+        <p class="small muted" style="margin:0">${isSw?'Soma maelekezo kamili ya kubadilisha akaunti na kanuni zote za matumizi ya MIMI NI MKULIMA:':'Read the complete instructions for changing accounts and all community guidelines:'}</p>
+        <button type="button" class="btn ghost learn-more-btn" data-act="openTermsPolicy">
+          ${ic('info')} ${isSw?'Jifunze Zaidi (Learn More) &rarr;':'Learn More &rarr;'}
+        </button>
+      </div>
+    </div>
+  `);
+}
+
+function showUsernameChangeForm(){
+  const u=curUser(),isSw=curLang()==='sw';
+  sheet(isSw?'Badilisha Jina la Mtumiaji':'Change Username',`
+    <form class="form" data-form="requestUsernameChange">
+      <div class="note" style="border-left:3px solid var(--lime);background:rgba(132,204,22,0.1)">
+        <b>${isSw?'🎉 Vigezo Vyote Vimekamilika!':'🎉 All Criteria Met!'}</b>
+        <p class="small muted" style="margin:.25rem 0 0">
+          ${isSw?`Ingiza jina lako jipya la mtumiaji. Nambari ya uhakiki ya tarakimu 6 (OTP code) itatumwa kwenye barua pepe yako rasmi: <b>${esc(maskContact(u.email||u.login,'email'))}</b>.`:`Enter your new username. A 6-digit verification code will be sent to your registered email: <b>${esc(maskContact(u.email||u.login,'email'))}</b>.`}
+        </p>
+      </div>
+      <label class="lab">${isSw?'Jina Jipya la Mtumiaji (New Username)':'New Username'}
+        <input class="field" name="newUsername" minlength="3" maxlength="50" required placeholder="${isSw?'Mf. Rashid_MkulimaBora':'e.g. Rashid_Farmer'}" autocomplete="off">
+      </label>
+      <button class="btn">${ic('send')} ${isSw?'Tuma Nambari ya Uhakiki':'Send Verification Code'}</button>
+    </form>
+  `);
+}
+
+function showUsernameCodeForm(challengeId,email,newUsername){
+  const isSw=curLang()==='sw';
+  sheet(isSw?'Uhakiki wa Barua Pepe':'Email Verification',`
+    <form class="form" data-form="confirmUsernameChange">
+      <p class="note">${isSw?'Nambari ya uhakiki ya tarakimu 6 imetumwa kwenye barua pepe:':'A 6-digit verification code was sent to:'} <b>${esc(email)}</b>. ${isSw?'Inaisha muda baada ya dakika 10.':'Expires in 10 minutes.'}</p>
+      <input type="hidden" name="challengeId" value="${esc(challengeId)}">
+      <input type="hidden" name="newUsername" value="${esc(newUsername)}">
+      <label class="lab">${isSw?'Nambari ya Uhakiki (Verification Code)':'Verification Code'}
+        <input class="field" name="code" pattern="[0-9]{6}" minlength="6" maxlength="6" required placeholder="000000" inputmode="numeric" autocomplete="one-time-code" style="font-size:1.4rem;letter-spacing:6px;text-align:center">
+      </label>
+      <button class="btn">${ic('check')} ${isSw?'Thibitisha na Ubadilishe':'Confirm &amp; Change'}</button>
+      <div class="row wrap" style="justify-content:center;margin-top:.4rem">
+        <button type="button" class="btn ghost sm" data-act="startUsernameChange">${ic('repeat')} ${isSw?'Anza Upya':'Restart'}</button>
+      </div>
+    </form>
+  `);
+}
+
+FORM.requestUsernameChange=async f=>{
+  const newUsername=fv(f,'newUsername').trim();
+  if(!newUsername)return toast(curLang()==='sw'?'Ingiza jina jipya la mtumiaji.':'Enter a new username.');
+  try{
+    const res=await authPost('/users/username/request-change',{new_username:newUsername});
+    PENDING_USER_CHANGE={challengeId:res.challenge_id,email:res.email,newUsername};
+    showUsernameCodeForm(res.challenge_id,res.email,newUsername);
+    toast(res.message||(curLang()==='sw'?'Nambari ya uhakiki imetumwa kwenye barua pepe yako!':'Verification code sent to your email!'));
+  }catch(err){
+    if(err.data&&err.data.criteria){
+      showIneligibleModal(err.data.criteria);
+    }else{
+      toast(err.message||t('verification_unavailable'));
+    }
+  }
+};
+
+FORM.confirmUsernameChange=async f=>{
+  const challengeId=fv(f,'challengeId'),code=fv(f,'code').trim(),newUsername=fv(f,'newUsername').trim();
+  if(!code)return;
+  try{
+    const res=await authPost('/users/username/confirm-change',{challenge_id:challengeId,code});
+    const u=curUser();
+    if(u){
+      u.name=newUsername;
+      u.handle='@'+newUsername.toLowerCase().replace(/[^a-z0-9]+/g,'');
+      DB.posts.forEach(p=>{if(p.by===u.id)p.name=newUsername});
+      save();
+    }
+    closeSheet();
+    render();
+    toast(res.message||(curLang()==='sw'?'Jina la mtumiaji limebadilishwa kikamilifu!':'Username updated successfully!'));
+  }catch(err){
+    toast(err.message||t('verification_failed'));
+  }
+};
+
+ACT.openTermsPolicy=()=>{
+  closeSheet();
+  go('terms');
+};
 function followRows(ids,u,emptyKey){
   const people=ids.filter(id=>id!==u.id&&DB.users[id]);
   if(!people.length)return`<div class="empty">${t(emptyKey)}</div>`;
@@ -1562,6 +1799,71 @@ VIEWS.about=()=>`<div class="view about" style="max-width:720px"><h2>${t('about_
   <h3>${t('about_dev_title')}</h3><p>${t('about_dev_desc')}</p>
   <p class="muted">${t('about_services')}</p>
   <p class="note" style="margin-top:1.4rem">${t('about_version')}</p></div>`;
+
+/* ============ terms & policies ============ */
+VIEWS.terms=()=>{
+  const isSw=curLang()==='sw';
+  return`<div class="view terms-view">
+    <div class="row" style="margin-bottom:1.2rem;justify-content:space-between;align-items:center">
+      <button class="icon-btn" data-act="go" data-v="account" aria-label="${t('back_home')}">${ic('back')}</button>
+      <span class="badge" style="background:var(--lime);color:#12200a;font-weight:800;padding:.3rem .7rem;font-size:.78rem">${isSw?'Sera &amp; Kanuni Rasmi':'Official Policies'}</span>
+    </div>
+
+    <h1 style="font:800 clamp(1.8rem,6vw,2.5rem)/1.1 var(--font-display);letter-spacing:-.02em;margin-bottom:.4rem">
+      ${isSw?'Vigezo na Masharti ya MIMI NI MKULIMA':'MIMI NI MKULIMA Terms &amp; Conditions'}
+    </h1>
+    <p class="muted" style="margin-bottom:1.5rem">
+      ${isSw?'Mwongozo kamili wa kubadilisha jina la akaunti, vigezo vya lazima, usalama wa barua pepe, na kanuni za jamii ya wakulima na wafugaji.':'Complete guidelines on changing usernames, mandatory criteria, email verification, and community standards.'}
+    </p>
+
+    <div class="terms-card" style="border-left:4px solid var(--acc)">
+      <h3>${ic('user')} ${isSw?'1. Vigezo vya Kubadilisha Jina la Mtumiaji (Username Change Policy)':'1. Requirements for Changing Username'}</h3>
+      <p>${isSw?'Ili kuhakikisha usalama, kuaminiana na kuzuia vitendo vya udanganyifu au akaunti feki miongoni mwa wanajamii, mfumo wa MIMI NI MKULIMA unaweka vigezo vifuatavyo ambavyo ni lazima vitimie kabla ya kuruhusu mabadiliko ya jina:':'To guarantee safety, mutual trust, and prevent impersonation across our community, MIMI NI MKULIMA enforces the following mandatory criteria before permitting a username change:'}</p>
+      
+      <ul>
+        <li>
+          <span class="terms-rule-badge">⏳ ${isSw?'Kigezo cha 1: Umri wa Akaunti (Miezi 6)':'Criterion 1: Account Age (6 Months)'}</span><br>
+          <b>${isSw?'Akaunti lazima iwe imekaa angalau miezi 6 (siku 180) tangu kusajiliwa:':'Account must be at least 6 months (180 days) old since registration:'}</b>
+          ${isSw?'Akaunti mpya haziruhusiwi kubadilisha jina mara moja. Hii inasaidia kuzuia watu wanaofungua akaunti za muda mfupi kwa nia ya utapeli wa kibiashara au kukwepa wajibu.':'New accounts cannot change usernames immediately. This eliminates throwaway accounts used for commercial deception.'}
+        </li>
+        <li>
+          <span class="terms-rule-badge">⚡ ${isSw?'Kigezo cha 2: Utendaji Mfululizo (Wiki 2)':'Criterion 2: Consecutive Activity (2 Weeks)'}</span><br>
+          <b>${isSw?'Akaunti inapaswa kuwa hai na kutumika kwa angalau wiki mbili (siku 14) mfululizo kabla ya kuomba:':'Account must be actively used for at least two consecutive weeks (14 days) prior to request:'}</b>
+          ${isSw?'Mtumiaji anapaswa kuwa na rekodi ya utendaji wa kila siku kwenye app (kuingia, kusoma makala, kuwasiliana au kuchapisha maudhui) kwa siku 14 mfululizo bila kukosa ili kuthibitisha kuwa akaunti inatumiwa na binadamu halisi.':'The member must demonstrate steady activity within the application (logging in, consulting guides, messaging, or posting) across 14 consecutive days.'}
+        </li>
+        <li>
+          <span class="terms-rule-badge">🔒 ${isSw?'Kigezo cha 3: Muda wa Subira (Miezi 2)':'Criterion 3: Cooldown Period (2 Months)'}</span><br>
+          <b>${isSw?'Huwezi kubadilisha tena jina hadi miezi miwili (siku 60) ipite:':'No further changes permitted until 2 months (60 days) have elapsed:'}</b>
+          ${isSw?'Ukifanikiwa kubadilisha jina la akaunti, mfumo utafunga uwezo wa kubadilisha tena hadi siku 60 zitimie. Hii inalinda wateja na wafugaji/wakulima wanaofanya biashara na wewe wasipoteze mawasiliano na utambulisho wako.':'Once altered, the system locks username changes for 60 days so trading partners, farmers, and extension officers do not lose track of your identity.'}
+        </li>
+        <li>
+          <span class="terms-rule-badge">✉️ ${isSw?'Kigezo cha 4: Uhakiki Salama wa Barua Pepe (Brevo API)':'Criterion 4: Secure Email Verification (Brevo API)'}</span><br>
+          <b>${isSw?'Uthibitisho wa Nambari ya Siri (OTP) kupitia Barua Pepe:':'One-Time Verification Code (OTP) via Registered Email:'}</b>
+          ${isSw?'Pindi vigezo vyote vinapokamilika, mfumo utatuma nambari ya siri ya tarakimu 6 kwenye barua pepe uliyosajilia kupitia mfumo wetu salama wa Brevo ili kuhakikisha ni wewe mwenyewe mwenye akaunti unayefanya mabadiliko hayo.':'When all criteria are satisfied, a secure 6-digit verification code is delivered to your registered email via Brevo to verify that the change is legitimately authorized by you.'}
+        </li>
+      </ul>
+    </div>
+
+    <div class="terms-card">
+      <h3>${ic('leaf')} ${isSw?'2. Kanuni za Wataalamu na Ushauri wa Kilimo na Mifugo':'2. Guidelines for Agricultural &amp; Veterinary Specialists'}</h3>
+      <p>${isSw?'Wataalamu wote wa mazao (Crop Experts) na mifugo (Livestock Experts) wanapaswa kutoa ushauri wenye weledi na ushahidi wa kisayansi. Matumizi ya simu za video na sauti ndani ya app yapo kwa ajili ya kusaidia wakulima na kutatua changamoto halisi za shambani.':'All Crop Experts and Livestock Experts must uphold professional ethics and provide sound agricultural and veterinary guidance. In-app audio and video calls are intended for resolving genuine field and barn challenges.'}</p>
+    </div>
+
+    <div class="terms-card">
+      <h3>${ic('tag')} ${isSw?'3. Masharti ya Soko la Mazao na Mifugo (Marketplace)':'3. Marketplace &amp; Trade Terms'}</h3>
+      <p>${isSw?'Wakulima na wafugaji wanapaswa kuweka bei halisi za Kitanzania (TZS), maelezo sahihi ya wingi au idadi, na eneo halisi la shamba. Bidhaa bandia, mbegu zilizopitwa na wakati au madawa yasiyoidhinishwa ni marufuku kabisa.':'Sellers must list accurate pricing in Tanzanian Shillings (TZS), truthful quantities, and real farm locations. Counterfeit produce, expired seeds, or unapproved agrochemicals are strictly prohibited.'}</p>
+    </div>
+
+    <div class="terms-card">
+      <h3>${ic('lock')} ${isSw?'4. Usalama na Faragha ya Akaunti':'4. Account Security &amp; Privacy'}</h3>
+      <p>${isSw?'MIMI NI MKULIMA haitawahi kukuomba nenosiri lako au nambari yako ya uhakiki ya barua pepe. Tunza taarifa zako kwa siri. Ikiwa unaona shughuli yoyote isiyo ya kawaida, badilisha nenosiri lako mara moja kwa kutumia kiungo cha Forgot Password.':'MIMI NI MKULIMA will never ask for your password or verification codes. Keep your login credentials confidential. If you detect suspicious activity, reset your password immediately.'}</p>
+    </div>
+
+    <div style="text-align:center;margin:2rem 0">
+      <button class="btn" data-act="go" data-v="account">${ic('user')} ${isSw?'Rudi kwenye Akaunti Yangu':'Return to My Account'}</button>
+    </div>
+  </div>`;
+};
 
 /* ============ events ============ */
 document.addEventListener('click',e=>{const el=e.target.closest('[data-act]');if(!el)return;const f=ACT[el.dataset.act];if(f)f(el,e)});
