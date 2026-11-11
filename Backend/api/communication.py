@@ -200,9 +200,16 @@ def update_password_by_destination(channel: str, destination: str, password: str
     identity = destination.strip().lower() if channel == "email" else destination.strip()
     salt, digest = hash_password(password)
     with database() as conn:
-        account = conn.execute("SELECT id FROM comm_users WHERE email=? OR phone=?", (identity, identity)).fetchone()
+        account = conn.execute("SELECT id FROM comm_users WHERE lower(email)=lower(?) OR phone=?", (identity, identity)).fetchone()
         if account is None:
-            return None
+            # Create or synchronize user in comm_users
+            new_id = secrets.token_hex(12)
+            name_part = identity.split("@")[0].replace(".", " ").replace("_", " ").title() if "@" in identity else "Mkulima"
+            conn.execute(
+                "INSERT INTO comm_users (id, name, email, phone, role, password_salt, password_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                (new_id, name_part, identity if "@" in identity else "", identity if "@" not in identity else "", "farmer", salt, digest, int(time.time())),
+            )
+            return new_id
         cursor = conn.execute(
             "UPDATE comm_users SET password_salt=?, password_hash=? WHERE id=?",
             (salt, digest, account["id"]),

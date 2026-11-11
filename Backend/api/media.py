@@ -1,10 +1,18 @@
+import asyncio
+import os
 import re
+import uuid
+from pathlib import Path
 from urllib.parse import quote
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, HTTPException, Query, Request
 
 router = APIRouter()
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+UPLOAD_DIR = PROJECT_ROOT / "Assets" / "uploads"
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+
 @router.get("/images")
 async def search_images(q: str = Query(min_length=1, max_length=120)):
     query = q.strip()
@@ -75,3 +83,78 @@ async def search_images(q: str = Query(min_length=1, max_length=120)):
         ) from exc
 
     return {"results": results}
+
+
+@router.post("/upload")
+async def upload_file(
+    request: Request,
+    name: str = Query(default="media.mp4"),
+    start: float = Query(default=0.0),
+    end: float = Query(default=0.0),
+):
+    data = await request.body()
+    if not data:
+        raise HTTPException(status_code=400, detail="Hakuna faili lililopokelewa / No file data received.")
+
+    # 150 MB max
+    if len(data) > 150 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Faili linazidi 150MB / File exceeds 150MB limit.")
+
+    clean_name = re.sub(r"[^a-zA-Z0-9_.-]", "_", name)
+    ext = os.path.splitext(clean_name)[1].lower() or ".mp4"
+    raw_filename = f"raw_{uuid.uuid4().hex[:8]}_{clean_name}"
+    saved_filename = f"{uuid.uuid4().hex[:10]}_{clean_name}"
+
+    raw_path = UPLOAD_DIR / raw_filename
+    final_path = UPLOAD_DIR / saved_filename
+    raw_path.write_bytes(data)
+
+    # If trimming requested (max 10 minutes = 600s)
+    if end > start and ext in [".mp4", ".mov", ".webm", ".mkv", ".avi", ".m4v"]:
+        duration = end - start
+        if duration > 600.0:
+            end = start + 600.0
+
+        cmd = [
+            "ffmpeg",
+            "-y",
+            "-ss",
+            f"{max(0.0, start):.2f}",
+            "-to",
+            f"{end:.2f}",
+            "-i",
+            str(raw_path),
+            "-c:v",
+            "libx264",
+            "-preset",
+            "ultrafast",
+            "-c:a",
+            "aac",
+            "-movflags",
+            "+faststart",
+            str(final_path),
+        ]
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            await proc.communicate()
+            if final_path.exists() and final_path.stat().st_size > 0:
+                raw_path.unlink(missing_ok=True)
+            else:
+                raw_path.rename(final_path)
+        except Exception:
+            raw_path.rename(final_path)
+    else:
+        raw_path.rename(final_path)
+
+    url = f"/Assets/uploads/{saved_filename}"
+    return {
+        "url": url,
+        "filename": saved_filename,
+        "size": final_path.stat().st_size if final_path.exists() else len(data),
+    }
+
+

@@ -254,6 +254,184 @@ label.lab{display:grid;gap:.3rem;font-size:.85rem;color:var(--muted);font-weight
 .feed::-webkit-scrollbar{display:none}
 .post{width:min(100%,54rem);height:min(48rem,max(26rem,calc(100vh - 13rem)));height:min(48rem,max(26rem,calc(100dvh - 13rem)));position:relative;scroll-snap-align:start;scroll-snap-stop:always;overflow:hidden;background:#111;margin:0 auto .75rem;border-radius:12px}
 .pm{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* tiktok style stream video */
+.tiktok-video-box{position:absolute;inset:0;width:100%;height:100%;display:grid;place-items:center;cursor:pointer;user-select:none;background:#000;overflow:hidden}
+.tiktok-video-box video{width:100%;height:100%;object-fit:cover}
+.tiktok-center-icon{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:3;opacity:0;transition:opacity .2s ease, transform .2s ease;transform:scale(0.85)}
+.tiktok-center-icon.visible{opacity:1;transform:scale(1)}
+.tiktok-play-disc{width:4.5rem;height:4.5rem;border-radius:50%;background:rgba(0,0,0,.52);backdrop-filter:blur(6px);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.5);border:1.5px solid rgba(255,255,255,.3)}
+.tiktok-play-disc svg{width:2.2rem;height:2.2rem;fill:#fff;margin-left:3px}
+.tiktok-mute-btn{position:absolute;top:1rem;right:1rem;z-index:5;width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(0,0,0,.55);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.25);color:#fff;display:grid;place-items:center;cursor:pointer;padding:0;transition:transform .15s}
+.tiktok-mute-btn:hover{transform:scale(1.08)}
+.tiktok-mute-btn svg{width:1.25rem;height:1.25rem;fill:currentColor}
+.tiktok-bar{position:absolute;bottom:0;left:0;right:0;height:5px;background:rgba(255,255,255,.25);z-index:5;cursor:pointer}
+.tiktok-bar:hover{height:7px}
+.tiktok-progress{height:100%;background:var(--lime,#22c55e);width:0%;transition:width .1s linear}
+
+/* tiktok text overlay & badges */
+.tiktok-text-badge{position:absolute;left:50%;transform:translateX(-50%);z-index:4;padding:.35rem .9rem;border-radius:8px;font-size:1.05rem;font-weight:800;letter-spacing:.02em;text-align:center;max-width:85%;text-wrap:balance;pointer-events:none;transition:all .2s ease}
+.tiktok-text-badge.top{top:1.2rem}
+.tiktok-text-badge.center{top:50%;transform:translate(-50%,-50%)}
+.tiktok-text-badge.bottom{bottom:4.6rem}
+.badge-dark{background:rgba(0,0,0,.75);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(6px)}
+.badge-green{background:#15803d;color:#fff;box-shadow:0 4px 14px rgba(21,128,61,.45)}
+.badge-yellow{background:#facc15;color:#000;box-shadow:0 4px 14px rgba(250,204,21,.45)}
+.badge-red{background:#dc2626;color:#fff;box-shadow:0 4px 14px rgba(220,38,38,.45)}
+.badge-glass{background:rgba(255,255,255,.3);color:#fff;backdrop-filter:blur(8px);border:1.5px solid #fff;text-shadow:0 2px 5px rgba(0,0,0,.85)}
+
+/* ============ Agro Studio Pro Full Version Styles ============ */
+.agro-studio-fullscreen, .capcut-studio-fullscreen{position:fixed;inset:0;width:100vw;height:100vh;height:100dvh;z-index:9999;background:#090b0e;color:#fff;display:grid;grid-template-rows:auto 1fr auto auto;user-select:none;font-family:var(--font-sans,system-ui);overflow:hidden}
+.agro-studio, .capcut-studio{display:flex;flex-direction:column;background:#0d0f12;color:#fff;border-radius:16px;overflow:hidden;max-height:92vh;max-height:92dvh;user-select:none;font-family:var(--font-sans,system-ui)}
+
+/* Agro Review Screen Modal */
+.agro-review-modal{display:grid;gap:.85rem;color:#fff;font-family:var(--font-sans,system-ui)}
+.agro-review-stage{position:relative;width:100%;max-width:340px;height:380px;background:#000;border-radius:12px;overflow:hidden;margin:0 auto;display:grid;place-items:center;box-shadow:0 12px 35px rgba(0,0,0,.85)}
+.agro-review-meta{display:flex;flex-wrap:wrap;gap:.35rem;align-items:center;justify-content:center}
+.agro-review-meta .pill{font-size:.73rem;padding:.2rem .6rem}
+.agro-review-actions{display:flex;gap:.6rem;align-items:center;margin-top:.4rem}
+.agro-review-actions .btn{flex:1;font-weight:800;font-size:.86rem;padding:.6rem 1rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.agro-review-actions .btn-post{background:linear-gradient(135deg,#22c55e,#10b981);color:#080d0a;box-shadow:0 4px 14px rgba(34,197,94,.4)}
+
+.cc-topbar{display:flex;align-items:center;justify-content:space-between;padding:.55rem .9rem;background:#14171f;border-bottom:1px solid rgba(255,255,255,.09);z-index:10;gap:.6rem;flex-wrap:wrap}
+.cc-brand{display:flex;align-items:center;gap:.45rem;font-weight:800;font-size:.9rem;letter-spacing:.02em}
+.cc-brand-pro{display:inline-flex;align-items:center;gap:.35rem;font-weight:900;font-size:.92rem;letter-spacing:.02em;background:linear-gradient(90deg,#00f2fe,#4facfe);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cc-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:.15rem .45rem;font-size:.68rem;font-weight:700;color:#00f2fe}
+.cc-badge-gold{background:rgba(250,204,21,.15);border:1px solid rgba(250,204,21,.35);border-radius:6px;padding:.15rem .45rem;font-size:.68rem;font-weight:800;color:#facc15}
+.cc-res-select{background:#1e2430;border:1px solid rgba(255,255,255,.16);color:#fff;border-radius:6px;padding:.2rem .4rem;font-size:.72rem;font-weight:700;cursor:pointer}
+.cc-export-btn{background:linear-gradient(135deg,#22c55e,#10b981);color:#080d0a;font-weight:800;font-size:.82rem;padding:.38rem 1.1rem;border-radius:999px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;box-shadow:0 3px 12px rgba(34,197,94,.4);transition:transform .15s}
+.cc-export-btn:hover{transform:scale(1.04)}
+
+/* Canvas stage */
+.cc-stage{position:relative;flex:1;min-height:200px;background:radial-gradient(circle at center,#151922 0%,#090b0e 100%);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:.5rem}
+.cc-canvas-box{position:relative;background:#000;overflow:hidden;border-radius:12px;box-shadow:0 12px 35px rgba(0,0,0,.85);display:grid;place-items:center;transition:width .25s ease, height .25s ease, aspect-ratio .25s ease}
+.cc-canvas-box.ratio-9-16{width:min(210px,46vw);aspect-ratio:9/16;height:340px}
+.cc-canvas-box.ratio-1-1{width:270px;height:270px;aspect-ratio:1/1}
+.cc-canvas-box.ratio-16-9{width:340px;height:192px;aspect-ratio:16/9}
+.cc-canvas-box.ratio-4-5{width:250px;height:312px;aspect-ratio:4/5}
+.cc-canvas-box.ratio-21-9{width:360px;height:154px;aspect-ratio:21/9}
+.cc-media{width:100%;height:100%;object-fit:cover;transition:filter .1s, transform .2s}
+
+/* Safe Area Guides Overlay */
+.cc-safe-area{position:absolute;inset:12% 8% 18% 8%;border:1px dashed rgba(255,255,255,.32);pointer-events:none;border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;padding:.3rem;font-size:.6rem;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.05em;z-index:4}
+
+/* Timecode HUD */
+.cc-timecode-hud{position:absolute;top:.65rem;left:.65rem;z-index:5;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);border:1px solid rgba(255,255,255,.18);border-radius:6px;padding:.2rem .5rem;font-family:monospace;font-size:.72rem;font-weight:700;color:#00f2fe;pointer-events:none}
+
+/* Floating stickers & text on canvas */
+.cc-sticker-overlay{position:absolute;font-size:2.2rem;z-index:5;cursor:move;filter:drop-shadow(0 3px 8px rgba(0,0,0,.6));transition:transform .15s}
+.cc-sticker-overlay.top-right{top:.8rem;right:.8rem}
+.cc-sticker-overlay.top-left{top:.8rem;left:.8rem}
+.cc-sticker-overlay.center{top:50%;left:50%;transform:translate(-50%,-50%)}
+.cc-sticker-overlay.bottom-right{bottom:.8rem;right:.8rem}
+.cc-sticker-overlay.bottom-left{bottom:.8rem;left:.8rem}
+
+/* Typography font classes */
+.font-system{font-family:system-ui,-apple-system,sans-serif}
+.font-impact{font-family:Impact,Haettenschweiler,sans-serif;letter-spacing:.04em;text-transform:uppercase}
+.font-script{font-family:cursive,serif;font-style:italic}
+.font-grotesk{font-family:'Trebuchet MS',sans-serif;letter-spacing:.02em}
+.font-serif{font-family:Georgia,serif}
+.font-rounded{font-family:'Arial Rounded MT Bold',system-ui,sans-serif}
+
+/* Play button overlay */
+.cc-play-overlay{position:absolute;inset:0;display:grid;place-items:center;cursor:pointer;background:rgba(0,0,0,.2);transition:opacity .2s;z-index:4}
+.cc-play-overlay.playing{opacity:0;pointer-events:none}
+.cc-play-overlay span{width:3.4rem;height:3.4rem;border-radius:50%;background:rgba(0,0,0,.72);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.45);display:grid;place-items:center;box-shadow:0 6px 20px rgba(0,0,0,.5)}
+.cc-play-overlay svg{width:1.6rem;height:1.6rem;fill:#fff;margin-left:2px}
+
+/* CapCut Timeline Pro */
+.cc-timeline-area{background:#12151c;border-top:1px solid rgba(255,255,255,.08);padding:.4rem .8rem .3rem;display:grid;gap:.35rem}
+.cc-tl-toolbar{display:flex;align-items:center;justify-content:space-between;gap:.4rem;padding:.15rem .2rem;border-bottom:1px solid rgba(255,255,255,.06);font-size:.74rem}
+.cc-tl-tools{display:flex;align-items:center;gap:.35rem;overflow-x:auto;scrollbar-width:none}
+.cc-tl-tools::-webkit-scrollbar{display:none}
+.cc-tl-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:6px;padding:.2rem .48rem;font-size:.72rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.25rem;transition:all .15s;white-space:nowrap}
+.cc-tl-btn:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.25)}
+.cc-tl-btn.active{background:#00f2fe;color:#080d0a;border-color:#00f2fe}
+
+.cc-time-ruler{display:flex;justify-content:space-between;color:rgba(255,255,255,.45);font-size:.68rem;font-weight:600;padding:0 .2rem}
+.cc-track-wrapper{position:relative;background:#1a1e27;border-radius:8px;padding:.3rem .4rem;display:grid;gap:.3rem}
+.cc-track-strip{position:relative;height:42px;background:#242a36;border-radius:6px;overflow:hidden;border:2px solid #facc15;cursor:pointer}
+.cc-strip-fill{position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(250,204,21,.16) 0,rgba(250,204,21,.16) 8px,#242a36 8px,#242a36 16px)}
+.cc-playhead-line{position:absolute;top:0;bottom:0;width:2px;background:#ef4444;z-index:6;pointer-events:none}
+.cc-playhead-line::before{content:"";position:absolute;top:-5px;left:-5px;width:12px;height:12px;border-radius:50%;background:#ef4444;box-shadow:0 0 8px rgba(239,68,68,.9)}
+.cc-trim-slider-wrap{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;align-items:center;font-size:.74rem}
+.cc-trim-slider-wrap input[type=range]{accent-color:#facc15;cursor:pointer}
+
+/* Secondary Multi-Tracks (Video, Text, Stickers, Effects, Audio) */
+.cc-mini-tracks{display:flex;gap:.35rem;overflow-x:auto;padding:.15rem 0;scrollbar-width:none}
+.cc-mini-tracks::-webkit-scrollbar{display:none}
+.cc-mini-track{font-size:.68rem;padding:.2rem .5rem;border-radius:5px;background:#212733;color:rgba(255,255,255,.85);white-space:nowrap;display:inline-flex;align-items:center;gap:.3rem;border:1px solid rgba(255,255,255,.08)}
+.cc-mini-track.track-video{border-color:rgba(250,204,21,.4);color:#facc15}
+.cc-mini-track.track-text{border-color:rgba(0,242,254,.4);color:#00f2fe}
+.cc-mini-track.track-sticker{border-color:rgba(236,72,153,.4);color:#ec4899}
+.cc-mini-track.track-audio{border-color:rgba(34,197,94,.4);color:#22c55e}
+.cc-mini-track.track-vfx{border-color:rgba(168,85,247,.4);color:#c084fc}
+
+/* CapCut Tool Ribbon (Tabs) */
+.cc-tools-ribbon{display:flex;gap:.25rem;overflow-x:auto;padding:.4rem .6rem;background:#14171f;border-top:1px solid rgba(255,255,255,.09);scrollbar-width:none}
+.cc-tools-ribbon::-webkit-scrollbar{display:none}
+.cc-tool-tab{flex:none;display:grid;place-items:center;gap:.15rem;padding:.35rem .65rem;border-radius:8px;font-size:.7rem;font-weight:700;color:rgba(255,255,255,.65);background:transparent;border:none;cursor:pointer;transition:all .15s}
+.cc-tool-tab:hover{color:#fff;background:rgba(255,255,255,.06)}
+.cc-tool-tab.active{color:#00f2fe;background:rgba(0,242,254,.14);box-shadow:inset 0 0 10px rgba(0,242,254,.1)}
+.cc-tool-tab svg{width:1.25rem;height:1.25rem;fill:currentColor}
+
+/* CapCut Sub-Panel for Active Tool */
+.cc-subpanel{background:#191d26;padding:.65rem .85rem;max-height:165px;overflow-y:auto;display:grid;gap:.5rem;border-top:1px solid rgba(255,255,255,.06)}
+.cc-subpanel-title{font-size:.73rem;font-weight:800;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.05em}
+.cc-row-controls{display:flex;gap:.4rem;align-items:center;overflow-x:auto;scrollbar-width:none}
+.cc-row-controls::-webkit-scrollbar{display:none}
+.cc-btn-pill{flex:none;padding:.3rem .7rem;border-radius:999px;font-size:.74rem;font-weight:700;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.06);color:#fff;cursor:pointer;transition:all .15s}
+.cc-btn-pill.active{background:#00f2fe;color:#080d0a;border-color:#00f2fe;box-shadow:0 2px 8px rgba(0,242,254,.3)}
+.cc-btn-pill:hover:not(.active){background:rgba(255,255,255,.12)}
+
+/* Sliders inside subpanel */
+.cc-slider-row{display:grid;grid-template-columns:5.5rem 1fr 3rem;align-items:center;gap:.5rem;font-size:.75rem}
+.cc-slider-row input[type=range]{accent-color:#00f2fe;cursor:pointer}
+
+/* SFX Sound bank button */
+.cc-sfx-btn{background:#232a38;border:1px solid rgba(255,255,255,.12);color:#fff;border-radius:8px;padding:.4rem .7rem;font-size:.74rem;font-weight:700;display:inline-flex;align-items:center;gap:.35rem;cursor:pointer;transition:transform .12s,background .12s}
+.cc-sfx-btn:hover{background:#2e3748;transform:scale(1.03)}
+.cc-sfx-btn:active{transform:scale(0.97)}
+
+/* Video effects animation classes */
+@keyframes ccZoomPulse { 0%{transform:scale(1)} 50%{transform:scale(1.07)} 100%{transform:scale(1)} }
+@keyframes ccShake { 0%{transform:translate(0,0)} 20%{transform:translate(-3px,2px)} 40%{transform:translate(3px,-2px)} 60%{transform:translate(-2px,1px)} 80%{transform:translate(2px,1px)} 100%{transform:translate(0,0)} }
+@keyframes ccFlashGlow { 0%{filter:brightness(1)} 50%{filter:brightness(1.6) contrast(1.25)} 100%{filter:brightness(1)} }
+@keyframes ccGlitch { 0%{transform:translate(0,0)} 25%{transform:translate(-4px,-1px) skewX(3deg)} 50%{transform:translate(3px,1px) skewX(-3deg)} 75%{transform:translate(-2px,2px)} 100%{transform:translate(0,0)} }
+@keyframes ccFilmGrain { 0%{filter:contrast(1.1) brightness(0.98)} 50%{filter:contrast(1.25) brightness(1.04) sepia(0.2)} 100%{filter:contrast(1.1) brightness(0.98)} }
+@keyframes ccRgbSplit { 0%{filter:drop-shadow(2px 0 0 rgba(255,0,0,.6)) drop-shadow(-2px 0 0 rgba(0,255,255,.6))} 50%{filter:drop-shadow(-2px 0 0 rgba(255,0,0,.6)) drop-shadow(2px 0 0 rgba(0,255,255,.6))} 100%{filter:drop-shadow(2px 0 0 rgba(255,0,0,.6)) drop-shadow(-2px 0 0 rgba(0,255,255,.6))} }
+@keyframes ccNeonPulse { 0%{filter:drop-shadow(0 0 5px rgba(0,242,254,.7))} 50%{filter:drop-shadow(0 0 16px rgba(0,242,254,1))} 100%{filter:drop-shadow(0 0 5px rgba(0,242,254,.7))} }
+
+.fx-zoom{animation:ccZoomPulse 2.8s infinite ease-in-out}
+.fx-shake{animation:ccShake .45s infinite ease-in-out}
+.fx-flash{animation:ccFlashGlow 1.8s infinite ease-in-out}
+.fx-glitch{animation:ccGlitch .75s infinite ease-in-out}
+.fx-grain{animation:ccFilmGrain 1s infinite steps(2)}
+.fx-rgb{animation:ccRgbSplit 1.2s infinite ease-in-out}
+.fx-neon{animation:ccNeonPulse 2s infinite ease-in-out}
+
+
+/* tiktok style video editor modal */
+.v-editor{display:grid;gap:1rem;color:var(--text)}
+.v-editor-preview{position:relative;width:100%;max-width:320px;height:280px;background:#000;border-radius:12px;overflow:hidden;margin:0 auto;display:grid;place-items:center}
+.v-editor-preview video{width:100%;height:100%;object-fit:contain}
+.v-editor-play-btn{position:absolute;inset:0;display:grid;place-items:center;cursor:pointer;background:rgba(0,0,0,.25);transition:opacity .2s;z-index:3}
+.v-editor-play-btn.playing{opacity:0}
+.v-editor-play-btn:hover{opacity:1}
+.v-editor-play-btn span{width:3.2rem;height:3.2rem;border-radius:50%;background:rgba(0,0,0,.65);display:grid;place-items:center;border:1.5px solid rgba(255,255,255,.4)}
+.v-editor-play-btn svg{width:1.6rem;height:1.6rem;fill:#fff;margin-left:2px}
+.v-trim-box{background:var(--raised);border:1px solid var(--border);border-radius:10px;padding:.8rem .9rem;display:grid;gap:.6rem}
+.v-trim-header{display:flex;justify-content:space-between;align-items:center;font-size:.85rem;font-weight:700}
+.v-trim-sliders{display:grid;gap:.5rem}
+.v-trim-row{display:grid;grid-template-columns:5.5rem 1fr 3.5rem;align-items:center;gap:.6rem;font-size:.8rem}
+.v-trim-row input[type=range]{accent-color:var(--lime);cursor:pointer}
+.v-chips{display:flex;gap:.4rem;overflow-x:auto;padding-bottom:.2rem;scrollbar-width:none}
+.v-chips::-webkit-scrollbar{display:none}
+.v-chip{flex:none;padding:.3rem .7rem;border-radius:999px;font-size:.78rem;font-weight:600;border:1px solid var(--border);background:var(--raised);color:var(--text);cursor:pointer;transition:all .15s}
+.v-chip.on{background:var(--lime);color:#080d0a;border-color:var(--lime)}
+
+
 .textcard{display:grid;place-items:center;padding:4.5rem 4.5rem 7rem 1.6rem}
 .textcard p{font:800 clamp(1.5rem,5vw,2.4rem)/1.15 var(--font-display);letter-spacing:-.01em;max-width:18ch;text-wrap:balance}
 .post::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;background:linear-gradient(transparent,rgba(0,0,0,.72));pointer-events:none}
@@ -366,3 +544,121 @@ label.lab{display:grid;gap:.3rem;font-size:.85rem;color:var(--muted);font-weight
 .terms-card ul{padding-left:1.3rem;margin:.5rem 0}
 .terms-card li{margin-bottom:.7rem}
 .terms-rule-badge{background:var(--raised);padding:.2rem .6rem;border-radius:6px;font-weight:700;font-size:.8rem;color:var(--acc);display:inline-block;margin-bottom:.3rem}
+
+/* ============ WhatsApp-Style Chat Enhancements ============ */
+.m-sticker{background:transparent!important;border:none!important;padding:0!important;box-shadow:none!important}
+.m-sticker .stk-emoji{font-size:3.5rem;line-height:1;display:inline-block;filter:drop-shadow(0 2px 5px rgba(0,0,0,.2))}
+.m-sticker img{max-width:140px;max-height:140px;border-radius:12px;background:transparent}
+
+/* WhatsApp Circular Video Note */
+.video-note-bubble{position:relative;width:170px;height:170px;border-radius:50%;overflow:hidden;border:3px solid #22c55e;box-shadow:0 6px 20px rgba(0,0,0,.35);background:#000;cursor:pointer;margin:.2rem 0}
+.video-note-bubble video{width:100%;height:100%;object-fit:cover}
+.video-note-badge{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;backdrop-filter:blur(4px);pointer-events:none;white-space:nowrap}
+
+/* WhatsApp Voice Note Bubble */
+.voice-note-box{display:flex;align-items:center;gap:.6rem;min-width:180px;padding:.2rem 0}
+.vn-play-btn{width:2.4rem;height:2.4rem;border-radius:50%;background:#22c55e;color:#080d0a;display:grid;place-items:center;border:none;cursor:pointer;flex:none}
+.vn-waveform{flex:1;height:20px;display:flex;align-items:center;gap:2px}
+.vn-bar{width:3px;height:10px;background:currentColor;opacity:.5;border-radius:2px}
+.vn-bar.act{opacity:1;background:#22c55e}
+
+/* WhatsApp Message Reaction Bar */
+.reaction-bar{position:absolute;bottom:100%;left:0;margin-bottom:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.2rem .45rem;display:flex;align-items:center;gap:.3rem;box-shadow:0 8px 24px rgba(0,0,0,.3);z-index:10}
+.reaction-btn{background:transparent;border:none;font-size:1.3rem;cursor:pointer;padding:.15rem .25rem;border-radius:50%;transition:transform .15s}
+.reaction-btn:hover{transform:scale(1.25)}
+.m{position:relative}
+.m-reactions{position:absolute;bottom:-8px;right:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.1rem .35rem;font-size:.72rem;display:inline-flex;align-items:center;gap:.2rem;box-shadow:0 2px 6px rgba(0,0,0,.2);cursor:pointer;z-index:2}
+
+/* WhatsApp Sticker & Emoji Picker Row */
+.wa-picker-tabs{display:flex;border-bottom:1px solid var(--line);background:var(--surface);padding:0 .5rem}
+.wa-picker-tab{flex:1;padding:.5rem;text-align:center;font-weight:700;font-size:.8rem;background:none;border:none;color:var(--muted);cursor:pointer}
+.wa-picker-tab.active{color:var(--acc);border-bottom:2px solid var(--acc)}
+.stickers-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.6rem;padding:.7rem;max-height:180px;overflow-y:auto}
+.stk-btn{font-size:2rem;background:none;border:none;cursor:pointer;padding:.2rem;border-radius:8px;transition:transform .12s}
+.stk-btn:hover{transform:scale(1.18);background:rgba(255,255,255,.08)}
+
+/* WhatsApp Status Fullscreen Viewer */
+.wa-status-viewer{position:fixed;inset:0;z-index:9999;background:#000;color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:1rem .8rem calc(1.5rem + env(safe-area-inset-bottom,0px));user-select:none}
+.wa-status-progress{display:flex;gap:4px;width:100%;padding:0 .2rem .6rem}
+.wa-progress-segment{flex:1;height:3px;background:rgba(255,255,255,.3);border-radius:2px;overflow:hidden}
+.wa-progress-fill{width:0%;height:100%;background:#fff;transition:width .1s linear}
+.wa-status-header{display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:0 .2rem;z-index:2}
+.wa-status-body{position:relative;flex:1;display:grid;place-items:center;overflow:hidden;margin:.6rem 0}
+.wa-status-body img,.wa-status-body video{max-width:100%;max-height:78vh;object-fit:contain;border-radius:8px}
+.wa-status-body p{font:800 clamp(1.4rem,5vw,2.2rem)/1.2 var(--font-display);text-align:center;padding:1rem;text-wrap:balance}
+.wa-status-footer{display:flex;align-items:center;justify-content:space-between;padding:0 .4rem;z-index:2}
+.wa-views-pill{background:rgba(255,255,255,.2);backdrop-filter:blur(8px);border-radius:999px;padding:.3rem .9rem;font-size:.8rem;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:.4rem}
+.wa-delete-btn{background:rgba(239,68,68,.3);color:#fca5a5;border:1px solid rgba(239,68,68,.4);border-radius:999px;padding:.3rem .8rem;font-size:.8rem;font-weight:700;cursor:pointer}
+
+/* Calling Controls HUD */
+.call-timer-hud{font-family:monospace;font-size:.95rem;opacity:.85;margin-top:.2rem}
+.call-ctrl-row{display:flex;gap:1.2rem;align-items:center;justify-content:center;margin-top:1.2rem}
+.call-ctrl-btn{width:3.3rem;height:3.3rem;border-radius:50%;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);color:#fff;display:grid;place-items:center;cursor:pointer;transition:all .15s}
+.call-ctrl-btn.active{background:#fff;color:#080d0a}
+
+/* ============ WhatsApp Full Media / Status Studio Editor ============ */
+.wa-editor-overlay{position:fixed;inset:0;z-index:10000;background:#0b141a;color:#fff;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;user-select:none}
+.wa-ed-top{display:flex;align-items:center;justify-content:space-between;padding:.6rem .8rem;background:linear-gradient(180deg,rgba(0,0,0,.75) 0%,transparent 100%);z-index:10}
+.wa-ed-tools{display:flex;align-items:center;gap:.5rem}
+.wa-tool-btn{width:2.4rem;height:2.4rem;border-radius:50%;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);color:#fff;display:grid;place-items:center;cursor:pointer;transition:transform .12s,background .12s}
+.wa-tool-btn:hover{background:rgba(255,255,255,.2);transform:scale(1.08)}
+.wa-tool-btn.active{background:#25d366;color:#0b141a;border-color:#25d366}
+
+/* WhatsApp Trimmer Bar */
+.wa-trimmer-wrap{padding:.3rem .8rem;background:rgba(0,0,0,.6);z-index:10;display:flex;flex-direction:column;gap:.3rem}
+.wa-trimmer-info{display:flex;justify-content:space-between;font-size:.75rem;font-weight:700;color:rgba(255,255,255,.85)}
+.wa-trimmer-track{position:relative;height:32px;background:#1e293b;border-radius:6px;overflow:hidden;display:flex;align-items:center}
+.wa-filmstrip{display:flex;width:100%;height:100%;opacity:.45}
+.wa-frame-box{flex:1;border-right:1px solid rgba(255,255,255,.2);background:linear-gradient(45deg,#064e3b,#022c22)}
+.wa-trim-range{position:absolute;top:0;bottom:0;border:3px solid #25d366;background:rgba(37,211,102,.12);border-radius:6px;pointer-events:none}
+
+/* Stage / Preview Area */
+.wa-ed-stage{position:relative;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.wa-ed-stage video,.wa-ed-stage img{max-width:100%;max-height:100%;object-fit:contain}
+.wa-draw-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:5;touch-action:none}
+.wa-stage-overlay{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:hidden}
+.wa-overlay-text-item{position:absolute;transform:translate(-50%,-50%);font-weight:800;font-size:1.6rem;padding:.3rem .8rem;border-radius:8px;pointer-events:auto;cursor:move;text-shadow:0 2px 6px rgba(0,0,0,.8);white-space:nowrap}
+.wa-overlay-sticker-item{position:absolute;transform:translate(-50%,-50%);font-size:3.5rem;pointer-events:auto;cursor:move;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+
+/* Music Badge in Editor & Viewer */
+.wa-music-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(37,211,102,.2);border:1px solid #25d366;color:#86efac;font-size:.78rem;font-weight:700;padding:.25rem .7rem;border-radius:999px;backdrop-filter:blur(6px);animation:waPulse 2s infinite}
+@keyframes waPulse{0%,100%{box-shadow:0 0 0 rgba(37,211,102,0)}50%{box-shadow:0 0 12px rgba(37,211,102,.4)}}
+.wa-disc-spin{display:inline-block;animation:waSpin 4s linear infinite}
+@keyframes waSpin{100%{transform:rotate(360deg)}}
+
+/* WhatsApp Bottom Bar */
+.wa-ed-bottom{padding:.6rem .8rem calc(.8rem + env(safe-area-inset-bottom,0px));background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 100%);z-index:10;display:flex;flex-direction:column;gap:.6rem}
+.wa-caption-row{display:flex;align-items:center;gap:.5rem}
+.wa-caption-input{flex:1;background:rgba(30,41,59,.8);border:1px solid rgba(255,255,255,.15);border-radius:999px;padding:.65rem 1.1rem;color:#fff;font-size:.92rem;outline:none}
+.wa-caption-input:focus{border-color:#25d366}
+.wa-send-fab{width:3.4rem;height:3.4rem;border-radius:50%;background:#25d366;border:none;color:#0b141a;display:grid;place-items:center;cursor:pointer;flex:none;box-shadow:0 4px 16px rgba(37,211,102,.4);transition:transform .12s}
+.wa-send-fab:hover{transform:scale(1.08)}
+.wa-privacy-row{display:flex;align-items:center;justify-content:space-between;font-size:.78rem;color:rgba(255,255,255,.75);padding:0 .4rem}
+.wa-privacy-pill{display:inline-flex;align-items:center;gap:.3rem;background:rgba(255,255,255,.12);padding:.2rem .6rem;border-radius:999px;cursor:pointer}
+
+/* WhatsApp Music Picker Sheet */
+.wa-music-list{display:flex;flex-direction:column;gap:.5rem;max-height:320px;overflow-y:auto;padding:.4rem 0}
+.wa-music-item{display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;border-radius:12px;background:var(--surface);border:1px solid var(--line);cursor:pointer;transition:background .15s}
+.wa-music-item:hover{background:var(--raised)}
+.wa-music-play-btn{width:2.2rem;height:2.2rem;border-radius:50%;background:#25d366;color:#0b141a;border:none;display:grid;place-items:center;cursor:pointer;flex:none}
+
+/* WhatsApp Status Tab FABs */
+.wa-status-fabs{position:fixed;bottom:calc(4.5rem + env(safe-area-inset-bottom,0px));right:1.2rem;display:flex;flex-direction:column;align-items:center;gap:.8rem;z-index:90}
+.wa-fab-pen{width:2.8rem;height:2.8rem;border-radius:50%;background:var(--surface);border:1px solid var(--line);color:var(--text);display:grid;place-items:center;box-shadow:0 4px 12px rgba(0,0,0,.3);cursor:pointer;transition:transform .12s}
+.wa-fab-cam{width:3.4rem;height:3.4rem;border-radius:50%;background:#25d366;border:none;color:#0b141a;display:grid;place-items:center;box-shadow:0 6px 18px rgba(37,211,102,.45);cursor:pointer;transition:transform .12s}
+.wa-fab-pen:hover,.wa-fab-cam:hover{transform:scale(1.1)}
+
+/* Quick Reaction Bar in Status Viewer */
+.wa-status-rx-row{display:flex;align-items:center;gap:.5rem;overflow-x:auto;padding:.4rem 0}
+.wa-status-rx-btn{font-size:1.4rem;background:rgba(255,255,255,.15);border:none;border-radius:50%;width:2.5rem;height:2.5rem;display:grid;place-items:center;cursor:pointer;transition:transform .12s}
+.wa-status-rx-btn:hover{transform:scale(1.25);background:rgba(255,255,255,.3)}
+
+/* Interactive Professional Overlays & Trimmer Controls */
+.wa-quick-trim-btn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:999px;padding:.2rem .6rem;font-size:.72rem;font-weight:700;cursor:pointer;transition:background .15s}
+.wa-quick-trim-btn:hover,.wa-quick-trim-btn.active{background:#25d366;color:#0b141a;border-color:#25d366}
+.wa-doodle-bar{display:flex;align-items:center;justify-content:center;gap:.6rem;padding:.4rem .8rem;background:rgba(0,0,0,.7);z-index:10}
+.wa-color-dot{width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid transparent;cursor:pointer;transition:transform .12s}
+.wa-color-dot:hover,.wa-color-dot.active{transform:scale(1.3);border-color:#fff}
+.wa-overlay-del-btn{position:absolute;top:-8px;right:-8px;width:1.2rem;height:1.2rem;border-radius:50%;background:#ef4444;color:#fff;display:grid;place-items:center;font-size:.65rem;font-weight:900;cursor:pointer;border:1px solid #fff;box-shadow:0 2px 4px rgba(0,0,0,.4)}
+.wa-filter-chip{padding:.25rem .7rem;border-radius:999px;font-size:.75rem;font-weight:700;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;cursor:pointer;white-space:nowrap}
+.wa-filter-chip.active{background:#25d366;color:#0b141a;border-color:#25d366}

@@ -23,8 +23,8 @@ logger = logging.getLogger(__name__)
 
 OTP_TTL_SECONDS = 600
 OTP_MAX_ATTEMPTS = 5
-OTP_SEND_LIMIT = 5
-OTP_IP_SEND_LIMIT = 15
+OTP_SEND_LIMIT = 10
+OTP_IP_SEND_LIMIT = 30
 OTP_SEND_WINDOW_SECONDS = 3600
 OTP_SECRET = secrets.token_bytes(32)
 
@@ -46,7 +46,7 @@ class VerificationConfirmation(BaseModel):
 
 class PasswordResetCompletion(BaseModel):
     reset_token: str = Field(min_length=30, max_length=100)
-    new_password: str = Field(min_length=8, max_length=100)
+    new_password: str = Field(min_length=6, max_length=100)
 
 
 class UsernameChangeRequest(BaseModel):
