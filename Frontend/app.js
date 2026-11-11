@@ -564,8 +564,203 @@ const I18N = {
     perm_camera_disabled: 'Ruhusa ya kamera imezimwa kwenye Mipangilio.',
     perm_mic_disabled: 'Ruhusa ya maikrofoni imezimwa kwenye Mipangilio.',
     audio_unsupported: 'Kurekodi sauti hakupatikani kwenye kivinjari hiki.'
+  },
+  fr: {
+    nav_home: 'Accueil',
+    nav_account: 'Compte',
+    nav_chat: 'Discussion',
+    nav_stream: 'Stream',
+    nav_about: 'À propos',
+    nav_settings: 'Paramètres',
+    brand_sub: 'Cultiver et Élever Ensemble',
+    hello_back: 'Bon retour',
+    hello_guest: 'Bienvenue à la ferme',
+    home_lede: 'Apprenez, posez des questions et connectez-vous avec les agriculteurs et éleveurs.',
+    door_grow_t: 'AGRICULTURE',
+    door_grow_s: 'Cultiver Ensemble',
+    door_grow_c1: 'Apprendre l’Agriculture',
+    door_grow_c2: 'Parler à un Expert',
+    door_grow_c3: 'Discuter avec l’IA',
+    door_grow_c4: 'Ma Ferme',
+    door_raise_t: 'ÉLEVAGE',
+    door_raise_s: 'Élever Ensemble',
+    door_raise_c1: 'Apprendre l’Élevage',
+    door_raise_c2: 'Parler à un Expert',
+    door_raise_c3: 'Discuter avec l’IA',
+    door_raise_c4: 'Mon Étable',
+    tab_learn: 'Apprendre',
+    tab_expert: 'Parler à un Expert',
+    tab_ai: 'Agro IA',
+    tab_my_farm: 'Ma Ferme',
+    tab_my_barn: 'Mon Étable',
+    tab_tasks: 'Tâches',
+    btn_login_signup: 'Connexion / Inscription',
+    st_title: 'Paramètres',
+    st_lang_group: 'Langue / Language',
+    st_lang_label: 'Langue de l’application',
+    st_dark_mode: 'Mode Sombre',
+    st_logout: 'Déconnexion',
+    toast_lang_changed: 'Langue changée avec succès !'
+  },
+  ar: {
+    nav_home: 'الرئيسية',
+    nav_account: 'الحساب',
+    nav_chat: 'المحادثة',
+    nav_stream: 'البث',
+    nav_about: 'حول التطبيق',
+    nav_settings: 'الإعدادات',
+    brand_sub: 'نزرع ونربي معاً',
+    hello_back: 'مرحباً بعودتك',
+    hello_guest: 'مرحباً بك في المزرعة',
+    home_lede: 'تعلم، اسأل، وتواصل مع المزارعين ومربي الماشية.',
+    door_grow_t: 'الزراعة',
+    door_grow_s: 'نزرع معاً',
+    door_grow_c1: 'تعلم الزراعة',
+    door_grow_c2: 'تحدث مع خبير',
+    door_grow_c3: 'الدردشة مع الذكاء الاصطناعي',
+    door_grow_c4: 'مزرعتي',
+    door_raise_t: 'الثروة الحيوانية',
+    door_raise_s: 'نربي معاً',
+    door_raise_c1: 'تعلم تربية الماشية',
+    door_raise_c2: 'تحدث مع خبير',
+    door_raise_c3: 'الدردشة مع الذكاء الاصطناعي',
+    door_raise_c4: 'حظيرتي',
+    tab_learn: 'تعلم',
+    tab_expert: 'تحدث مع خبير',
+    tab_ai: 'الذكاء الاصطناعي الزراعي',
+    tab_my_farm: 'مزرعتي',
+    tab_my_barn: 'حظيرتي',
+    tab_tasks: 'المهام',
+    btn_login_signup: 'تسجيل الدخول / إنشاء حساب',
+    st_title: 'الإعدادات',
+    st_lang_group: 'اللغة',
+    st_lang_label: 'لغة التطبيق',
+    st_dark_mode: 'الوضع الليلي',
+    st_logout: 'تسجيل الخروج',
+    toast_lang_changed: 'تم تغيير اللغة بنجاح!'
+  },
+  es: {
+    nav_home: 'Inicio',
+    nav_account: 'Cuenta',
+    nav_chat: 'Chat',
+    nav_stream: 'Stream',
+    nav_about: 'Acerca de',
+    nav_settings: 'Ajustes',
+    brand_sub: 'Cultivar y Criar Juntos',
+    hello_back: 'Bienvenido de nuevo',
+    hello_guest: 'Bienvenido a la granja',
+    home_lede: 'Aprende, haz preguntas y conéctate con agricultores y ganaderos.',
+    door_grow_t: 'AGRICULTURA',
+    door_grow_s: 'Cultivar Juntos',
+    door_grow_c1: 'Aprender Agricultura',
+    door_grow_c2: 'Hablar con un Experto',
+    door_grow_c3: 'Chatear con IA',
+    door_grow_c4: 'Mi Granja',
+    door_raise_t: 'GANADERÍA',
+    door_raise_s: 'Criar Juntos',
+    door_raise_c1: 'Aprender Ganadería',
+    door_raise_c2: 'Hablar con un Experto',
+    door_raise_c3: 'Chatear con IA',
+    door_raise_c4: 'Mi Establo',
+    tab_learn: 'Aprender',
+    tab_expert: 'Hablar con Experto',
+    tab_ai: 'Agro IA',
+    tab_my_farm: 'Mi Granja',
+    tab_my_barn: 'Mi Establo',
+    tab_tasks: 'Tareas',
+    btn_login_signup: 'Iniciar sesión / Registro',
+    st_title: 'Ajustes',
+    st_lang_group: 'Idioma',
+    st_lang_label: 'Idioma de la aplicación',
+    st_dark_mode: 'Modo Oscuro',
+    st_logout: 'Cerrar sesión',
+    toast_lang_changed: '¡Idioma cambiado con éxito!'
+  },
+  pt: {
+    nav_home: 'Início',
+    nav_account: 'Conta',
+    nav_chat: 'Chat',
+    nav_stream: 'Stream',
+    nav_about: 'Sobre',
+    nav_settings: 'Configurações',
+    brand_sub: 'Cultivar e Criar Juntos',
+    hello_back: 'Bem-vindo de volta',
+    hello_guest: 'Bem-vindo à fazenda',
+    home_lede: 'Aprenda, tire dúvidas e conecte-se com agricultores e pecuaristas.',
+    door_grow_t: 'AGRICULTURA',
+    door_grow_s: 'Cultivar Juntos',
+    door_grow_c1: 'Aprender Agricultura',
+    door_grow_c2: 'Falar com Especialista',
+    door_grow_c3: 'Conversar com IA',
+    door_grow_c4: 'Minha Fazenda',
+    door_raise_t: 'PECUÁRIA',
+    door_raise_s: 'Criar Juntos',
+    door_raise_c1: 'Aprender Pecuária',
+    door_raise_c2: 'Falar com Especialista',
+    door_raise_c3: 'Conversar com IA',
+    door_raise_c4: 'Meu Celeiro',
+    tab_learn: 'Aprender',
+    tab_expert: 'Falar com Especialista',
+    tab_ai: 'Agro IA',
+    tab_my_farm: 'Minha Fazenda',
+    tab_my_barn: 'Meu Celeiro',
+    tab_tasks: 'Tarefas',
+    btn_login_signup: 'Entrar / Cadastrar',
+    st_title: 'Configurações',
+    st_lang_group: 'Idioma',
+    st_lang_label: 'Idioma do aplicativo',
+    st_dark_mode: 'Modo Escuro',
+    st_logout: 'Sair da conta',
+    toast_lang_changed: 'Idioma alterado com sucesso!'
+  },
+  de: {
+    nav_home: 'Startseite',
+    nav_account: 'Konto',
+    nav_chat: 'Chat',
+    nav_stream: 'Stream',
+    nav_about: 'Über uns',
+    nav_settings: 'Einstellungen',
+    brand_sub: 'Gemeinsam Anbauen & Aufziehen',
+    hello_back: 'Willkommen zurück',
+    hello_guest: 'Willkommen auf dem Bauernhof',
+    home_lede: 'Lernen, Fragen stellen und mit Landwirten und Tierhaltern vernetzen.',
+    door_grow_t: 'LANDWIRTSCHAFT',
+    door_grow_s: 'Gemeinsam Anbauen',
+    door_grow_c1: 'Landwirtschaft Lernen',
+    door_grow_c2: 'Mit Experten Sprechen',
+    door_grow_c3: 'Mit KI Chatten',
+    door_grow_c4: 'Mein Hof',
+    door_raise_t: 'TIERHALTUNG',
+    door_raise_s: 'Gemeinsam Aufziehen',
+    door_raise_c1: 'Tierhaltung Lernen',
+    door_raise_c2: 'Mit Experten Sprechen',
+    door_raise_c3: 'Mit KI Chatten',
+    door_raise_c4: 'Mein Stall',
+    tab_learn: 'Lernen',
+    tab_expert: 'Experte Fragen',
+    tab_ai: 'Agro KI',
+    tab_my_farm: 'Mein Hof',
+    tab_my_barn: 'Mein Stall',
+    tab_tasks: 'Aufgaben',
+    btn_login_signup: 'Anmelden / Registrieren',
+    st_title: 'Einstellungen',
+    st_lang_group: 'Sprache',
+    st_lang_label: 'App-Sprache',
+    st_dark_mode: 'Dunkelmodus',
+    st_logout: 'Abmelden',
+    toast_lang_changed: 'Sprache erfolgreich geändert!'
   }
 };
+
+const SUPPORTED_LANGUAGES = [
+  { code: 'en', name: 'English', native: 'English', flag: '🇬🇧' },
+  { code: 'sw', name: 'Kiswahili', native: 'Kiswahili', flag: '🇹🇿' },
+  { code: 'fr', name: 'French', native: 'Français', flag: '🇫🇷' },
+  { code: 'ar', name: 'Arabic', native: 'العربية', flag: '🇸🇦', dir: 'rtl' },
+  { code: 'es', name: 'Spanish', native: 'Español', flag: '🇪🇸' },
+  { code: 'pt', name: 'Portuguese', native: 'Português', flag: '🇵🇹' },
+  { code: 'de', name: 'German', native: 'Deutsch', flag: '🇩🇪' }
+];
 
 /* ============ helpers ============ */
 const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
@@ -985,7 +1180,7 @@ async function runAI(turns,o){o=o||{};
 function aiErr(e){const c=e&&e.code;if(c==='cancelled')return'';if(c==='rate_limited')return'AI usage limit reached. Please try again later.';if(c==='upstream_error'||c==='empty_completion')return'AI service is unavailable right now. Please try again.';if(c==='prompt_too_large')return'The message is too long. Please shorten it and try again.';return'AI service is currently offline or unreachable.'}
 
 /* ============ router ============ */
-const S={view:'home',sec:'kilimo',tab:'jifunze',ltab:'muhtasari',ct:'chats',thread:null,cv:null,stream:{tab:'you',q:'',focus:null},learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0},auth:'login',ptab:'maudhui'};
+const S={view:'home',sec:'kilimo',tab:'jifunze',ltab:'kazi',ct:'chats',thread:null,cv:null,stream:{tab:'you',q:'',focus:null},learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0},auth:'login',ptab:'maudhui'};
 const VIEWS={},POST={},SECTAB={},ACT={},FORM={};
 const chatPal=()=>ST().chatTheme==='system'?(ST().dark?'dark':'light'):ST().chatTheme;
 
@@ -994,8 +1189,11 @@ function applyPrefs(){
   r.dataset.theme=s.dark?'dark':'light';
   r.style.setProperty('--ts',String(s.size/100));
   r.style.setProperty('--font-body',s.font==='serif'?"'Times New Roman',Georgia,serif":s.font==='mono'?"ui-monospace,'SF Mono',Menlo,Consolas,monospace":"'Figtree',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif");
+  const foundLang=SUPPORTED_LANGUAGES.find(x=>x.code===s.lang)||SUPPORTED_LANGUAGES[0];
+  r.lang=foundLang.code;
+  r.dir=foundLang.dir||'ltr';
   const langInd=$('#langIndicator');
-  if(langInd)langInd.textContent=curLang().toUpperCase();
+  if(langInd)langInd.textContent=foundLang.code.toUpperCase();
 }
 
 function render(){
@@ -1065,17 +1263,45 @@ VIEWS.home=()=>{const u=curUser();
    </button>
   </div></div>`};
 
-ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'menu',ltab:'muhtasari',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
+ACT.openSec=el=>{go('section',{sec:el.dataset.sec,tab:'menu',ltab:'kazi',learn:{q:'',tab:'maelezo',doc:null,media:{query:'',loading:false,results:[],error:null},mediaRequest:0}})};
 ACT.stab=el=>{S.tab=el.dataset.t;render()};
 ACT.sectionEntry=el=>{S.tab=el.dataset.t;render()};
 ACT.sectionMenu=()=>{S.tab='menu';render()};
 ACT.go=el=>go(el.dataset.v);
 ACT.closeSheet=()=>closeSheet();
+
 ACT.toggleLang=()=>{
-  DB.settings.lang=curLang()==='en'?'sw':'en';
+  ACT.openLangPicker();
+};
+
+ACT.openLangPicker=()=>{
+  const cur=curLang();
+  sheet(cur==='sw'?'Chagua Lugha / Select Language':'Select Language / Chagua Lugha',`
+    <div class="lang-sheet-wrap">
+      <p class="muted small" style="margin:0">${cur==='sw'?'Chagua lugha unayopendelea kwa ajili ya programu nzima:':'Choose your preferred language for the entire webapp:'}</p>
+      <div class="lang-grid">
+        ${SUPPORTED_LANGUAGES.map(l=>`
+          <button type="button" class="lang-card ${cur===l.code?'on':''}" data-act="setLang" data-code="${l.code}">
+            <span class="lang-card-flag">${l.flag}</span>
+            <span class="lang-card-native">${esc(l.native)}</span>
+            <span class="lang-card-name">${esc(l.name)}</span>
+            ${cur===l.code?'<span class="lang-card-check">✓</span>':''}
+          </button>
+        `).join('')}
+      </div>
+    </div>
+  `);
+};
+
+ACT.setLang=el=>{
+  const code=el.dataset.code;
+  if(!code)return;
+  DB.settings.lang=code;
   save();
+  applyPrefs();
+  closeSheet();
   render();
-  toast(t('toast_lang_changed'));
+  toast(t('toast_lang_changed', 'Language changed successfully!'));
 };
 
 /* ============ section ============ */
@@ -1506,28 +1732,79 @@ ACT.attKind=async el=>{const kind=el.dataset.k;closeSheet();
 ACT.attClear=()=>{ATT=null;$('#attBar').innerHTML=''};
 
 /* --- farm --- */
+/* --- farm --- */
 function farmHTML(){const k=S.sec,T=SEC[k];
   if(!curUser())return`<div class="empty"><b>${k==='kilimo'?t('tab_my_farm'):t('tab_my_barn')}</b>${t('farm_gate')}<p style="margin-top:1rem"><button class="btn" data-act="go" data-v="account">${t('btn_login_signup')}</button></p></div>`;
-  const f=farmOf(k),tabs=[['muhtasari',t('tab_summary')],['kazi',t('tab_tasks')],['fedha',t('tab_finances')],['ai',t('tab_ai_advisor')]];
-  const inc=f.ledger.filter(x=>x.type==='in').reduce((a,x)=>a+x.amt,0),exp=f.ledger.filter(x=>x.type==='out').reduce((a,x)=>a+x.amt,0);
+  const f=farmOf(k);
+  const isSw=curLang()==='sw';
+  const tabs=[
+    ['kazi',t('tab_tasks',isSw?'Shughuli / Kazi':'Tasks')],
+    ['survey',isSw?'Kagua Shamba Sasa':'Survey Farm Now'],
+    ['ai',t('tab_ai_advisor',isSw?'Mshauri wa AI':'AI Advisor')]
+  ];
+  if(!['kazi','survey','ai'].includes(S.ltab)){
+    S.ltab='kazi';
+  }
   let b='';
-  if(S.ltab==='muhtasari')b=`<div class="stats"><div class="stat"><span class="muted small">${t('stat_tasks_left')}</span><b>${f.tasks.filter(t=>!t.done).length}</b></div><div class="stat"><span class="muted small">${t('stat_income')}</span><b>${money(inc)}</b></div><div class="stat"><span class="muted small">${t('stat_profit')}</span><b>${money(inc-exp)}</b></div></div>
-  <form class="form" data-form="farm"><label class="lab">${t('lbl_farm_name')}<input class="field" name="name" value="${esc(f.name)}" maxlength="60"></label>
-  <label class="lab">${t('lbl_farm_size')}<input class="field" name="size" value="${esc(f.size)}" maxlength="40"></label>
-  <label class="lab">${t('lbl_farm_items')}<input class="field" name="items" value="${esc(f.items)}" maxlength="120" placeholder="${k==='kilimo'?t('ph_farm_crop'):t('ph_farm_ani')}"></label>
-  <label class="lab">${t('lbl_place')}<input class="field" name="place" value="${esc(f.place)}" maxlength="120"></label>
-  <label class="lab">${t('lbl_notes')}<textarea class="field" name="notes" maxlength="500">${esc(f.notes)}</textarea></label>
-  <div class="row wrap"><button class="btn">${t('btn_save')}</button>${PRIV().location?`<button type="button" class="btn ghost" data-act="farmLoc">${ic('tag')} ${t('btn_use_location')}</button>`:''}</div></form>`;
-  else if(S.ltab==='kazi')b=`<form class="row" data-form="task"><input class="field grow" name="text" placeholder="${t('ph_new_task')}" maxlength="120" aria-label="New task"><input class="field" style="width:auto" type="date" name="due" aria-label="Date"><button class="btn">${ic('plus')}</button></form>
-  <div class="list" style="margin-top:.6rem">${f.tasks.length?f.tasks.map(t=>`<div class="item"><button class="chk ${t.done?'on':''}" data-act="taskTog" data-id="${t.id}" role="checkbox" aria-checked="${t.done}" aria-label="Complete">${t.done?ic('check'):''}</button><span class="grow ${t.done?'done':''}">${esc(t.text)}${t.due?`<br><span class="muted small">Date: ${esc(t.due)}</span>`:''}</span><button class="icon-btn" data-act="taskDel" data-id="${t.id}" aria-label="Delete">${ic('trash')}</button></div>`).join(''):`<div class="empty"><b>${t('no_tasks')}</b>${t('no_tasks_sub')}</div>`}</div>`;
-  else if(S.ltab==='fedha')b=`<div class="stats"><div class="stat"><span class="muted small">${t('stat_income')}</span><b class="in">${money(inc)}</b></div><div class="stat"><span class="muted small">${t('stat_expenses')}</span><b class="out">${money(exp)}</b></div><div class="stat"><span class="muted small">${t('stat_profit')}</span><b>${money(inc-exp)}</b></div></div>
-  <form class="row wrap" data-form="ledger"><select class="field" name="type" style="width:auto" aria-label="Type"><option value="in">${t('fin_in')}</option><option value="out">${t('fin_out')}</option></select><input class="field grow" name="label" placeholder="${t('ph_fin_desc')}" maxlength="80" required><input class="field" style="width:8rem" name="amt" type="number" min="1" step="1" placeholder="TZS" required><button class="btn">${ic('plus')}</button></form>
-  <div class="list" style="margin-top:.6rem">${f.ledger.length?f.ledger.slice().reverse().map(x=>`<div class="item"><span class="grow">${esc(x.label)}<br><span class="muted small">${ago(x.ts)}</span></span><b class="${x.type}">${x.type==='in'?'+':'−'}${money(x.amt)}</b><button class="icon-btn" data-act="ledDel" data-id="${x.id}" aria-label="Delete">${ic('trash')}</button></div>`).join(''):`<div class="empty"><b>${t('no_fin')}</b>${t('no_fin_sub')}</div>`}</div>`;
-  else b=aiChatHTML(T.my);
-  return`<div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${S.ltab===i?'on':''}" data-act="ftab" data-t="${i}">${l}</button>`).join('')}</div>${b}`}
+  if(S.ltab==='kazi'){
+    b=`<form class="row" data-form="task"><input class="field grow" name="text" placeholder="${t('ph_new_task')}" maxlength="120" aria-label="New task"><input class="field" style="width:auto" type="date" name="due" aria-label="Date"><button class="btn">${ic('plus')}</button></form>
+    <div class="list" style="margin-top:.6rem">${f.tasks.length?f.tasks.map(t=>`<div class="item"><button class="chk ${t.done?'on':''}" data-act="taskTog" data-id="${t.id}" role="checkbox" aria-checked="${t.done}" aria-label="Complete">${t.done?ic('check'):''}</button><span class="grow ${t.done?'done':''}">${esc(t.text)}${t.due?`<br><span class="muted small">Date: ${esc(t.due)}</span>`:''}</span><button class="icon-btn" data-act="taskDel" data-id="${t.id}" aria-label="Delete">${ic('trash')}</button></div>`).join(''):`<div class="empty"><b>${t('no_tasks')}</b>${t('no_tasks_sub')}</div>`}</div>`;
+  }else if(S.ltab==='survey'){
+    b=`<div class="survey-wrap">
+      <div class="survey-hero">
+        <div class="survey-radar"></div>
+        <div class="survey-badge">🛰️ ${isSw?'HUDUMA INAYOKUJA':'COMING SOON'}</div>
+        <h3 class="survey-title">${isSw?'Huduma Hii kwa Sasa Haipatikani':'This Service is Currently Unavailable'}</h3>
+        <p class="survey-desc">${isSw?'Huduma ya "Survey Farm Now" (Kukagua Shamba Moja kwa Moja kwa Satelaiti na Drone za Kisasa) inakuja hivi punde kwenye toleo lijalo la kimataifa!':'Our next-generation "Survey Farm Now" AI satellite and drone multispectral telemetry is coming very soon in our upcoming global release!'}</p>
+        <div class="row wrap" style="justify-content:center;gap:.75rem">
+          <button class="btn" data-act="surveyNotify" style="background:#84cc16;color:#0f172a;font-weight:800">
+            🔔 ${isSw?'Niarifu Huduma Ikitoka':'Notify Me When Available'}
+          </button>
+          <button class="btn ghost" data-act="ftab" data-t="ai" style="color:#ffffff;border-color:rgba(255,255,255,.3)">
+            💬 ${isSw?'Uliza Agro AI Maswali ya Shamba':'Ask Agro AI About Your Farm'}
+          </button>
+        </div>
+      </div>
+      <div class="survey-features">
+        <div class="survey-feat-card">
+          <div class="survey-feat-icon">🛰️</div>
+          <div class="survey-feat-info">
+            <b>${isSw?'Picha za Satelaiti za NDVI':'Satellite Multispectral NDVI'}</b>
+            <p>${isSw?'Kupima afya ya mimea, unene wa majani na maeneo yenye upungufu wa unyevu au virutubisho.':'Continuous high-resolution satellite indexing to track canopy health, nitrogen uptake, and biomass health.'}</p>
+          </div>
+        </div>
+        <div class="survey-feat-card">
+          <div class="survey-feat-icon">🛸</div>
+          <div class="survey-feat-info">
+            <b>${isSw?'Kukodisha Drone za Shambani':'On-Demand Drone Scouting'}</b>
+            <p>${isSw?'Weka miadi na waendesha drone walioidhinishwa kwa ajili ya kupiga ramani ya 3D na kupulizia dawa kwa usahihi.':'Book certified local drone pilots for centimeter-accurate 3D topography and targeted micro-spraying.'}</p>
+          </div>
+        </div>
+        <div class="survey-feat-card">
+          <div class="survey-feat-icon">🧪</div>
+          <div class="survey-feat-info">
+            <b>${isSw?'Uchunguzi wa Afya ya Udongo':'Soil Fertility & Moisture AI'}</b>
+            <p>${isSw?'Ugunduzi wa kiwango cha pH, unyevu, joto na mapendekezo ya mbolea kulingana na eneo lako.':'AI analysis of soil compaction, pH variance, moisture deficit and precision fertilizer recommendations.'}</p>
+          </div>
+        </div>
+        <div class="survey-feat-card">
+          <div class="survey-feat-icon">🐄</div>
+          <div class="survey-feat-info">
+            <b>${isSw?'Ufuatiliaji wa Mifugo na Malisho':'Pasture & Herd Heatmaps'}</b>
+            <p>${isSw?'Kukagua ubora wa nyasi za malisho na uwezo wa kubeba mifugo (carrying capacity) kwa msimu mzima.':'Pasture biomass calculations, rotational grazing optimization and herd movement diagnostics.'}</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }else{
+    b=aiChatHTML(T.my);
+  }
+  return`<div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${S.ltab===i?'on':''}" data-act="ftab" data-t="${i}">${l}</button>`).join('')}</div>${b}`
+}
 
 SECTAB.langu=farmHTML;
 ACT.ftab=el=>{S.ltab=el.dataset.t;render()};
+ACT.surveyNotify=()=>{toast(curLang()==='sw'?'Asante! Utapokea taarifa pindi Survey Farm Now itakapozinduliwa.':'Thank you! You will be notified as soon as Survey Farm Now launches.')};
 FORM.farm=f=>{const o=farmOf(S.sec);['name','size','items','place','notes'].forEach(n=>o[n]=fv(f,n).trim());save();toast(t('saved_toast'));render()};
 FORM.task=f=>{const text=fv(f,'text').trim();if(!text)return;farmOf(S.sec).tasks.unshift({id:uid('t'),text,due:fv(f,'due'),done:false});save();render()};
 ACT.taskTog=el=>{const t=farmOf(S.sec).tasks.find(x=>x.id===el.dataset.id);if(t){t.done=!t.done;save();render()}};
@@ -5096,7 +5373,7 @@ VIEWS.settings=()=>{const s=ST(),pv=PRIV(),u=curUser();
   return`<div class="view" style="max-width:640px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${t('st_title')}</h2>
   
   <h3 class="sgroup">${t('st_lang_group')}</h3>
-  <div class="srow"><span>${t('st_lang_label')}</span><select class="field" data-set="lang" data-src="st" aria-label="Language / Lugha"><option value="en" ${s.lang==='en'?'selected':''}>English (Default)</option><option value="sw" ${s.lang==='sw'?'selected':''}>Kiswahili</option></select></div>
+  <div class="srow"><span>${t('st_lang_label')}</span><div style="display:flex;gap:.5rem;align-items:center"><select class="field" data-set="lang" data-src="st" aria-label="Language / Lugha">${SUPPORTED_LANGUAGES.map(l=>`<option value="${l.code}" ${s.lang===l.code?'selected':''}>${l.flag} ${l.native} (${l.name})</option>`).join('')}</select><button class="btn ghost sm" data-act="openLangPicker" style="white-space:nowrap">${ic('repeat')} ${curLang()==='sw'?'Chagua Lugha':'Select'}</button></div></div>
 
   <h3 class="sgroup">${t('st_screen')}</h3>${sw('dark',s.dark,t('st_dark_mode'),'st')}
   <div class="srow"><span>${t('st_font_format')}</span><select class="field" data-set="font" data-src="st" aria-label="Text font"><option value="sans" ${s.font==='sans'?'selected':''}>${t('st_font_sans')}</option><option value="serif" ${s.font==='serif'?'selected':''}>${t('st_font_serif')}</option><option value="mono" ${s.font==='mono'?'selected':''}>${t('st_font_mono')}</option></select></div>
