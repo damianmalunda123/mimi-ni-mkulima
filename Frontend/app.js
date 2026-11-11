@@ -1329,7 +1329,34 @@ ACT.aiAttach=()=>sheet(t('attach_title'),`<div class="menu">
   <button data-act="attKind" data-k="audio">🎵 Audio</button>
   <button data-act="attKind" data-k="doc">${ic('clip')} Document (PDF, Word, PPT, Excel)</button>
 </div>`);
-ACT.aiCamera=async()=>{closeSheet();if(!ST().perm.camera)return toast(t('perm_camera_disabled'));const f=await pickFile('image/*','environment');if(!f)return;try{const b64=await imgToData(f,900,.8);ATT={kind:'image',name:f.name||'camera.jpg',type:'image/jpeg',size:f.size||0,data:b64,file:f};const b=$('#attBar');if(b)b.innerHTML=`<div class="att"><span style="font-size:1.1rem">📷</span><span class="grow" style="font-weight:700">${esc(ATT.name)}</span><button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button></div>`}catch(e){toast('Could not capture photo.')}};
+ACT.aiCamera=async()=>{
+  closeSheet();
+  if(!ST().perm.camera)return toast(t('perm_camera_disabled'));
+  /* Force camera on mobile — set capture="user" or "environment" + accept=image/* */
+  const inp=document.createElement('input');
+  inp.type='file';
+  inp.accept='image/*';
+  inp.setAttribute('capture','environment'); /* rear camera by default */
+  const f=await new Promise(res=>{
+    inp.onchange=()=>res(inp.files&&inp.files[0]||null);
+    inp.addEventListener('cancel',()=>res(null));
+    inp.click();
+  });
+  if(!f)return;
+  try{
+    const b64=await imgToData(f,1080,.85);
+    ATT={kind:'image',name:f.name||('photo_'+Date.now()+'.jpg'),type:'image/jpeg',size:f.size||0,data:b64,file:f};
+    const bar=$('#attBar');
+    if(bar)bar.innerHTML=`<div class="att" style="align-items:center;gap:.6rem">
+      <img src="${b64}" style="width:44px;height:44px;border-radius:.4rem;object-fit:cover;flex-shrink:0">
+      <span class="grow" style="font-size:.85rem;font-weight:600">📷 ${esc(ATT.name)}</span>
+      <button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button>
+    </div>`;
+    toast(curLang()==='sw'?'Picha imepigwa — bonyeza Send kupeleka kwa Agro AI':'Photo ready — tap Send to analyze with Agro AI');
+    /* Focus the textarea so user can type a question */
+    const ta=$('#aiText');if(ta){ta.focus();ta.placeholder=curLang()==='sw'?'Uliza swali kuhusu picha hii…':'Ask a question about this photo…';}
+  }catch(e){toast(curLang()==='sw'?'Imeshindwa kupiga picha.':'Could not capture photo.');}
+};
 ACT.attKind=async el=>{const kind=el.dataset.k;closeSheet();
   if(kind==='camera'&&!ST().perm.camera)return toast(t('perm_camera_disabled'));
   if(kind!=='camera'&&!ST().perm.file)return toast(t('perm_file_disabled'));
@@ -1350,7 +1377,13 @@ ACT.attKind=async el=>{const kind=el.dataset.k;closeSheet();
       file:f
     };
     const iconStr=kind==='video'?'🎬':kind==='audio'?'🎧':kind==='doc'?'📄':'📷';
-    const b=$('#attBar');if(b)b.innerHTML=`<div class="att"><span style="font-size:1.1rem">${iconStr}</span><span class="grow" style="font-weight:700">${esc(ATT.name)}</span><button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button></div>`;
+    const b=$('#attBar');
+    if(b){
+      const isImg=(kind==='image'||kind==='camera');
+      b.innerHTML=isImg
+        ?`<div class="att" style="align-items:center;gap:.6rem"><img src="${b64}" style="width:44px;height:44px;border-radius:.4rem;object-fit:cover;flex-shrink:0"><span class="grow" style="font-size:.85rem;font-weight:600">${iconStr} ${esc(ATT.name)}</span><button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button></div>`
+        :`<div class="att"><span style="font-size:1.1rem">${iconStr}</span><span class="grow" style="font-weight:700">${esc(ATT.name)}</span><button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button></div>`;
+    }
   }catch(e){toast('Could not read file.')}};
 ACT.attClear=()=>{ATT=null;$('#attBar').innerHTML=''};
 
