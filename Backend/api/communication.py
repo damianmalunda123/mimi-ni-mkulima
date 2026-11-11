@@ -25,16 +25,28 @@ connections: dict[str, set[WebSocket]] = {}
 
 
 class RegisterRequest(BaseModel):
-    name: str = Field(min_length=2, max_length=60)
+    name: str = Field(min_length=2, max_length=120)
     email: str = Field(min_length=5, max_length=254)
-    phone: str = Field(default="", max_length=24)
-    password: str = Field(min_length=8, max_length=100)
+    phone: str = Field(default="", max_length=30)
+    password: str = Field(min_length=6, max_length=100)
     role: Literal["crop_expert", "livestock_expert", "farmer", "livestock_keeper"]
+    nida_name: str = Field(default="", max_length=120)
+    education_level: str = Field(default="", max_length=50)
+    college_name: str = Field(default="", max_length=150)
+    reg_number: str = Field(default="", max_length=60)
+    license_expiry: str = Field(default="", max_length=30)
+    cert_doc: str = Field(default="")
+    license_doc: str = Field(default="")
 
 
 class LoginRequest(BaseModel):
-    email: str = Field(min_length=5, max_length=254)
-    password: str = Field(min_length=8, max_length=100)
+    email: str = Field(min_length=3, max_length=254)
+    password: str = Field(min_length=6, max_length=100)
+
+
+class ExpertStatusUpdateRequest(BaseModel):
+    status: Literal["Approved", "Rejected", "Pending_Verification"]
+    reason: str = Field(default="", max_length=500)
 
 
 class MessageRequest(BaseModel):
@@ -43,7 +55,13 @@ class MessageRequest(BaseModel):
 
 class DeleteAccountRequest(BaseModel):
     email: str = Field(min_length=5, max_length=254)
-    password: str = Field(min_length=8, max_length=100)
+    password: str = Field(min_length=6, max_length=100)
+
+
+def hash_password(password: str, salt: bytes | None = None) -> tuple[str, str]:
+    salt = salt or secrets.token_bytes(16)
+    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, PASSWORD_ITERATIONS)
+    return salt.hex(), digest.hex()
 
 
 def database_path() -> Path:
@@ -64,6 +82,17 @@ def connect() -> sqlite3.Connection:
             email TEXT NOT NULL UNIQUE,
             phone TEXT NOT NULL DEFAULT '',
             role TEXT NOT NULL,
+            status TEXT NOT NULL DEFAULT 'Approved',
+            nida_name TEXT DEFAULT '',
+            education_level TEXT DEFAULT '',
+            college_name TEXT DEFAULT '',
+            reg_number TEXT DEFAULT '',
+            license_expiry TEXT DEFAULT '',
+            cert_doc TEXT DEFAULT '',
+            license_doc TEXT DEFAULT '',
+            rejection_reason TEXT DEFAULT '',
+            verified_at INTEGER DEFAULT NULL,
+            verified_by TEXT DEFAULT '',
             password_salt TEXT NOT NULL,
             password_hash TEXT NOT NULL,
             created_at INTEGER NOT NULL,
@@ -97,14 +126,48 @@ def connect() -> sqlite3.Connection:
             ON comm_user_activity(user_id, active_date);
         """
     )
+
+    columns = [
+        ("status", "TEXT NOT NULL DEFAULT 'Approved'"),
+        ("nida_name", "TEXT DEFAULT ''"),
+        ("education_level", "TEXT DEFAULT ''"),
+        ("college_name", "TEXT DEFAULT ''"),
+        ("reg_number", "TEXT DEFAULT ''"),
+        ("license_expiry", "TEXT DEFAULT ''"),
+        ("cert_doc", "TEXT DEFAULT ''"),
+        ("license_doc", "TEXT DEFAULT ''"),
+        ("rejection_reason", "TEXT DEFAULT ''"),
+        ("verified_at", "INTEGER DEFAULT NULL"),
+        ("verified_by", "TEXT DEFAULT ''"),
+        ("last_username_changed_at", "INTEGER DEFAULT NULL"),
+        ("last_active_at", "INTEGER DEFAULT NULL"),
+    ]
+    for col_name, col_def in columns:
+        try:
+            conn.execute(f"ALTER TABLE comm_users ADD COLUMN {col_name} {col_def}")
+        except sqlite3.OperationalError:
+            pass
+
+    # Ensure root Super Admin account exists and matches Admin@!mkulima123
     try:
-        conn.execute("ALTER TABLE comm_users ADD COLUMN last_username_changed_at INTEGER DEFAULT NULL")
-    except sqlite3.OperationalError:
+        admin_salt, admin_digest = hash_password("Admin@!mkulima123")
+        admin_row = conn.execute(
+            "SELECT id FROM comm_users WHERE id='admin_root' OR email='admin@miminikulima.com' OR name='@mimi ni mkulima'"
+        ).fetchone()
+        if not admin_row:
+            conn.execute(
+                "INSERT INTO comm_users (id, name, email, phone, role, status, password_salt, password_hash, created_at) "
+                "VALUES ('admin_root', '@mimi ni mkulima', 'admin@miminikulima.com', '+255700000000', 'admin', 'Approved', ?, ?, ?)",
+                (admin_salt, admin_digest, int(time.time())),
+            )
+        else:
+            conn.execute(
+                "UPDATE comm_users SET role='admin', status='Approved', password_salt=?, password_hash=? WHERE id=?",
+                (admin_salt, admin_digest, admin_row["id"]),
+            )
+    except Exception:
         pass
-    try:
-        conn.execute("ALTER TABLE comm_users ADD COLUMN last_active_at INTEGER DEFAULT NULL")
-    except sqlite3.OperationalError:
-        pass
+
     return conn
 
 
@@ -136,12 +199,24 @@ def log_user_activity(user_id: str) -> None:
 
 
 def public_user(row: sqlite3.Row) -> dict:
-    keys = row.keys() if hasattr(row, "keys") else []
+    keys = set(row.keys()) if hasattr(row, "keys") else set()
     return {
         "id": row["id"],
         "name": row["name"],
         "email": row["email"],
+        "phone": row["phone"] if "phone" in keys else "",
         "role": row["role"],
+        "status": row["status"] if "status" in keys else "Approved",
+        "nida_name": row["nida_name"] if "nida_name" in keys else "",
+        "education_level": row["education_level"] if "education_level" in keys else "",
+        "college_name": row["college_name"] if "college_name" in keys else "",
+        "reg_number": row["reg_number"] if "reg_number" in keys else "",
+        "license_expiry": row["license_expiry"] if "license_expiry" in keys else "",
+        "cert_doc": row["cert_doc"] if "cert_doc" in keys else "",
+        "license_doc": row["license_doc"] if "license_doc" in keys else "",
+        "rejection_reason": row["rejection_reason"] if "rejection_reason" in keys else "",
+        "verified_at": row["verified_at"] if "verified_at" in keys else None,
+        "verified_by": row["verified_by"] if "verified_by" in keys else "",
         "created_at": row["created_at"] if "created_at" in keys else None,
         "last_username_changed_at": row["last_username_changed_at"] if "last_username_changed_at" in keys else None,
         "last_active_at": row["last_active_at"] if "last_active_at" in keys else None,
@@ -173,7 +248,7 @@ def session_token(response: Response, user_id: str) -> None:
     )
 
 
-def current_user(request: Request) -> dict[str, str]:
+def current_user(request: Request) -> dict:
     token = request.cookies.get(SESSION_COOKIE)
     if not token:
         raise HTTPException(status_code=401, detail="Sign in to continue.")
@@ -188,12 +263,6 @@ def current_user(request: Request) -> dict[str, str]:
         raise HTTPException(status_code=401, detail="Your session has expired. Sign in again.")
     log_user_activity(row["id"])
     return public_user(row)
-
-
-def hash_password(password: str, salt: bytes | None = None) -> tuple[str, str]:
-    salt = salt or secrets.token_bytes(16)
-    digest = hashlib.pbkdf2_hmac("sha256", password.encode(), salt, PASSWORD_ITERATIONS)
-    return salt.hex(), digest.hex()
 
 
 def update_password_by_destination(channel: str, destination: str, password: str) -> str | None:
@@ -272,26 +341,53 @@ def register(payload: RegisterRequest, response: Response) -> dict:
     email = payload.email.strip().lower()
     if not re.fullmatch(r"[^@\s]+@[^@\s]+\.[^@\s]+", email):
         raise HTTPException(status_code=422, detail="Enter a valid email address.")
+    
+    is_expert = payload.role in EXPERT_ROLES
+    status = "Pending_Verification" if is_expert else "Approved"
+
     salt, digest = hash_password(payload.password)
     user_id = secrets.token_urlsafe(18)
     try:
         with database() as conn:
             conn.execute(
-                "INSERT INTO comm_users(id, name, email, phone, role, password_salt, password_hash, created_at) "
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                (user_id, payload.name.strip(), email, payload.phone.strip(), payload.role, salt, digest, int(time.time())),
+                "INSERT INTO comm_users(id, name, email, phone, role, status, nida_name, education_level, "
+                "college_name, reg_number, license_expiry, cert_doc, license_doc, password_salt, password_hash, created_at) "
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                (
+                    user_id,
+                    payload.name.strip(),
+                    email,
+                    payload.phone.strip(),
+                    payload.role,
+                    status,
+                    payload.nida_name.strip() or payload.name.strip(),
+                    payload.education_level.strip(),
+                    payload.college_name.strip(),
+                    payload.reg_number.strip(),
+                    payload.license_expiry.strip(),
+                    payload.cert_doc,
+                    payload.license_doc,
+                    salt,
+                    digest,
+                    int(time.time()),
+                ),
             )
     except sqlite3.IntegrityError as exc:
         raise HTTPException(status_code=409, detail="An account with this email already exists.") from exc
     session_token(response, user_id)
-    return {"user": {"id": user_id, "name": payload.name.strip(), "email": email, "role": payload.role}}
+    with database() as conn:
+        row = conn.execute("SELECT * FROM comm_users WHERE id=?", (user_id,)).fetchone()
+    return {"user": public_user(row)}
 
 
 @router.post("/login")
 def login(payload: LoginRequest, response: Response) -> dict:
-    email = payload.email.strip().lower()
+    ident = payload.email.strip().lower()
     with database() as conn:
-        row = conn.execute("SELECT * FROM comm_users WHERE email=?", (email,)).fetchone()
+        row = conn.execute(
+            "SELECT * FROM comm_users WHERE lower(email)=? OR lower(name)=? OR (id='admin_root' AND (? IN ('@mimi ni mkulima', 'admin@miminikulima.com', 'mimi ni mkulima')))",
+            (ident, ident, ident),
+        ).fetchone()
     if row is None:
         raise HTTPException(status_code=401, detail="Email or password is incorrect.")
     _, digest = hash_password(payload.password, bytes.fromhex(row["password_salt"]))
@@ -299,6 +395,86 @@ def login(payload: LoginRequest, response: Response) -> dict:
         raise HTTPException(status_code=401, detail="Email or password is incorrect.")
     session_token(response, row["id"])
     return {"user": public_user(row)}
+
+
+# ========================================================
+# Administrator Endpoints (Webapp Control & Verification)
+# ========================================================
+
+@router.get("/admin/experts")
+def list_experts(status: str | None = None, request: Request = None) -> dict:
+    user = current_user(request)
+    if user.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin authorization required.")
+    query = "SELECT * FROM comm_users WHERE role IN ('crop_expert', 'livestock_expert')"
+    params = []
+    if status and status != "all":
+        query += " AND status=?"
+        params.append(status)
+    query += " ORDER BY created_at DESC"
+    with database() as conn:
+        rows = conn.execute(query, params).fetchall()
+    return {"experts": [public_user(r) for r in rows]}
+
+
+@router.post("/admin/experts/{expert_id}/status")
+def update_expert_status(expert_id: str, payload: ExpertStatusUpdateRequest, request: Request = None) -> dict:
+    admin = current_user(request)
+    if admin.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin authorization required.")
+    now_ts = int(time.time())
+    with database() as conn:
+        row = conn.execute("SELECT * FROM comm_users WHERE id=?", (expert_id,)).fetchone()
+        if not row:
+            raise HTTPException(status_code=404, detail="Expert not found.")
+        conn.execute(
+            "UPDATE comm_users SET status=?, rejection_reason=?, verified_at=?, verified_by=? WHERE id=?",
+            (payload.status, payload.reason.strip(), now_ts, admin.get("name", "Admin"), expert_id),
+        )
+        updated_row = conn.execute("SELECT * FROM comm_users WHERE id=?", (expert_id,)).fetchone()
+    return {"ok": True, "expert": public_user(updated_row)}
+
+
+@router.get("/admin/stats")
+def get_admin_stats(request: Request = None) -> dict:
+    admin = current_user(request)
+    if admin.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin authorization required.")
+    with database() as conn:
+        total_users = conn.execute("SELECT count(*) as c FROM comm_users").fetchone()["c"]
+        pending_experts = conn.execute("SELECT count(*) as c FROM comm_users WHERE status='Pending_Verification'").fetchone()["c"]
+        approved_experts = conn.execute("SELECT count(*) as c FROM comm_users WHERE role IN ('crop_expert','livestock_expert') AND status='Approved'").fetchone()["c"]
+        rejected_experts = conn.execute("SELECT count(*) as c FROM comm_users WHERE status='Rejected'").fetchone()["c"]
+        total_messages = conn.execute("SELECT count(*) as c FROM comm_messages").fetchone()["c"]
+    return {
+        "total_users": total_users,
+        "pending_experts": pending_experts,
+        "approved_experts": approved_experts,
+        "rejected_experts": rejected_experts,
+        "total_messages": total_messages,
+    }
+
+
+@router.get("/admin/users")
+def get_admin_users(request: Request = None) -> dict:
+    admin = current_user(request)
+    if admin.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin authorization required.")
+    with database() as conn:
+        rows = conn.execute("SELECT * FROM comm_users ORDER BY created_at DESC LIMIT 200").fetchall()
+    return {"users": [public_user(r) for r in rows]}
+
+
+@router.delete("/admin/users/{user_id}")
+def delete_admin_user(user_id: str, request: Request = None) -> dict:
+    admin = current_user(request)
+    if admin.get("role") != "admin":
+        raise HTTPException(status_code=403, detail="Admin authorization required.")
+    if user_id == "admin_root" or user_id == admin["id"]:
+        raise HTTPException(status_code=400, detail="Cannot delete root administrator account.")
+    with database() as conn:
+        conn.execute("DELETE FROM comm_users WHERE id=?", (user_id,))
+    return {"ok": True}
 
 
 @router.post("/logout")
@@ -345,7 +521,7 @@ def experts(kind: Literal["kilimo", "ufugaji"] | None = None) -> dict[str, list[
     placeholders = ",".join("?" for _ in roles)
     with database() as conn:
         rows = conn.execute(
-            f"SELECT id, name, email, role FROM comm_users WHERE role IN ({placeholders}) ORDER BY name COLLATE NOCASE",
+            f"SELECT id, name, email, role FROM comm_users WHERE role IN ({placeholders}) AND status='Approved' ORDER BY name COLLATE NOCASE",
             roles,
         ).fetchall()
     result = []

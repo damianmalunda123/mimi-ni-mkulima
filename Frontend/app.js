@@ -1218,6 +1218,20 @@ function render(){
   $$('#nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===S.view));
   $('#main').innerHTML=VIEWS[S.view]();
   if(POST[S.view])POST[S.view]();
+  // Admin floating bar: visible on all pages except admin panel itself
+  let adminBar=$('#adminFloatingBar');
+  const adminUser=curUser();
+  if(adminUser&&adminUser.role==='admin'&&S.view!=='admin'){
+    if(!adminBar){
+      adminBar=document.createElement('div');
+      adminBar.id='adminFloatingBar';
+      adminBar.className='admin-floating-bar';
+      document.body.appendChild(adminBar);
+    }
+    adminBar.innerHTML=`🛡️ Admin <button data-act="goAdmin">Control Panel</button>`;
+  } else {
+    if(adminBar)adminBar.remove();
+  }
 }
 
 function go(v,p){Object.assign(S,{view:v},p||{});closeSheet();render();$('#main').scrollTop=0}
@@ -1833,13 +1847,154 @@ function localAccountForEmail(email){return Object.values(DB.users).find(x=>(x.e
 function activateRemoteUser(remote,existing){let u=existing||localAccountForEmail(remote.email);if(!u){u={id:uid('u'),name:remote.name,login:remote.email,email:remote.email,phone:'',salt:uid('s'),hash:'',bio:'',handle:'@'+(remote.name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};newUserData(u);DB.users[u.id]=u}u.name=remote.name;u.email=remote.email;u.login=remote.email;u.remoteId=remote.id;u.role=remote.role;DB.session=u.id;save();connectCommunicationSocket();loadRemoteThreads();return u}
 async function restoreCommunicationSession(){const existing=curUser();if(!existing||!existing.email)return;try{const result=await communicationsRequest('/me'),remote=result.user;if((existing.email||'').toLowerCase()===remote.email.toLowerCase())activateRemoteUser(remote,existing)}catch(e){if(e.status===401)expireCommunicationSession()}}
 function findResetAccount(value){const id=value.trim().toLowerCase();if(id.includes('@')){const account=Object.values(DB.users).find(x=>(x.email||x.login||'').toLowerCase()===id);return account?{account,channel:'email',destination:account.email||account.login}:null}const phone=normalizePhone(id),account=Object.values(DB.users).find(x=>x.phone&&normalizePhone(x.phone)===phone||x.login&&!x.login.includes('@')&&normalizePhone(x.login)===phone);return account?{account,channel:'sms',destination:account.phone||normalizePhone(account.login)}:null}
+let REG_ROLE = 'farmer';
+let REG_CERT_DOC = null;
+let REG_LICENSE_DOC = null;
+
+ACT.regRoleChange = el => {
+  REG_ROLE = el.value;
+  const box = $('#expertFieldsBox');
+  if (box) {
+    box.style.display = (REG_ROLE === 'crop_expert' || REG_ROLE === 'livestock_expert') ? 'flex' : 'none';
+  }
+};
+
+ACT.pickCertDoc = async () => {
+  const f = await pickFile('image/*,application/pdf');
+  if (!f) return;
+  try {
+    if (f.type && f.type.startsWith('image/')) {
+      REG_CERT_DOC = await imgToData(f, 1200, 0.85);
+    } else {
+      REG_CERT_DOC = await fileToData(f);
+    }
+    const p = $('#certPreview');
+    if (p) p.innerHTML = `<span class="expert-file-preview">📄 ${esc(f.name || 'Cheti cha Taaluma')} <button type="button" class="icon-btn" data-act="clearCertDoc" style="color:#ef4444">${ic('x')}</button></span>`;
+    toast(curLang()==='sw'?'Cheti cha taaluma kimepakiwa!':'Academic certificate attached!');
+  } catch(e) { toast('Could not load certificate.'); }
+};
+
+ACT.clearCertDoc = () => {
+  REG_CERT_DOC = null;
+  const p = $('#certPreview');
+  if (p) p.innerHTML = '';
+};
+
+ACT.pickLicenseDoc = async () => {
+  const f = await pickFile('image/*,application/pdf');
+  if (!f) return;
+  try {
+    if (f.type && f.type.startsWith('image/')) {
+      REG_LICENSE_DOC = await imgToData(f, 1200, 0.85);
+    } else {
+      REG_LICENSE_DOC = await fileToData(f);
+    }
+    const p = $('#licensePreview');
+    if (p) p.innerHTML = `<span class="expert-file-preview">📜 ${esc(f.name || 'Leseni ya Kazi')} <button type="button" class="icon-btn" data-act="clearLicenseDoc" style="color:#ef4444">${ic('x')}</button></span>`;
+    toast(curLang()==='sw'?'Leseni ya kazi imepakiwa!':'Practicing license attached!');
+  } catch(e) { toast('Could not load license.'); }
+};
+
+ACT.clearLicenseDoc = () => {
+  REG_LICENSE_DOC = null;
+  const p = $('#licensePreview');
+  if (p) p.innerHTML = '';
+};
+
 function authHTML(){const reg=S.auth==='register',login=S.auth==='login';let body='';
   if(S.auth==='forgot')body=`<p class="note" style="margin-bottom:.9rem">${curLang()==='sw'?'Weka anwani ya barua pepe (email) uliyojisajili nayo. Mfumo utatengeneza nambari ya siri ya uhakiki (OTP yenye tarakimu 6) na kuituma kiotomatiki kwenye barua pepe yako.':'Enter your registered email address. The system will automatically generate and send a 6-digit verification code to your email.'}</p><form class="form" data-form="requestReset"><label class="lab">${t('lbl_email')}<input class="field" name="id" type="email" required maxlength="254" placeholder="mfano: mkulima@gmail.com" autocomplete="email"></label><button class="btn">${curLang()==='sw'?'Tuma Nambari ya Uhakiki':'Send Verification Code'}</button><button type="button" class="btn ghost" data-act="backToLogin">${t('btn_change_details')}</button></form>`;
   else if(S.auth==='forgotCode')body=`<p class="note" style="margin-bottom:.9rem">${t('verification_sent_to')} <b>${esc(maskContact(PENDING_RESET.destination,PENDING_RESET.channel))}</b>.<br>${curLang()==='sw'?'Tafadhali kagua barua pepe yako (inbox au spam) kisha ingiza tarakimu 6 za uhakiki hapa:':'Please check your email and enter the 6-digit code below:'}</p><form class="form" data-form="confirmResetCode"><label class="lab">${t('verification_code')}<input class="field" name="code" required inputmode="numeric" pattern="[0-9]{6}" minlength="6" maxlength="6" placeholder="000000" autocomplete="one-time-code" style="font-size:1.35rem;letter-spacing:0.25rem;text-align:center"></label><button class="btn">${curLang()==='sw'?'Thibitisha Nambari':'Verify Code'}</button><div class="row wrap"><button type="button" class="btn ghost sm" data-act="resendResetCode">${t('btn_resend_code')}</button><button type="button" class="btn ghost sm" data-act="backToForgot">${t('btn_change_details')}</button></div></form>`;
   else if(S.auth==='resetPassword')body=`<p class="note" style="margin-bottom:.9rem">${curLang()==='sw'?'Uhakiki umefaulu! Mfumo umekupa ruhusa ya kubadilisha nenosiri. Tafadhali andika nenosiri jipya na kulithibitisha hapa chini:':'Verification successful! You may now set your new password and confirm it below:'}</p><form class="form" data-form="resetPassword">${passwordField('newPw',t('lbl_new_pw'),'new-password')}${passwordField('confirmNewPw',t('lbl_confirm_pw'),'new-password')}<button class="btn">${t('btn_reset_password')}</button></form>`;
-  else body=`<div class="tabs" role="tablist"><button class="${login?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div><form class="form" data-form="auth">${reg?`<label class="lab">${t('lbl_name')}<input class="field" name="name" required maxlength="60" autocomplete="name"></label><label class="lab">${t('lbl_email')}<input class="field" name="email" type="email" required maxlength="254" autocomplete="email"></label><label class="lab">${t('lbl_phone')}<input class="field" name="phone" type="tel" maxlength="24" placeholder="+255 7XX XXX XXX" autocomplete="tel"></label><label class="lab">${t('lbl_role')}<select class="field" name="role" required><option value="farmer">${t('role_farmer')}</option><option value="livestock_keeper">${t('role_livestock_keeper')}</option><option value="crop_expert">${t('role_crop_expert')}</option><option value="livestock_expert">${t('role_livestock_expert')}</option></select></label><p class="muted small">${t('role_note')}</p>`:`<label class="lab">${t('lbl_id')}<input class="field" name="id" type="email" required maxlength="254" autocomplete="username"></label>`}${passwordField('pw',t('lbl_pw'),reg?'new-password':'current-password')}${reg?passwordField('confirmPw',t('lbl_confirm_pw'),'new-password'):''}<button class="btn">${reg?t('register_tab'):t('login_tab')}</button>${login?`<button type="button" class="btn ghost" data-act="forgotPassword">${t('forgot_password')}</button>`:''}<p class="note">${t('auth_note')}</p></form>`;
+  else body=`<div class="tabs" role="tablist"><button class="${login?'on':''}" data-act="authTab" data-t="login">${t('login_tab')}</button><button class="${reg?'on':''}" data-act="authTab" data-t="register">${t('register_tab')}</button></div>
+  <form class="form" data-form="auth">
+    ${reg ? `
+      <label class="lab">${t('lbl_name')} <span style="font-weight:400;color:var(--muted)">(${curLang()==='sw'?'Kama ilivyo NIDA':'As on NIDA'})</span>
+        <input class="field" name="name" required maxlength="100" autocomplete="name" placeholder="${curLang()==='sw'?'Jina Kamili':'Full Name'}">
+      </label>
+      <label class="lab">${t('lbl_email')}
+        <input class="field" name="email" type="email" required maxlength="254" autocomplete="email">
+      </label>
+      <label class="lab">${t('lbl_phone')}
+        <input class="field" name="phone" type="tel" maxlength="24" placeholder="+255 7XX XXX XXX" autocomplete="tel">
+      </label>
+      <label class="lab">${t('lbl_role')}
+        <select class="field" name="role" required data-act="regRoleChange">
+          <option value="farmer" ${REG_ROLE==='farmer'?'selected':''}>${t('role_farmer')}</option>
+          <option value="livestock_keeper" ${REG_ROLE==='livestock_keeper'?'selected':''}>${t('role_livestock_keeper')}</option>
+          <option value="crop_expert" ${REG_ROLE==='crop_expert'?'selected':''}>${t('role_crop_expert')}</option>
+          <option value="livestock_expert" ${REG_ROLE==='livestock_expert'?'selected':''}>${t('role_livestock_expert')}</option>
+        </select>
+      </label>
+      <p class="muted small">${t('role_note')}</p>
+
+      <!-- Certified Expert Government Verification Section -->
+      <div id="expertFieldsBox" class="expert-verify-box" style="display:${(REG_ROLE==='crop_expert'||REG_ROLE==='livestock_expert')?'flex':'none'}">
+        <div class="expert-verify-header">
+          🏛️ <span>${curLang()==='sw'?'Uhakiki wa Mtaalamu wa Serikali (VCT / Wizara ya Kilimo)':'Government Certified Expert Verification'}</span>
+        </div>
+        <p class="muted small" style="margin:0">${curLang()==='sw'?'Kulingana na miongozo ya serikali ya Tanzania, wataalamu wote wanatakiwa kuwasilisha nambari ya usajili na vyeti vinavyotambuliwa.':'According to Tanzanian government regulations (VCT / Min of Ag), experts must provide valid credentials and certificates.'}</p>
+        
+        <label class="lab">${curLang()==='sw'?'Jina Kamili (Kama lilivyo kwenye NIDA / Cheti)':'Full Name (Matching NIDA / Certificate)'}
+          <input class="field" name="nida_name" maxlength="100" placeholder="${curLang()==='sw'?'Mfano: Dkt. Juma Ali Mwamba':'e.g. Dr. Juma Ali Mwamba'}">
+        </label>
+
+        <label class="lab">${curLang()==='sw'?'Kiwango cha Elimu':'Education Level'}
+          <select class="field" name="education_level">
+            <option value="Degree">${curLang()==='sw'?'Shahada ya Kwanza (Bachelor Degree)':'Bachelor Degree'}</option>
+            <option value="Diploma">${curLang()==='sw'?'Stashahada (Diploma)':'Diploma'}</option>
+            <option value="Certificate">${curLang()==='sw'?'Astashahada (Certificate)':'Certificate'}</option>
+            <option value="Masters">${curLang()==='sw'?'Shahada ya Uzamili (Masters)':'Masters'}</option>
+            <option value="PhD">${curLang()==='sw'?'Shahada ya Uzamivu (PhD)':'PhD'}</option>
+          </select>
+        </label>
+
+        <label class="lab">${curLang()==='sw'?'Chuo Kikuu / Chuo cha Kilimo au Mifugo':'University or College Name'}
+          <input class="field" name="college_name" maxlength="120" placeholder="${curLang()==='sw'?'Mfano: SUA, MATI Uyole, LITA Tengeru':'e.g. SUA, MATI Uyole, LITA Tengeru'}" list="collegeSuggestions">
+          <datalist id="collegeSuggestions">
+            <option value="Sokoine University of Agriculture (SUA)">
+            <option value="MATI Uyole (Mbeya)">
+            <option value="MATI Ilonga (Kilosa)">
+            <option value="MATI Tumbi (Tabora)">
+            <option value="LITA Tengeru (Arusha)">
+            <option value="LITA Morogoro">
+            <option value="LITA Mpwapwa (Dodoma)">
+            <option value="University of Dar es Salaam (UDSM)">
+          </datalist>
+        </label>
+
+        <label class="lab">${curLang()==='sw'?'Nambari ya Usajili wa Kitaalamu (Registration Number)':'Professional Registration Number'}
+          <input class="field" name="reg_number" maxlength="60" placeholder="${curLang()==='sw'?'Mfano: VCT/2023/0481 au AGRI/EXT/904':'e.g. VCT/2023/0481 or AGRI/EXT/904'}">
+        </label>
+
+        <label class="lab">${curLang()==='sw'?'Tarehe ya Kumalizika Leseni ya Kazi':'Practicing License Expiry Date'}
+          <input class="field" type="date" name="license_expiry">
+        </label>
+
+        <div class="expert-file-picker">
+          <span class="muted small" style="font-weight:700">${curLang()==='sw'?'Cheti cha Taaluma (Academic Certificate - PDF/Picha)':'Academic Certificate (PDF/Image)'}</span>
+          <button type="button" class="expert-file-btn" data-act="pickCertDoc">📁 ${curLang()==='sw'?'Pakia / Piga Picha ya Cheti':'Upload / Snap Certificate'}</button>
+          <div id="certPreview">${REG_CERT_DOC ? `<span class="expert-file-preview">📄 Cheti kimepakiwa <button type="button" class="icon-btn" data-act="clearCertDoc" style="color:#ef4444">${ic('x')}</button></span>` : ''}</div>
+        </div>
+
+        <div class="expert-file-picker">
+          <span class="muted small" style="font-weight:700">${curLang()==='sw'?'Leseni ya Kazi (Practicing License - PDF/Picha)':'Practicing License (PDF/Image)'}</span>
+          <button type="button" class="expert-file-btn" data-act="pickLicenseDoc">📁 ${curLang()==='sw'?'Pakia / Piga Picha ya Leseni':'Upload / Snap License'}</button>
+          <div id="licensePreview">${REG_LICENSE_DOC ? `<span class="expert-file-preview">📜 Leseni imepakiwa <button type="button" class="icon-btn" data-act="clearLicenseDoc" style="color:#ef4444">${ic('x')}</button></span>` : ''}</div>
+        </div>
+      </div>
+    ` : `
+      <label class="lab">${curLang()==='sw'?'Barua Pepe au Jina la Akaunti':'Email Address or Username'}
+        <input class="field" name="id" required maxlength="254" autocomplete="username" placeholder="mkulima@gmail.com au @mimi ni mkulima">
+      </label>
+    `}
+    ${passwordField('pw',t('lbl_pw'),reg?'new-password':'current-password')}
+    ${reg?passwordField('confirmPw',t('lbl_confirm_pw'),'new-password'):''}
+    <button class="btn">${reg?t('register_tab'):t('login_tab')}</button>
+    ${login?`<button type="button" class="btn ghost" data-act="forgotPassword">${t('forgot_password')}</button>`:''}
+    <p class="note">${t('auth_note')}</p>
+  </form>`;
   const title=reg?t('register_title'):login?t('login_title'):t('reset_title');
-  return`<div class="view" style="max-width:460px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${title}</h2>${body}<p class="muted small" style="margin-top:1rem">${t('guest_note')}</p></div>`}
+  return`<div class="view" style="max-width:480px"><h2 style="font:800 2rem var(--font-display);letter-spacing:-.02em">${title}</h2>${body}<p class="muted small" style="margin-top:1rem">${t('guest_note')}</p></div>`}
 
 ACT.authTab=el=>{PENDING_RESET=null;S.auth=el.dataset.t;render()};
 ACT.togglePassword=el=>{const input=document.getElementById(el.dataset.target);if(!input)return;const visible=input.type==='password';input.type=visible?'text':'password';el.innerHTML=ic(visible?'eye-off':'eye');el.setAttribute('aria-label',t(visible?'btn_hide_pw':'btn_show_pw'));el.title=t(visible?'btn_hide_pw':'btn_show_pw')};
@@ -1847,28 +2002,65 @@ ACT.forgotPassword=()=>{PENDING_RESET=null;S.auth='forgot';render()};
 ACT.backToLogin=()=>{PENDING_RESET=null;S.auth='login';render()};
 ACT.backToForgot=()=>{if(PENDING_RESET)delete PENDING_RESET.challengeId;S.auth='forgot';render()};
 ACT.resendResetCode=async()=>{if(!PENDING_RESET)return;try{const result=await authPost('/users/password-reset/send',{channel:PENDING_RESET.channel,destination:PENDING_RESET.destination});PENDING_RESET.challengeId=result.challenge_id;toast(curLang()==='sw'?'Nambari mpya imetumwa kwenye barua pepe yako!':'New code sent to your email!')}catch(e){toast(e.message||t('verification_unavailable'))}};
-FORM.auth=async f=>{const pw=fv(f,'pw');
+
+FORM.auth=async f=>{
+  const pw=fv(f,'pw');
   if(S.auth==='register'){
     const name=fv(f,'name').trim(),email=fv(f,'email').trim().toLowerCase(),phone=fv(f,'phone').trim()?normalizePhone(fv(f,'phone').trim()):'',role=fv(f,'role'),confirm=fv(f,'confirmPw');
     if(!name)return toast(t('lbl_name'));
     if(pw!==confirm)return toast(t('password_mismatch'));
+
+    let nida_name='',education_level='',college_name='',reg_number='',license_expiry='',cert_doc='',license_doc='';
+    if(role==='crop_expert'||role==='livestock_expert'){
+      nida_name=fv(f,'nida_name').trim()||name;
+      education_level=fv(f,'education_level').trim();
+      college_name=fv(f,'college_name').trim();
+      reg_number=fv(f,'reg_number').trim();
+      license_expiry=fv(f,'license_expiry').trim();
+      cert_doc=REG_CERT_DOC||'';
+      license_doc=REG_LICENSE_DOC||'';
+      if(!college_name)return toast(curLang()==='sw'?'Tafadhali weka Jina la Chuo/Chuo Kikuu.':'Please enter your College or University name.');
+      if(!reg_number)return toast(curLang()==='sw'?'Tafadhali weka Nambari ya Usajili wa Kitaalamu (VCT/Wizara).':'Please enter your professional registration number (VCT/Ministry).');
+      if(!cert_doc)return toast(curLang()==='sw'?'Tafadhali pakia Cheti chako cha Taaluma (Academic Certificate).':'Please upload your academic certificate.');
+    }
+
     try{
-      const result=await communicationsRequest('/register',{name,email,phone,password:pw,role});
-      const localSalt=uid('s'),local={id:uid('u'),name,login:email,email,phone,salt:localSalt,hash:await sha(localSalt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),ts:now()};
-      newUserData(local);local.ai=DB.guest.ai||{};local.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[local.id]=local;activateRemoteUser(result.user,local);toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');go('account')
+      const payload={name,email,phone,password:pw,role,nida_name,education_level,college_name,reg_number,license_expiry,cert_doc,license_doc};
+      const result=await communicationsRequest('/register',payload);
+      const localSalt=uid('s'),local={id:uid('u'),name,login:email,email,phone,salt:localSalt,hash:await sha(localSalt+pw),bio:'',handle:'@'+(name.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,14)||'farmer')+Math.floor(10+Math.random()*90),role,status:result.user.status,nida_name,education_level,college_name,reg_number,license_expiry,cert_doc,license_doc,ts:now()};
+      newUserData(local);local.ai=DB.guest.ai||{};local.history=DB.guest.history||[];DB.guest={ai:{},history:[]};DB.users[local.id]=local;activateRemoteUser(result.user,local);
+      REG_CERT_DOC=null;REG_LICENSE_DOC=null;
+      if(result.user.status==='Pending_Verification'){
+        toast(curLang()==='sw'?'Usajili umepokelewa! Akaunti yako inasubiri uhakiki wa serikali.':'Registration submitted! Your expert account is pending government verification.');
+      }else{
+        toast((curLang()==='en'?'Welcome, ':'Karibu, ')+name.split(' ')[0]+'!');
+      }
+      go('account');
     }catch(e){toast(e.message||t('verification_unavailable'))}
   }else{
-    const email=fv(f,'id').trim().toLowerCase(),local=localAccountForEmail(email);
+    const idVal=fv(f,'id').trim().toLowerCase();
+    const local=localAccountForEmail(idVal);
     try{
       let result;
-      try{result=await communicationsRequest('/login',{email,password:pw})}
+      try{result=await communicationsRequest('/login',{email:idVal,password:pw})}
       catch(e){
         if(e.status!==401||!local||!local.hash||local.hash!==await sha(local.salt+pw))throw e;
-        result=await communicationsRequest('/register',{name:local.name,email,phone:local.phone||'',password:pw,role:local.role||'farmer'});
+        result=await communicationsRequest('/register',{name:local.name,email:idVal,phone:local.phone||'',password:pw,role:local.role||'farmer'});
       }
-      activateRemoteUser(result.user,local);toast((curLang()==='en'?'Welcome back, ':'Karibu tena, ')+(result.user.name||'').split(' ')[0]+'!');go('account')
+      activateRemoteUser(result.user,local);
+      if(result.user.role==='admin'||idVal==='@mimi ni mkulima'||idVal==='admin@miminikulima.com'){
+        toast(curLang()==='sw'?'Karibu kwenye Jopo Kuu la Utawala (Admin Panel)!':'Welcome to Administrator Control Center!');
+        return go('admin');
+      }
+      if(result.user.status==='Pending_Verification'){
+        toast(curLang()==='sw'?'Akaunti yako inapitiwa na mamlaka za serikali (VCT/Wizara ya Kilimo).':'Your expert account is under review by government authorities.');
+      }else{
+        toast((curLang()==='en'?'Welcome back, ':'Karibu tena, ')+(result.user.name||'').split(' ')[0]+'!');
+      }
+      go('account');
     }catch(e){toast(e.message||t('verification_unavailable'))}
-  }};
+  }
+};
 FORM.requestReset=async f=>{
   const value=fv(f,'id').trim();
   if(!value)return toast(t('reset_account_missing'));
@@ -1974,16 +2166,74 @@ function profileHTML(u){
   let b;
   if(S.ptab==='maudhui')b=grid(mine);else if(S.ptab==='repost')b=grid(DB.posts.filter(p=>u.reposts.includes(p.id)));
   else if(S.ptab==='saved')b=grid(DB.posts.filter(p=>u.saved.includes(p.id)));
-  else b=`<p style="margin-bottom:.6rem"><button class="btn sm" data-act="addListing">${ic('plus')} ${t('btn_add_product')}</button></p>${u.listings.length?`<div class="list">${u.listings.map(l=>`<div class="item">${l.img?`<img src="${l.img}" style="width:48px;height:48px;border-radius:.4rem;object-fit:cover;flex-shrink:0">`:''}<span class="grow"><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.qty||'')}${l.place?' · '+esc(l.place):''}</span></span><b>TZS ${money(l.price)}</b><button class="icon-btn" data-act="delListing" data-id="${l.id}" aria-label="Delete">${ic('trash')}</button></div>`).join('')}</div>`:`<div class="empty"><b>${t('no_products')}</b>${t('no_products_sub')}</div>`}`;
+  else b=`<p style="margin-bottom:.6rem"><button class="btn sm" data-act="addListing">${ic('plus')} ${t('btn_add_product')}</button></p>${u.listings.length?`<div class="list">${u.listings.map(l=>`<div class="item">${l.img?`<img src="${l.img}" style="width:48px;height:48px;border-radius:.4rem;object-fit:cover;flex-shrink:0">`:''}` +
+    `<span class="grow"><b>${esc(l.name)}</b><br><span class="muted small">${esc(l.qty||'')}${l.place?' · '+esc(l.place):''}</span></span><b>TZS ${money(l.price)}</b>` +
+    `<button class="icon-btn" data-act="delListing" data-id="${l.id}" aria-label="Delete">${ic('trash')}</button></div>`).join('')}</div>`:
+    `<div class="empty"><b>${t('no_products')}</b>${t('no_products_sub')}</div>`}`;
+
+  // Expert verification status banner
+  const isExpert=u.role==='crop_expert'||u.role==='livestock_expert';
+  const isSw=curLang()==='sw';
+  let verifyBanner='';
+  if(isExpert){
+    const st=u.status||'Pending_Verification';
+    if(st==='Pending_Verification'){
+      verifyBanner=`<div class="expert-verify-banner pending">
+        <span style="font-size:1.6rem">⏳</span>
+        <div>
+          <b>${isSw?'Akaunti Inapitiwa':'Account Under Review'}</b><br>
+          <span class="small">Akaunti yako inapitiwa na mamlaka za serikali (VCT/Wizara ya Kilimo). Utapokea ujumbe thibitisho hivi karibuni.</span>
+          ${u.reg_number?`<br><span class="muted small">Nambari ya Usajili: <b>${esc(u.reg_number)}</b></span>`:''}
+          ${u.college_name?`<br><span class="muted small">${isSw?'Chuo':'College'}: <b>${esc(u.college_name)}</b></span>`:''}
+        </div>
+      </div>`;
+    } else if(st==='Approved'){
+      verifyBanner=`<div class="expert-verify-banner approved">
+        <span style="font-size:1.6rem">✅</span>
+        <div>
+          <b>${isSw?'Mtaalamu Aliyeidhinishwa':'Verified Expert'}</b><br>
+          <span class="small">${isSw?'Akaunti yako imehakikiwa na serikali. Unaweza sasa kutoa ushauri wa kitaalamu.':'Your account has been verified by government authorities. You can now provide expert consultations.'}</span>
+          ${u.college_name?`<br><span class="muted small">${isSw?'Chuo':'College'}: <b>${esc(u.college_name)}</b> · ${esc(u.education_level||'')}</span>`:''}
+        </div>
+      </div>`;
+    } else if(st==='Rejected'){
+      verifyBanner=`<div class="expert-verify-banner rejected">
+        <span style="font-size:1.6rem">❌</span>
+        <div>
+          <b>${isSw?'Akaunti Ilikataliwa':'Application Rejected'}</b><br>
+          <span class="small">${isSw?'Ombi lako limekataliwa. Tafadhali wasiliana na msimamizi au wasilisha tena nyaraka sahihi.':'Your application was rejected. Please contact admin or resubmit correct documents.'}</span>
+          ${u.rejection_reason?`<br><span class="muted small" style="color:#ef4444">${isSw?'Sababu':'Reason'}: ${esc(u.rejection_reason)}</span>`:''}
+        </div>
+      </div>`;
+    }
+  }
+
+  // Admin badge
+  const adminBadge=u.role==='admin'?`<div style="margin:.8rem 0;padding:.7rem 1rem;border-radius:12px;background:rgba(234,179,8,.12);border:1.5px solid #eab308;display:flex;align-items:center;gap:.7rem">
+    <span style="font-size:1.5rem">🛡️</span>
+    <div style="flex:1"><b style="color:#facc15">${isSw?'Msimamizi Mkuu':'Super Administrator'}</b><br><span class="small muted">Full platform control access</span></div>
+    <button class="btn sm" data-act="goAdmin" style="background:#eab308;color:#0b141a">${isSw?'Jopo la Utawala':'Admin Panel'}</button>
+  </div>`:'';
+
   return`<div class="view" style="max-width:640px"><div class="row" style="justify-content:flex-end"><button class="icon-btn" data-act="profMenu" aria-label="Profile menu">${ic('more')}</button></div>
   <div class="prof">${av(u.name,'lg',colorOf(u.id))}<h2 style="font:800 1.5rem var(--font-display)">${esc(u.name)}</h2><span class="muted">${esc(u.handle)}</span>${u.role?`<span class="pill">${esc(roleLabel(u.role))}</span>`:''}
   <p style="max-width:40ch">${u.bio?esc(u.bio):'<span class="muted">Add a short bio about yourself.</span>'}</p>
   <div class="counts"><button><b>${mine.length}</b><span class="muted small">${t('stat_posts')}</span></button><button data-act="followSheet"><b>${u.following.length}</b><span class="muted small">${t('stat_following')}</span></button><button data-act="followersSheet"><b>${followers}</b><span class="muted small">${t('stat_followers')}</span></button></div>
   <div class="row wrap" style="justify-content:center"><button class="btn ghost sm" data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button class="btn sm" data-act="newPost">${ic('plus')} ${t('btn_new_post')}</button></div></div>
+  ${adminBadge}${verifyBanner}
   <div class="tabs" role="tablist">${tabs.map(([i,l])=>`<button role="tab" class="${S.ptab===i?'on':''}" data-act="ptab" data-t="${i}">${l}</button>`).join('')}</div>${b}</div>`}
 
 ACT.ptab=el=>{S.ptab=el.dataset.t;render()};
-ACT.profMenu=()=>sheet('Profile Menu',`<div class="menu"><button data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button><button data-act="startUsernameChange">${ic('user')} ${curLang()==='sw'?'Badilisha Jina la Mtumiaji':'Change Username'}</button><button data-act="followSheet">${ic('users')} ${t('stat_following')}</button><button data-act="ptabGo" data-t="soko">${ic('tag')} ${t('tab_market')}</button><button data-act="openTermsPolicy">${ic('info')} ${curLang()==='sw'?'Vigezo na Masharti':'Terms & Policies'}</button><button data-act="go" data-v="settings">${ic('settings')} ${t('nav_settings')}</button><button data-act="logout">${ic('logout')} ${t('st_logout')}</button></div>`);
+ACT.goAdmin=()=>{closeSheet();go('admin')};
+ACT.profMenu=()=>{const u=curUser(),isSw=curLang()==='sw';sheet('Profile Menu',`<div class="menu">${u&&u.role==='admin'?`<button data-act="goAdmin">🛡️ ${isSw?'Jopo la Utawala':'Admin Control Panel'}</button>`:''}
+  <button data-act="editProfile">${ic('edit')} ${t('btn_edit_profile')}</button>
+  <button data-act="startUsernameChange">${ic('user')} ${isSw?'Badilisha Jina la Mtumiaji':'Change Username'}</button>
+  <button data-act="followSheet">${ic('users')} ${t('stat_following')}</button>
+  <button data-act="ptabGo" data-t="soko">${ic('tag')} ${t('tab_market')}</button>
+  <button data-act="openTermsPolicy">${ic('info')} ${isSw?'Vigezo na Masharti':'Terms & Policies'}</button>
+  <button data-act="go" data-v="settings">${ic('settings')} ${t('nav_settings')}</button>
+  <button data-act="logout">${ic('logout')} ${t('st_logout')}</button>
+</div>`);};
 ACT.ptabGo=el=>{closeSheet();S.ptab=el.dataset.t;render()};
 ACT.editProfile=()=>{const u=curUser(),isSw=curLang()==='sw';sheet(t('btn_edit_profile'),`<form class="form" data-form="profile"><label class="lab">${t('lbl_name')} (Username)<input class="field" name="name" value="${esc(u.name)}" maxlength="60" required readonly style="opacity:0.85;cursor:not-allowed"></label><div style="margin:-.3rem 0 .9rem;display:flex;justify-content:space-between;align-items:center;background:var(--raised);padding:.55rem .75rem;border-radius:10px;gap:.5rem"><span class="small muted">${isSw?'Kubadilisha jina kunahitaji vigezo na uthibitisho wa barua pepe.':'Changing username requires eligibility and email verification.'}</span><button type="button" class="btn sm soft" data-act="startUsernameChange" style="white-space:nowrap">${ic('edit')} ${isSw?'Badilisha':'Change'}</button></div><label class="lab">${t('lbl_notes')} (bio)<textarea class="field" name="bio" maxlength="160">${esc(u.bio)}</textarea></label><button class="btn">${t('btn_save')}</button></form>`)};
 FORM.profile=f=>{const u=curUser();u.bio=fv(f,'bio').trim();save();closeSheet();render()};
@@ -5422,6 +5672,206 @@ async function setPref(tEl){const k=tEl.dataset.set,src=tEl.dataset.src,val=tEl.
   if(src==='perm'){if(val&&(k==='camera'||k==='mic')&&navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){try{const s=await navigator.mediaDevices.getUserMedia(k==='camera'?{video:true}:{audio:true});s.getTracks().forEach(x=>x.stop())}catch(e){tEl.checked=false;return toast('Browser denied permission.')}}DB.settings.perm[k]=val}
   else if(src==='priv')PRIV()[k]=val;else DB.settings[k]=val;
   save();if(src==='st'||k==='lang')render()}
+
+/* ============ admin panel ============ */
+let ADMIN_TAB='experts', ADMIN_FILTER='Pending_Verification', ADMIN_USERS=[], ADMIN_EXPERTS=[], ADMIN_STATS={};
+
+async function loadAdminData(){
+  try{
+    const [statsRes,expertRes,usersRes]=await Promise.all([
+      communicationsRequest('/admin/stats',null,'GET').catch(()=>({})),
+      communicationsRequest(`/admin/experts?status=${encodeURIComponent(ADMIN_FILTER)}`,null,'GET').catch(()=>({experts:[]})),
+      communicationsRequest('/admin/users',null,'GET').catch(()=>({users:[]}))
+    ]);
+    ADMIN_STATS=statsRes||{};
+    ADMIN_EXPERTS=(expertRes.experts||[]);
+    ADMIN_USERS=(usersRes.users||[]);
+  }catch(e){toast('Could not load admin data: '+e.message);}
+  render();
+}
+
+function adminHTML(){
+  const u=curUser();
+  if(!u||u.role!=='admin')return`<div class="view"><div class="empty">🔒 Unauthorized. Admin access only.</div></div>`;
+  const isSw=curLang()==='sw';
+  const stats=ADMIN_STATS;
+
+  // KPI cards
+  const kpi=`<div class="admin-kpi-grid">
+    <div class="admin-kpi-card"><b>${stats.total_users||0}</b><span>${isSw?'Watumiaji Wote':'Total Users'}</span></div>
+    <div class="admin-kpi-card pending"><b>${stats.pending_experts||0}</b><span>${isSw?'Wanasubiri Uhakiki':'Pending Verification'}</span></div>
+    <div class="admin-kpi-card approved"><b>${stats.approved_experts||0}</b><span>${isSw?'Wataalamu Walioidhinishwa':'Approved Experts'}</span></div>
+    <div class="admin-kpi-card"><b>${stats.rejected_experts||0}</b><span>${isSw?'Waliokuwa Wamekataliwa':'Rejected'}</span></div>
+    <div class="admin-kpi-card"><b>${stats.total_messages||0}</b><span>${isSw?'Jumbe Zote':'Total Messages'}</span></div>
+  </div>`;
+
+  // Tab buttons
+  const tabs=`<div class="admin-filter-bar" style="margin-bottom:.4rem">
+    <button class="admin-filter-btn${ADMIN_TAB==='experts'?' active':''}" data-act="adminTab" data-t="experts">🌾 ${isSw?'Wataalamu':'Experts'}</button>
+    <button class="admin-filter-btn${ADMIN_TAB==='users'?' active':''}" data-act="adminTab" data-t="users">👥 ${isSw?'Watumiaji':'All Users'}</button>
+    <button class="admin-filter-btn${ADMIN_TAB==='content'?' active':''}" data-act="adminTab" data-t="content">📝 ${isSw?'Maudhui':'Content'}</button>
+  </div>`;
+
+  let body='';
+
+  if(ADMIN_TAB==='experts'){
+    // Filter pills
+    const filters=[['Pending_Verification',`⏳ ${isSw?'Wanasubiri':'Pending'}`],['Approved',`✅ ${isSw?'Walioidhinishwa':'Approved'}`],['Rejected',`❌ ${isSw?'Waliokuwa Wamekataliwa':'Rejected'}`],['all',`🌐 ${isSw?'Wote':'All'}`]];
+    const filterBar=`<div class="admin-filter-bar">${filters.map(([v,l])=>`<button class="admin-filter-btn${ADMIN_FILTER===v?' active':''}" data-act="adminFilter" data-f="${v}">${l}</button>`).join('')}</div>`;
+
+    if(!ADMIN_EXPERTS.length){
+      body=filterBar+`<div class="empty" style="margin-top:1.5rem">${isSw?'Hakuna wataalamu katika hali hii.':'No experts found in this status category.'}</div>`;
+    } else {
+      const expertCards=ADMIN_EXPERTS.map(ex=>{
+        const statusColor=ex.status==='Approved'?'#22c55e':ex.status==='Rejected'?'#ef4444':'#eab308';
+        const statusLabel=ex.status==='Approved'?(isSw?'Imeidhinishwa':'Approved'):ex.status==='Rejected'?(isSw?'Imekataliwa':'Rejected'):(isSw?'Inasubiri Uhakiki':'Pending Verification');
+        return`<div class="admin-expert-card">
+          <div class="admin-expert-head">
+            <div style="display:flex;align-items:center;gap:.7rem">
+              ${av(ex.name,'',colorOf(ex.id))}
+              <div>
+                <b>${esc(ex.name)}</b><br>
+                <span class="muted small">${esc(ex.email||'')} ${ex.phone?'· '+esc(ex.phone):''}</span>
+              </div>
+            </div>
+            <span style="padding:.3rem .8rem;border-radius:999px;font-size:.78rem;font-weight:800;background:${statusColor}20;color:${statusColor};border:1px solid ${statusColor}">${statusLabel}</span>
+          </div>
+          <div class="admin-expert-meta">
+            <div><span class="muted small">${isSw?'Aina ya Mtaalamu':'Expert Type'}</span><br><b>${esc(roleLabel(ex.role||''))}</b></div>
+            <div><span class="muted small">${isSw?'Kiwango cha Elimu':'Education'}</span><br><b>${esc(ex.education_level||'-')}</b></div>
+            <div><span class="muted small">${isSw?'Chuo':'College/University'}</span><br><b>${esc(ex.college_name||'-')}</b></div>
+            <div><span class="muted small">${isSw?'Nambari ya Usajili (VCT)':'Reg. Number (VCT)'}</span><br><b style="color:#facc15">${esc(ex.reg_number||'-')}</b></div>
+            <div><span class="muted small">${isSw?'Jina la NIDA':'NIDA Name'}</span><br><b>${esc(ex.nida_name||'-')}</b></div>
+            <div><span class="muted small">${isSw?'Leseni Inaisha':'License Expiry'}</span><br><b>${esc(ex.license_expiry||'-')}</b></div>
+          </div>
+          <div class="admin-doc-grid">
+            ${ex.cert_doc?`<button class="admin-doc-thumb" data-act="adminPreviewDoc" data-doc="${esc(ex.id)}" data-type="cert">📄 ${isSw?'Cheti cha Taaluma':'Academic Certificate'}</button>`:`<span class="muted small">📄 ${isSw?'Hakuna cheti':'No certificate uploaded'}</span>`}
+            ${ex.license_doc?`<button class="admin-doc-thumb" data-act="adminPreviewDoc" data-doc="${esc(ex.id)}" data-type="license">📜 ${isSw?'Leseni ya Kazi':'Practicing License'}</button>`:`<span class="muted small">📜 ${isSw?'Hakuna leseni':'No license uploaded'}</span>`}
+          </div>
+          ${ex.rejection_reason?`<div style="padding:.5rem .7rem;border-radius:8px;background:rgba(239,68,68,.08);border:1px solid #ef4444;font-size:.82rem;color:#f87171"><b>${isSw?'Sababu ya Kukataliwa':'Rejection Reason'}:</b> ${esc(ex.rejection_reason)}</div>`:''}
+          <div class="admin-actions-row">
+            ${ex.status!=='Approved'?`<button class="btn sm" data-act="adminApproveExpert" data-id="${esc(ex.id)}" style="background:#22c55e;color:#fff">✅ ${isSw?'Idhinisha':'Approve'}</button>`:''}
+            ${ex.status!=='Rejected'?`<button class="btn sm" data-act="adminRejectExpert" data-id="${esc(ex.id)}" style="background:#ef4444;color:#fff">❌ ${isSw?'Kataa':'Reject'}</button>`:''}
+            <button class="btn ghost sm" data-act="adminDeleteUser" data-id="${esc(ex.id)}">🗑️ ${isSw?'Futa Akaunti':'Delete Account'}</button>
+          </div>
+        </div>`;
+      }).join('');
+      body=filterBar+`<div class="admin-card-list">${expertCards}</div>`;
+    }
+  } else if(ADMIN_TAB==='users'){
+    if(!ADMIN_USERS.length){
+      body=`<div class="empty">${isSw?'Hakuna watumiaji.':'No users found.'}</div>`;
+    } else {
+      body=`<div class="admin-card-list">${ADMIN_USERS.map(usr=>`<div class="admin-expert-card" style="flex-direction:row;align-items:center;gap:1rem;flex-wrap:wrap">
+        ${av(usr.name,'',colorOf(usr.id))}
+        <div style="flex:1;min-width:0">
+          <b>${esc(usr.name)}</b><span class="pill" style="margin-left:.4rem;font-size:.7rem">${esc(usr.role||'farmer')}</span><br>
+          <span class="muted small">${esc(usr.email||'')} ${usr.phone?'· '+esc(usr.phone):''}</span>
+        </div>
+        <span style="font-size:.78rem;padding:.2rem .6rem;border-radius:999px;border:1px solid var(--line)">${esc(usr.status||'Approved')}</span>
+        ${usr.id!=='admin_root'?`<button class="btn ghost sm" data-act="adminDeleteUser" data-id="${esc(usr.id)}" style="color:#ef4444">🗑️</button>`:'<span class="muted small">Root</span>'}
+      </div>`).join('')}</div>`;
+    }
+  } else {
+    // Content moderation tab
+    const posts=DB.posts.slice().sort((a,b)=>b.ts-a.ts).slice(0,50);
+    if(!posts.length){
+      body=`<div class="empty">${isSw?'Hakuna maudhui.':'No posts to moderate.'}</div>`;
+    } else {
+      body=`<div class="admin-card-list">${posts.map(p=>`<div class="admin-expert-card" style="flex-direction:row;align-items:center;gap:.8rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:0">
+          <b>${esc((DB.users[p.by]&&DB.users[p.by].name)||'Unknown')}</b>
+          <span class="muted small" style="margin-left:.4rem">${new Date(p.ts*1e3).toLocaleDateString()}</span><br>
+          <span class="small muted">${esc((p.text||'').slice(0,100))}${p.text&&p.text.length>100?'…':''}</span>
+        </div>
+        ${p.img?`<img src="${p.img}" style="width:48px;height:48px;border-radius:.4rem;object-fit:cover;flex-shrink:0" alt="">`:''}
+        <button class="btn ghost sm" data-act="adminDeletePost" data-id="${esc(p.id)}" style="color:#ef4444">🗑️ ${isSw?'Futa':'Delete'}</button>
+      </div>`).join('')}</div>`;
+    }
+  }
+
+  return`<div class="admin-panel">
+    <div class="admin-header">
+      <h2>🛡️ ${isSw?'Jopo la Utawala':'Admin Control Center'}</h2>
+      <div style="display:flex;gap:.6rem;align-items:center">
+        <button class="btn sm" data-act="adminRefresh" style="background:var(--surface);color:var(--text);border:1px solid var(--line)">${ic('refresh')||'↻'} ${isSw?'Onyesha Upya':'Refresh'}</button>
+        <button class="btn ghost sm" data-act="go" data-v="account">${ic('user')} ${isSw?'Akaunti Yangu':'My Account'}</button>
+      </div>
+    </div>
+    ${kpi}
+    ${tabs}
+    ${body}
+  </div>`;
+}
+
+VIEWS.admin=()=>adminHTML();
+POST.admin=()=>loadAdminData();
+
+ACT.goAdmin=()=>{closeSheet();go('admin')};
+ACT.adminTab=el=>{ADMIN_TAB=el.dataset.t;render()};
+ACT.adminFilter=async el=>{ADMIN_FILTER=el.dataset.f;await loadAdminData()};
+ACT.adminRefresh=async()=>{await loadAdminData();toast('Data refreshed.')};
+
+ACT.adminApproveExpert=async el=>{
+  const id=el.dataset.id;
+  if(!id)return;
+  try{
+    await communicationsRequest(`/admin/experts/${id}/status`,{status:'Approved',reason:''},'POST');
+    toast(curLang()==='sw'?'Mtaalamu ameidhinishwa!':'Expert approved successfully!');
+    // Update local cache
+    const ex=ADMIN_EXPERTS.find(e=>e.id===id);if(ex)ex.status='Approved';
+    await loadAdminData();
+  }catch(e){toast('Error: '+e.message);}
+};
+
+ACT.adminRejectExpert=async el=>{
+  const id=el.dataset.id,isSw=curLang()==='sw';
+  if(!id)return;
+  const reason=prompt(isSw?'Tafadhali weka sababu ya kukataliwa:':'Please enter the rejection reason:','');
+  if(reason===null)return; // cancelled
+  try{
+    await communicationsRequest(`/admin/experts/${id}/status`,{status:'Rejected',reason:reason||''},'POST');
+    toast(isSw?'Akaunti imekataliwa.':'Expert application rejected.');
+    const ex=ADMIN_EXPERTS.find(e=>e.id===id);if(ex){ex.status='Rejected';ex.rejection_reason=reason;}
+    await loadAdminData();
+  }catch(e){toast('Error: '+e.message);}
+};
+
+ACT.adminDeleteUser=async el=>{
+  const id=el.dataset.id,isSw=curLang()==='sw';
+  if(!id)return;
+  if(!confirm(isSw?'Je, una uhakika kutaka kufuta akaunti hii? Hatua hii haiwezi kutenduliwa.':'Are you sure you want to delete this account? This cannot be undone.'))return;
+  try{
+    await communicationsRequest(`/admin/users/${id}`,null,'DELETE');
+    toast(isSw?'Akaunti imefutwa.':'Account deleted.');
+    ADMIN_USERS=ADMIN_USERS.filter(u=>u.id!==id);
+    ADMIN_EXPERTS=ADMIN_EXPERTS.filter(e=>e.id!==id);
+    render();
+  }catch(e){toast('Error: '+e.message);}
+};
+
+ACT.adminDeletePost=el=>{
+  const id=el.dataset.id,isSw=curLang()==='sw';
+  if(!id)return;
+  if(!confirm(isSw?'Je, una uhakika kutaka kufuta chapisho hili?':'Delete this post? This cannot be undone.'))return;
+  DB.posts=DB.posts.filter(p=>p.id!==id);save();toast(isSw?'Chapisho limefutwa.':'Post deleted.');render();
+};
+
+ACT.adminPreviewDoc=async el=>{
+  const userId=el.dataset.doc,type=el.dataset.type,isSw=curLang()==='sw';
+  const expert=ADMIN_EXPERTS.find(e=>e.id===userId);
+  if(!expert)return toast('Expert not found in loaded data.');
+  const docData=type==='cert'?expert.cert_doc:expert.license_doc;
+  const docLabel=type==='cert'?(isSw?'Cheti cha Taaluma':'Academic Certificate'):(isSw?'Leseni ya Kazi':'Practicing License');
+  if(!docData)return toast(isSw?'Hakuna hati iliyopakiwa.':'No document was uploaded.');
+  if(docData.startsWith('data:image/')){
+    sheet(docLabel,`<div style="text-align:center"><img src="${docData}" style="max-width:100%;max-height:70vh;border-radius:12px;border:1px solid var(--line)" alt="${docLabel}"></div>`);
+  } else if(docData.startsWith('data:application/pdf')){
+    sheet(docLabel,`<div style="text-align:center"><iframe src="${docData}" style="width:100%;height:70vh;border:none;border-radius:8px"></iframe></div>`);
+  } else {
+    sheet(docLabel,`<div class="empty">${isSw?'Muundo wa hati haukutambuliwa. Tafadhali angalia':'Unsupported document format. Try downloading it.'}</div>`);
+  }
+};
 
 /* ============ about ============ */
 VIEWS.about=()=>`<div class="view about" style="max-width:720px"><h2>${t('about_title')}</h2>
