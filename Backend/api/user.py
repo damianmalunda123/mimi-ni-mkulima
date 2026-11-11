@@ -212,10 +212,7 @@ def check_username_eligibility(user_row: sqlite3.Row, conn: sqlite3.Connection) 
 @router.post("/password-reset/send")
 async def send_password_reset_code(payload: VerificationRequest, request: Request):
     destination = normalize_destination(payload.channel, payload.destination)
-    if payload.channel == "email":
-        if not settings.BREVO_API_KEY.strip() and not settings.SMTP_HOST:
-            raise HTTPException(status_code=503, detail="Email verification service is not configured.")
-    elif not all((settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, settings.TWILIO_FROM_NUMBER)):
+    if payload.channel != "email" and not all((settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN, settings.TWILIO_FROM_NUMBER)):
         raise HTTPException(status_code=503, detail="SMS verification is not configured.")
 
     current_time = time.monotonic()

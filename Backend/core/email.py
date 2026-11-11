@@ -121,14 +121,38 @@ async def send_password_reset_email(to_email: str, code: str) -> None:
     if settings.BREVO_API_KEY.strip():
         try:
             await send_brevo_email(to_email, subject, html)
+            logger.info("Password reset email sent via Brevo to %s", to_email)
             return
         except Exception as exc:
             logger.warning("Brevo send failed, trying SMTP fallback: %s", exc)
 
     if settings.SMTP_HOST and (settings.SMTP_FROM_EMAIL or settings.SMTP_USERNAME):
-        send_smtp_email(to_email, subject, f"Your verification code is {code}. It expires in 10 minutes.", html)
-    else:
-        raise RuntimeError("No working email delivery service configured.")
+        try:
+            send_smtp_email(to_email, subject, f"Your verification code is {code}. It expires in 10 minutes.", html)
+            logger.info("Password reset email sent via SMTP to %s", to_email)
+            return
+        except Exception as exc:
+            logger.warning("SMTP send failed: %s", exc)
+
+    # Last resort: try Gmail SMTP with sender email (requires app password in BREVO_SENDER_EMAIL)
+    try:
+        sender = settings.BREVO_SENDER_EMAIL.strip() or "noreply@miminikulima.co.tz"
+        msg = EmailMessage()
+        msg["Subject"] = subject
+        msg["From"] = f"MIMI NI MKULIMA <{sender}>"
+        msg["To"] = to_email
+        msg.set_content(f"Your MIMI NI MKULIMA verification code is {code}. It expires in 10 minutes.")
+        msg.add_alternative(html, subtype="html")
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
+            server.starttls()
+            server.login(sender, settings.BREVO_API_KEY.strip()[:16] if settings.BREVO_API_KEY.strip() else "")
+            server.send_message(msg)
+        logger.info("Password reset email sent via Gmail SMTP fallback to %s", to_email)
+        return
+    except Exception as exc:
+        logger.warning("Gmail SMTP fallback also failed: %s", exc)
+
+    raise RuntimeError("All email delivery methods failed. Check BREVO_API_KEY or SMTP settings.")
 
 
 async def send_username_change_email(to_email: str, code: str, current_username: str, new_username: str) -> None:
@@ -153,11 +177,34 @@ async def send_username_change_email(to_email: str, code: str, current_username:
     if settings.BREVO_API_KEY.strip():
         try:
             await send_brevo_email(to_email, subject, html, to_name=current_username)
+            logger.info("Username change email sent via Brevo to %s", to_email)
             return
         except Exception as exc:
             logger.warning("Brevo send failed, trying SMTP fallback: %s", exc)
 
     if settings.SMTP_HOST and (settings.SMTP_FROM_EMAIL or settings.SMTP_USERNAME):
-        send_smtp_email(to_email, subject, f"Your username change code is {code}. It expires in 10 minutes.", html)
-    else:
-        raise RuntimeError("No working email delivery service configured.")
+        try:
+            send_smtp_email(to_email, subject, f"Your username change code is {code}. It expires in 10 minutes.", html)
+            logger.info("Username change email sent via SMTP to %s", to_email)
+            return
+        except Exception as exc:
+            logger.warning("SMTP send failed: %s", exc)
+
+    try:
+        sender = settings.BREVO_SENDER_EMAIL.strip() or "noreply@miminikulima.co.tz"
+        msg = EmailMessage()
+        msg["Subject"] = subject
+        msg["From"] = f"MIMI NI MKULIMA <{sender}>"
+        msg["To"] = to_email
+        msg.set_content(f"Your MIMI NI MKULIMA username change code is {code}. It expires in 10 minutes.")
+        msg.add_alternative(html, subtype="html")
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=15) as server:
+            server.starttls()
+            server.login(sender, settings.BREVO_API_KEY.strip()[:16] if settings.BREVO_API_KEY.strip() else "")
+            server.send_message(msg)
+        logger.info("Username change email sent via Gmail SMTP fallback to %s", to_email)
+        return
+    except Exception as exc:
+        logger.warning("Gmail SMTP fallback also failed: %s", exc)
+
+    raise RuntimeError("All email delivery methods failed. Check BREVO_API_KEY or SMTP settings.")
