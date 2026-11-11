@@ -1329,33 +1329,151 @@ ACT.aiAttach=()=>sheet(t('attach_title'),`<div class="menu">
   <button data-act="attKind" data-k="audio">🎵 Audio</button>
   <button data-act="attKind" data-k="doc">${ic('clip')} Document (PDF, Word, PPT, Excel)</button>
 </div>`);
-ACT.aiCamera=async()=>{
-  closeSheet();
-  if(!ST().perm.camera)return toast(t('perm_camera_disabled'));
-  /* Force camera on mobile — set capture="user" or "environment" + accept=image/* */
+
+function triggerFallbackCamera(onPhoto){
   const inp=document.createElement('input');
   inp.type='file';
   inp.accept='image/*';
-  inp.setAttribute('capture','environment'); /* rear camera by default */
-  const f=await new Promise(res=>{
-    inp.onchange=()=>res(inp.files&&inp.files[0]||null);
-    inp.addEventListener('cancel',()=>res(null));
-    inp.click();
-  });
-  if(!f)return;
-  try{
-    const b64=await imgToData(f,1080,.85);
-    ATT={kind:'image',name:f.name||('photo_'+Date.now()+'.jpg'),type:'image/jpeg',size:f.size||0,data:b64,file:f};
-    const bar=$('#attBar');
-    if(bar)bar.innerHTML=`<div class="att" style="align-items:center;gap:.6rem">
-      <img src="${b64}" style="width:44px;height:44px;border-radius:.4rem;object-fit:cover;flex-shrink:0">
-      <span class="grow" style="font-size:.85rem;font-weight:600">📷 ${esc(ATT.name)}</span>
-      <button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button>
-    </div>`;
-    toast(curLang()==='sw'?'Picha imepigwa — bonyeza Send kupeleka kwa Agro AI':'Photo ready — tap Send to analyze with Agro AI');
-    /* Focus the textarea so user can type a question */
+  inp.capture='environment';
+  inp.style.display='none';
+  document.body.appendChild(inp);
+  inp.onchange=async()=>{
+    const f=inp.files&&inp.files[0];
+    inp.remove();
+    if(!f)return;
+    try{
+      const b64=await imgToData(f,1080,.85);
+      onPhoto(b64,f.name||('camera_'+Date.now()+'.jpg'),f);
+    }catch(err){toast(curLang()==='sw'?'Imeshindwa kusoma picha.':'Could not read photo.');}
+  };
+  inp.addEventListener('cancel',()=>inp.remove());
+  inp.click();
+}
+
+ACT.aiCamera=async()=>{
+  closeSheet();
+  if(!ST().perm.camera)return toast(t('perm_camera_disabled'));
+
+  function applyPhotoToAI(b64,fname,fileObj){
+    ATT={kind:'image',name:fname,type:'image/jpeg',size:fileObj?fileObj.size:0,data:b64,file:fileObj||null};
+    const attEl=$('#attBar');
+    if(attEl)attEl.innerHTML=`<div class="att" style="align-items:center;gap:.6rem"><img src="${b64}" style="width:44px;height:44px;border-radius:.4rem;object-fit:cover;flex-shrink:0"><span class="grow" style="font-size:.85rem;font-weight:600">📷 ${esc(fname)}</span><button class="icon-btn" data-act="attClear" aria-label="Remove">${ic('x')}</button></div>`;
+    toast(curLang()==='sw'?'Picha imepigwa — bonyeza Send kupeleka kwa Agro AI':'Photo captured — tap Send to analyze with Agro AI');
     const ta=$('#aiText');if(ta){ta.focus();ta.placeholder=curLang()==='sw'?'Uliza swali kuhusu picha hii…':'Ask a question about this photo…';}
-  }catch(e){toast(curLang()==='sw'?'Imeshindwa kupiga picha.':'Could not capture photo.');}
+  }
+
+  /* ---- Live camera viewfinder with getUserMedia ---- */
+  if(navigator.mediaDevices&&navigator.mediaDevices.getUserMedia){
+    let facingMode='environment';
+    let stream=null,track=null,hasTorch=false,torchOn=false;
+
+    const ov=document.createElement('div');
+    ov.id='aiCamOverlay';
+    ov.style.cssText='position:fixed;inset:0;z-index:99999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:space-between;touch-action:none;user-select:none';
+
+    const vid=document.createElement('video');
+    vid.setAttribute('autoplay','');
+    vid.setAttribute('playsinline','');
+    vid.muted=true;
+    vid.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
+
+    const topBar=document.createElement('div');
+    topBar.style.cssText='position:relative;z-index:2;width:100%;display:flex;justify-content:space-between;align-items:center;padding:16px 16px 12px;background:linear-gradient(rgba(0,0,0,0.6),transparent)';
+    topBar.innerHTML=`
+      <button id="camClose" style="background:rgba(0,0,0,0.5);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.3rem;display:flex;align-items:center;justify-content:center;cursor:pointer">${ic('x')}</button>
+      <div style="color:#fff;font-weight:700;font-size:0.95rem;text-shadow:0 1px 4px rgba(0,0,0,0.8)">📷 ${curLang()==='sw'?'Piga Picha ya Zao / Mfugo':'Snap Crop / Livestock'}</div>
+      <button id="camTorch" style="background:rgba(0,0,0,0.5);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:1.2rem;display:none;align-items:center;justify-content:center;cursor:pointer">⚡</button>
+    `;
+
+    const frame=document.createElement('div');
+    frame.style.cssText='position:relative;z-index:2;width:72vw;max-width:320px;aspect-ratio:1/1;border:2px dashed rgba(255,255,255,0.6);border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,0.25);pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:12px';
+    frame.innerHTML=`<span style="background:rgba(0,0,0,0.65);color:#fff;font-size:0.75rem;padding:4px 10px;border-radius:20px">${curLang()==='sw'?'Lenga hapa zao au mfugo':'Focus on crop or animal'}</span>`;
+
+    const bottomBar=document.createElement('div');
+    bottomBar.style.cssText='position:relative;z-index:2;width:100%;display:flex;justify-content:space-around;align-items:center;padding:16px 20px 28px;background:linear-gradient(transparent,rgba(0,0,0,0.8))';
+    bottomBar.innerHTML=`
+      <div style="width:50px"></div>
+      <button id="camShutter" style="width:76px;height:76px;border-radius:50%;background:#ffffff;border:5px solid rgba(255,255,255,0.4);box-shadow:0 0 20px rgba(0,0,0,0.6);cursor:pointer;outline:none;transition:transform .1s" aria-label="Shutter"></button>
+      <button id="camFlip" style="background:rgba(0,0,0,0.5);border:none;color:#fff;width:50px;height:50px;border-radius:50%;font-size:1.4rem;display:flex;align-items:center;justify-content:center;cursor:pointer" title="Flip Camera">🔄</button>
+    `;
+
+    ov.appendChild(vid);
+    ov.appendChild(topBar);
+    ov.appendChild(frame);
+    ov.appendChild(bottomBar);
+    document.body.appendChild(ov);
+
+    async function openCam(){
+      if(stream){stream.getTracks().forEach(tr=>tr.stop());stream=null;}
+      try{
+        stream=await navigator.mediaDevices.getUserMedia({
+          video:{facingMode:{ideal:facingMode},width:{ideal:1920},height:{ideal:1080}},
+          audio:false
+        });
+        vid.srcObject=stream;
+        track=stream.getVideoTracks()[0];
+        if(track&&track.getCapabilities){
+          const caps=track.getCapabilities();
+          hasTorch=!!caps.torch;
+          const torchBtn=ov.querySelector('#camTorch');
+          if(torchBtn)torchBtn.style.display=hasTorch?'flex':'none';
+        }
+      }catch(e){
+        closeCam();
+        triggerFallbackCamera(applyPhotoToAI);
+      }
+    }
+
+    function closeCam(){
+      if(stream){stream.getTracks().forEach(tr=>tr.stop());stream=null;}
+      vid.srcObject=null;
+      if(ov.parentNode)ov.parentNode.removeChild(ov);
+    }
+
+    ov.querySelector('#camClose').onclick=()=>closeCam();
+    ov.querySelector('#camFlip').onclick=()=>{
+      facingMode=facingMode==='environment'?'user':'environment';
+      openCam();
+    };
+    const torchBtn=ov.querySelector('#camTorch');
+    if(torchBtn){
+      torchBtn.onclick=async()=>{
+        if(!track||!hasTorch)return;
+        torchOn=!torchOn;
+        try{await track.applyConstraints({advanced:[{torch:torchOn}]});torchBtn.style.color=torchOn?'#facc15':'#fff';}catch(err){}
+      };
+    }
+
+    const shutterBtn=ov.querySelector('#camShutter');
+    shutterBtn.onmousedown=()=>shutterBtn.style.transform='scale(0.92)';
+    shutterBtn.onmouseup=()=>shutterBtn.style.transform='scale(1)';
+    shutterBtn.onclick=()=>{
+      if(navigator.vibrate)navigator.vibrate(40);
+      const c=document.createElement('canvas');
+      c.width=vid.videoWidth||1280;
+      c.height=vid.videoHeight||720;
+      const ctx=c.getContext('2d');
+      if(facingMode==='user'){
+        ctx.translate(c.width,0);ctx.scale(-1,1);
+      }
+      ctx.drawImage(vid,0,0,c.width,c.height);
+      const b64=c.toDataURL('image/jpeg',0.85);
+      closeCam();
+
+      const fl=document.createElement('div');
+      fl.style.cssText='position:fixed;inset:0;background:#fff;z-index:99999;opacity:1;transition:opacity .25s ease-out';
+      document.body.appendChild(fl);
+      setTimeout(()=>{fl.style.opacity='0';setTimeout(()=>fl.remove(),260);},30);
+
+      applyPhotoToAI(b64,'camera_'+Date.now()+'.jpg',null);
+    };
+
+    await openCam();
+    return;
+  }
+
+  /* Direct fallback if getUserMedia not supported */
+  triggerFallbackCamera(applyPhotoToAI);
 };
 ACT.attKind=async el=>{const kind=el.dataset.k;closeSheet();
   if(kind==='camera'&&!ST().perm.camera)return toast(t('perm_camera_disabled'));
